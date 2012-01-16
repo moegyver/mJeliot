@@ -1,0 +1,149 @@
+\section{Intermediate Code (M-Code)}
+\label{sec:Intermediate_Code}
+
+A new language was to be designed in order to express the information extracted from the source code interpretation and pass it to a new visualization interpreter. This interpreter will parse these instructions (m-code sentences) and give the ``script'' of the animation or ``play'' to \p{Director}, which organizes the actors on the display. These cinematographic metaphors come from the previous versions of \jel{}. \p{Director} stands for the component that manages the different pieces of information (actors) on the screen.
+
+The m-code syntax is rather simple. While the inner representations of the m-code commands are numbers, Java constants are used to refer to them. The usual m-code sentence will consist of:
+
+\begin{description}
+	\item[Expression/Statement code] A shortcut for every Java statement or expression is used: e.g. AE stands for Add Expression. The names chosen are closely related to the ones used in \djava{}.
+
+	\item[Reference] Every Expression/Statement sentence is identified by a number. This way nested statements and expressions can be formed up from previous {m-code} sentences.
+
+\item[Related References] Most of the {m-code} sentences refer to previous m-code sentences. One Add Expression will refer to the references of both sides of expression. Flow-control statements will refer to a condition expression, and so on.
+
+	\item[Value] Most sentences will return the value resulting from the executing of an expression. If it is a flow control statement it will return a boolean value indicating the result of the condition. 
+	
+	\item[Type] Every expression that has a result must specify its type.
+	
+	\item[Location] This contains the location of the expression in the original source code file.
+	
+\end{description}
+
+Some auxiliary {m-code} commands have been defined to simplify m-code interpretation, especially when referring to assignments and binary expression:
+
+\begin{description}
+
+	\item[BEGIN] Indicates beginning of an assignment or expression. It encapsulates nested expressions, literals or qualified names.
+	
+	\item[LEFT] Indicates beginning of the left hand side of an expression.
+	
+	\item[RIGHT] Indicates beginning of the right hand side of an expression.
+	
+	\item[TO] Indicates the beginning of the assignment destination.
+	
+	\item[END]  States the end of the current program execution.
+	
+\end{description}
+
+One typical assignment like \p{a=b+1}; is coded as follows:
+
+\begin{verbatim}
+Begin|Assignment|1|1,1,1,10
+Begin|AddExpression|2|1,5,1,10
+Left|3
+QualifiedName|3|b|1|int
+Right|4
+Literal|4|1|int|1,9,1,10
+AddExpression|2|3|4|2|int|1,1,1,10
+To|5
+QualifiedName|5|a|UnknownValue|int
+Assignment|1|2|5|2|int|1,1,1,10
+\end{verbatim}
+
+In this example we find two new commands \p{QUALIFIED NAME}, which refers to variables previously declared and \p{LITERAL} which states for literal values, as numbers, characters or strings.
+
+For a complete listing of commands and their descriptions see the Intermediate Language Specifications document \citep{Moreno2004}. 
+
+\subsection{M-code production}
+
+\subsubsection{Evaluation Visitor}
+
+As previously noted, \p{EvaluationVisitor} was the main class that needed to be modified. In the next subsections, we will describe how {m-code} is produced for certain subsets of Java expressions and statements:
+
+{\bf{Static Method Call}}
+
+The visitor method \p{StaticMethodCall} is the entry point to the evaluation visitor. It is the method called when invoking the main method of a class from \p{TreeInterpreter}.
+
+Here is where I/O management takes place. I/O facilities were to be built-in in \djava{}, as they require special treatment in the \jel{} side. We have chosen to keep on using the I/O library provided by \jel{}~2000; nevertheless this can be changed by doing some simple changes in \p{EvaluationVisitor}. So, to obtain the I/O method calls, we first ask for the declaring class when
+visiting a static method call [\p{public Object visit(StaticMethodCall node)}],
+
+\begin{itemize}
+
+	\item If it is an \p{Input} class we ask the \p{{m-code} interpreter} to provide the information requested by ways of one pipe that communicates with both sides. We discriminate the type by the method name. Every input method has an equivalent in \p{MCodeUtilities}, where the value is actually read from the pipe. An m-code command named \p{INPUT} has been defined to request data of a given type from the \p{Director}.
+
+\item If it is an \p{Output} class then the only method currently available is \p{println}. \djava{} visits the argument and sends the resulting string to the \p{{m-code} interpreter} with the command
+\p{OUTPUT}.
+
+\end{itemize}
+
+After that a stack is maintained by \p{StaticMethodCall} and \p{ReturnStatement} visitors to manage multiple method calls (e.g. \p{return object.method()}). A reference number is pushed into the stack in every method call.
+
+Later, the argument types are processed and m-code is produced to inform \p{m-code interpreter} of these types. Finally \djava{} will invoke the method with all the information. When the invocation ends a special statement is produced to indicate the end of static method call (\p{SMCC}).
+
+However, when a static method call refers to a foreign method (no source code is provided for it), the normal invocation will only return the value, if it is not a void method. But to visualize the call properly we need to simulate the parameters passing and the method declaration m-code statements. Moreover, the value returned must be inside a return m-code statement, again for visualization purposes, so it is simulated too.
+
+{\bf{Return Statement}}
+
+A return statement can contain a value to return or nothing at all (a void method or function). If there is something to be, returned a \p{BEGIN} statement is produced before visiting the expression to be returned. Otherwise a simple return statement is produced with the special constant \p{Code.NO\_REFERENCE}, so \jel{} interpreter will not look for an expression. 
+
+A stack is maintained by the \p{StaticMethodCall} and \p{ReturnStatement} methods to manage recursive method calls (e.g. \p{return object.method()}). A reference number is pushed onto the stack in every method call. The return statement will pick it up from the top of the stack and that will identify the return statement.
+
+{\bf{Simple Assign Expression}}
+
+A \p{BEGIN} statement is produced indicating the beginning of a new assignment. Then the right expression is visited and thus it produces its own m-code. A special statement \p{TO} is produced
+pointing the beginning of the left expression, where the value obtained interpreting the right expression will be stored. This left expression was not visited in the original \djava{}, as
+it is not needed to modify the context. However we need to visualize that expression, so an "artificial" visit was added. An \p{evaluating} flag is set to show that it is an "artificial" visit. Finally, we produce the assign code with references to both expressions.
+
+{\bf{Qualified Name}}
+
+Qualified Names are the names already declared (e.g. variable names and any other identifier) and they are used in expressions. Its visitor was modified to take into account the \p{evaluating} flag. The reason having two different behaviors is that \djava{} throws an \p{ExecutionError} when visiting an uninitialized qualified name. That occurs when an assignment method (as \p{Simple\-Assign\-Expression}) visits its left hand side for visualization purposes before it has a value. When the \p{evaluating} flag is false, \djava{} invokes the \p{display} method to avoid unnecessary exceptions. However, both methods (\p{visit} and \p{display}) produce the same m-code.
+
+{\bf{Variable Declaration}}
+
+Variable declaration does not cause large modifications to original source code. Only if an initialization expression is found, we have to modify the normal process to visualize the initialization. This is done by simulating an assignment after the variable is declared.
+
+{\bf{Flow Control Statements}}
+
+All flow control statements work similarly. Here, we will explain how a \p{while} statement produces its m-code. Other statements work in a similar way.
+
+Firsts of all, the \p{WhileStatement} node keeps the reference to the condition that will be visited and will determine whether to enter or not the body of the statement. If the condition holds the
+visitor produces a \p{WHILE} statement with \p{TRUE} as a value. Then the body is evaluated, producing its own m-code.
+
+Break or continue visitors throw exceptions to be caught by the flow control statements. When they are caught their corresponding m-code statement is produced. This statement reflects where the break or
+continue has happened (\p{WHILE}, \p{FOR}, \p{DO} and \p{SWITCH} expression).
+
+{\bf{Boolean and Bitwise Unary Expressions}}
+
+This group contains the not (\p{!}) and complement (\p{\~})operators. There are two different possibilities. On the one hand the expression can be constant and not evaluation is performed by \djava{}, so the generation of m-code is straightforward. However, as there is no expression to be referred, there is no node containing that constant, only a value is returned. \p{Code.NO\_REFERENCE} is used to indicate this fact to the interpreter. On the other hand, when there is an expression to negate, a \p{BEGIN} statement is produced before the expression to be negated is visited. Finally the unary statement is produced returning the value and referring to the expression it affects. 
+
+{\bf{Unary arithmetic expressions}}
+
+This group contains increments and decrements (\p{++}, \verb|--|). No special modifications were carried out in these visitors. They just generate a \p{BEGIN} statement and their own statement
+(\p{PIE}, \p{PDE}, \p{PRIE}, \p{PRDE}), that returns the modified value and the type.
+
+{\bf{Binary Expressions}}
+
+This group comprises all boolean, bitwise and arithmetic binary operators. As usual, a \p{BEGIN} statement is produced, anticipating what the operator will be. Then both sides of the expression are visited and their values are collected. Before each of these two visits, there is one special m-code statement: a \p{LEFT} statement, for the left side, and a \p{RIGHT} statement for the right side. Finally the binary statement is generated referring both sides and the value resulting of applying the
+operator to both sides of the expression.
+
+{\bf{Compound Assignment Expressions}}
+
+This group contains all bitwise and arithmetic compound assignments. Compound operators are for example \p{+=}, \p{-=}, \p{*=} and \p{/=}. The visitors of these compound assignments have been modified to produce m-code that decomposes the compound assignment into a simple assignment and a binary operation. For example \p{a+=3-b} will be interpreted as \p{a=a+(-b)}.
+
+Then, the code of the visitors is just a composition of an assignment and a binary expression as its right hand side. This binary expression has as its sides the same ones as the compound assignment. As a result, two fake or artificial visits are done to the left hand side of the compound assignment.
+
+\subsubsection{Tree Interpreter}
+
+This class contains methods to interpret the constructs of the language. This class is the one called from Jeliot to start interpreting a program or a single method. There are two main methods that have been modified.
+ 
+{\bf{interpret(Reader r, String fname)}}
+
+This method receives the source code and invokes the three visitors of \djava{}: \p{NameVisitor}, \p{TypeCheker} and \p{EvaluationVisitor}. This method catches the execution and parsing errors and generates m-code to notify Jeliot of the possible lexical, syntax or semantic errors that are found during the interpretation.
+
+{\bf{interpretMethod(Class c, MethodDescriptor md, Object obj, Object[] params)}}
+
+Whenever a domestic method is invoked by the interpreter, this method will construct everything needed to interpret it. The m-code generated by this method provides the names of the formal parameters so they are added to the method variables by the \jel{} interpreter. It also indicates the location of the method declaration in the source code by means of a special m-code statement: \p{MD}, method declaration. These are the information that are generated in \p{StaticMethodCall} if the method is a
+foreign one. The flag inside is set to indicate that the currently interpreted method is a domestic method.
+
+{\bf Add here what happens during the constructor calls!}

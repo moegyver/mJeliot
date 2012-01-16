@@ -1,0 +1,41 @@
+\section{Introduction}
+\label{sec:Introduction}
+
+\jel{} is a program animation system intended for teaching introductory programming. Programs are animated fully or semi-automatically, requiring no modifications or annotations on the part of the instructor or student. While this limits the flexibility of the animation, \jel{} is extremely simple to use so that it is easily accepted by true novices, as well as by their teachers who do not have to invest in learning how to prepare animations.
+
+\jel{} is written in Java for portability and animates program that are written in Java. \jel{} uses a modified version of \djava{} \citep{DJava} (section~\ref{sec:DynamicJava}) as a front-end and modified version of \jel{}~2000's animation engine (section~\ref{sec:Visualization_Engine}) as its back-end. The user interface was also adopted from \jel{}~2000 (sections~\ref{sec:Jeliot_Class} and \ref{sec:User_Interface}).
+
+\djava{} is a Java source code interpreter written in Java. This application is open source and can be freely obtained from \url{http://www.koala.ilog.fr/djava/}. At the moment, DynamicJava is almost fully compliant with Java language specifications and supports multi-threading and inner-classes.
+
+To make these two separate systems communicate (section~\ref{sec:Communications_Model}) with each other a new intermediate code (section~\ref{sec:Intermediate_Code} and Intermediate Language Specification) and an intermediate code interpreter (section~\ref{sec:Intermediate_Code_Interpreter}) were designed. In this way the system should be more flexible for modifications and new extensions (sections~\ref{sec:Managing_Jeliot_3_System} and \ref{sec:Extending_Jeliot_System}).
+
+\subsection{History}
+
+The first member of the \jel{} family of program animation systems was called Eliot; it was developed by Erkki Sutinen and Jorma Tarhio and their students at the University of Helsinki. Eliot was written in C and used the Polka animation library. Later a version was written in Java and the name was changed to \jel{}. (This version is now called \jel{}~I to distinguish it from later versions.)
+
+\jel{}~I was a flexible system: the user could choose the variables to be animated, the graphical form of the animated elements and multiple views of the same program. It proved too difficult for teaching novices, so a new version called \jel{}~2000 was developed at the Weizmann Institute of Science by Pekka Uronen under the supervision of Moti Ben-Ari. A pedagogical experiment carried out by Ronit Ben-Bassat Levy proved the effectiveness of \jel{} in teaching introductory programming \citep{Levy2003}.
+
+\jel{}~2000 only implemented a very small subset of the Java language. The current version \jel{}~3 is a re-implementation designed to significantly extend the range of Java features that are animated, in particular, to cover object-oriented programming. The design and implementation was carried out at the University of Joensuu by Niko Myller and Andr{\'{e}} Moreno-Garc{\'{\i}}a, under the supervision of Moti Ben-Ari and Erkki Sutinen. For an extensive discussion of the history of \jel{}, see \citep{Benari2002a}.
+
+\subsection{Release Notes}
+\label{sec:Release_Notes}
+
+\paragraph{Version 3.2} contains documentation and supports inheritance, supports: inheritance of classes and \p{super()} method calls at the beginning of a constructor.
+
+\paragraph{Version 3.1} supports objects creation and object method calls. Line numbering was added for source code editor and viewer. Supports: User made classes (inheritance is not yet supported), constructor calls, object method calls, object field accesses.
+
+\paragraph{Version 3.01} is a maintenance release. Bugs of the initial release were fixed. Support for \p{switch} statement was added.
+
+\paragraph{Version 3.0} is the initial public release. Supports: Values of type \p{String} and all primitive types, one-dimensional arrays with primitive types or strings as their component type, expressions including all unary and binary operations except \p{instanceof}, all the control statements (\p{if}, \p{while}, etc.) except \p{switch} statement and conditional expression (\p{exp?exp1:exp2}), method invocations, including recursive invocations.
+
+\paragraph{Not implemented:}
+\begin{itemize}
+\item Static variables.
+\item Calls to \p{super(...)} method with parameters.
+\item Super field accesses.
+\item Arrays with components of reference type (except \p{String})
+\item Two or more dimensional arrays.
+\item Conditional expressions (\p{exp?exp1:exp2}).
+\item Array initializers.
+\item Java 2 SDK API classes' methods cannot return object (except \p{String} type) or array types (e.g. \p{object.getClass()} that returns a \p{Class} instance).
+\end{itemize}

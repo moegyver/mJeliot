@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:gravity="bottom">
+	<ImageView android:src="@drawable/start" android:scaleType="center" android:layout_height="wrap_content" android:baselineAlignBottom="true" android:layout_width="wrap_content" android:id="@+id/ImageView01" android:layout_gravity="center"></ImageView>
+	<TextView android:id="@+id/textviewurl"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/address" />
+	<EditText android:id="@+id/editurl"
+		android:layout_width="fill_parent"
+		android:singleLine="true"
+		android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-."
+		android:layout_height="wrap_content"/>
+	<Button android:id="@+id/buttonconnect"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/connect"/>
+
+
+</LinearLayout>

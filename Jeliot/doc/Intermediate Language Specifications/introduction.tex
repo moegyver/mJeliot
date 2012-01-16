@@ -1,0 +1,30 @@
+\chapter{Introduction}
+\label{ch:Introduction}
+
+This document contains the specification for the \mcode{}, intermediate language code used in Jeliot 3 program visualization system.
+
+\section{Purpose}
+\label{sec:purpose}
+
+This document main intention is to lay a solid ground for \mcode{}, so future modifications, additions and queries to it will have a clear reference within this document.
+
+\section{Scope}
+\label{sec:scope}
+
+This document attaches to \jel{}. \mcode{} was developed in order to provide the execution information to an interpreter, which manages the visualization scene. The interpreted language is Java and the interpretation is done by \djava{}. \djava{} is a Java interpreter written in Java. Java and \djava{} imposes some properties to the \mcode{}. Furthermore, the original target users (programming novices) and their programs, also delimits the Java features that are currently supported by the \mcode{}, such features as threads and reflection utilities are not supported. More on this will be explained in the following chapter.
+
+\section{Definitions, acronyms and abbreviations}
+\label{sec:definitions}
+
+Here it is included some definitions of used word to help its comprehension.
+
+\section{References}
+\label{sec:deferences}
+
+Interested readers should point to the master theses written by Niko Myller and \andres{} Moreno, both can be found at Jeliot 3's webpage: \url{http://cs.joensuu.fi/jeliot/} . Niko's thesis \citep{myllerthesis} describes Jeliot 3 system and its implementation. \andres{}' thesis \citep{morenothesis} explains further the decisions that shaped this intermediate code and compares it with different solutions, describing a taxonomy.
+
+\section{Overview}
+\label{sec:overview}
+
+This language will be used to transfer evaluation information between Dynamic Java and Director class of Jeliot 3. The information flows to one direction, from Dynamic Java to Director (with a possible exception of the Input statements).
+Section~\ref{ch:overall} will provide a background, introducing \jel{} system and some features of \mcode{}.

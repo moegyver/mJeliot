@@ -1,0 +1,300 @@
+%% Title: Jeliot 3 - Animation Tutorial
+%% File: tutorial.tex
+%% Author: Timo Rongas <timo.rongas@lut.fi>
+%% Last Update:
+%% Last Editor: Timo Rongas
+
+
+\documentclass[a4paper,12pt,english]{article}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{times}
+\usepackage{geometry}
+\usepackage{wrapfig}
+\usepackage{subfigure}
+\geometry{verbose,a4paper,tmargin=30mm,bmargin=30mm,lmargin=20mm,rmargin=20mm}
+
+\newcommand{\jel}{Jeliot}
+
+% Use same notation for files as for URLs
+\newcommand{\file}{\url}
+\newcommand{\p}[1]{\texttt{#1}}
+\newcommand{\bu}[1]{\textsf{#1}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{12pt}
+
+\begin{document}
+
+\begin{titlepage}
+\begin{flushleft}
+Eastern Finland Virtual University (ISVY)
+\end{flushleft}
+\vfill{}
+
+\Huge{Jeliot 3 - Animation Tutorial} \\
+\Large{Detailed and Illustrated Step-By-Step Animation Session}
+
+\vfill{}
+\end{titlepage}
+\pagebreak
+
+\section*{Hello, User}
+
+\begin{wrapfigure}[11]{r}{50mm}
+\vspace{-12pt}
+some funny comment here.
+%\includegraphics{images_old/tmpwrap.eps}
+\end{wrapfigure}
+
+
+This is the animation tutorial for \jel{} 3. It guides you through a complete illustrated animation session with selected simple example, describing the meanings of different actions as you use them and pointing your attention to correct places. In addition, a few animation aspects are shown in the end through other short examples.
+
+The examples used here are distributed with \jel{} and can be found from the examples directory under \jel{}. When reading this tutorial, I suggest you try to follow the flow of the tutorial by animating the same things in \jel{}  yourself! In case you have not installed \jel{} yet, see \emph{Jeliot 3 - Quick Tutorial} for quick set of starting instructions. At any time, if you do not understand what you are asked to do, check the \emph{Jeliot 3 - User Guide} for extra information.
+
+
+\section{Animation Tutorial: Calculating Averages}
+
+The very first thing to do is to start \jel{}. If you used the windows installer, you shoul be able to find \jel{} from you Start-menu. Otherwise, try to run the file \file{jeliot.bat} or command \file{java -jar jeliot.jar} in the directory where \jel{} is installed. For installation instructions see the \emph{user guide} of \jel{}.
+
+\subsection{Preparations for Animating}
+
+\begin{wrapfigure}[15]{l}{50mm}
+\vspace{-12pt}
+some funny comment here.
+%\includegraphics{images_old/tmpwrap.eps}
+\end{wrapfigure}
+
+In this example tutorial, we will be using the file \file{Average.java} to demonstrate animation. The file is located in \file{examples} directory under \jel{}. You can open it with the \bu{Open} toolbar button or by selecting \bu{Program/Open} from the menu. The algorithm in the file calculates the average value of inputted \p{double} values. If for some mysterious reason you cannot find the file from the \file{examples} directory, you can find it from appendix \ref{app:ex1}.
+
+You should now have \jel{} running on your screen, with the \file{Average.java} opened to the \emph{source frame} (the area where source code is shown, on the left side of the screen). \emph{Animation frame} (the large area on the right side of the screen) should be covered with a blue curtain. To open the curtains of the animation stage, click on \bu{Compile}. The curtains will slide to the sides (look at fig. \ref{fig:ex1-01}), the source frame will become uneditable and the file and edit operations toolbar from the top of the source frame will disappear.
+
+\begin{figure}[ht]
+  \begin{minipage}[t]{.49\textwidth}
+    \begin{center}  
+      \includegraphics{images/ex1-01.eps}
+      \caption{\label{fig:ex1-01}Curtains being opened.}
+    \end{center}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{.49\textwidth}
+    \begin{center}  
+      \includegraphics{images/ex1-02.eps}
+      \caption{\label{fig:ex1-02}Different areas of animation frame.}
+    \end{center}
+  \end{minipage}
+\end{figure}
+
+\subsection{Animation Controls}
+
+\begin{wrapfigure}[10]{r}{40mm}
+\vspace{-12pt}
+``If you're reading this, you didn't start with the other docs first, did you?''
+%\includegraphics{images_old/tmpwrap.eps}
+\end{wrapfigure}
+
+
+A few words on controlling the animation are probably in place now. If you have read the \emph{quick start guide}, you should have some idea on how the controls work. However, to make sure lets go through them again. The buttons you will need in this tutorial are \bu{Step}, \bu{Play}, \bu{Pause} and the \bu{Compile} you have already used. \bu{Play} makes the animation go forward continuously, either until the program ends or you click \bu{Pause}. \bu{Step} will make the animation go forward just one step, making it easy follow single instructions. Note the \bu{Animation speed} slider below the buttons, use it to make animation run faster/slower. For the sake of this tutorial, I suggest you use the \bu{Step} button to proceed through the phases that are explained here.
+% or just mention that they work like VCR-buttons?
+
+
+\subsection{Initalization of the Animation Area}
+
+\begin{wrapfigure}[10]{r}{40mm}
+\vspace{-12pt}
+``99 bottles of beer on the wall, 99 bottles of beer. Take one down, pass it around, 98 bottless of beer on the wall.''
+%\includegraphics{images_old/tmpwrap.eps}
+\end{wrapfigure}
+
+
+The screen that has opened after you clicked on \bu{Compile} does not tell you much. Click on \bu{Step} once. You can see white dashed lines appearing to animation frame, dividing it into four sections. What you can see there are the \emph{Method Area}, \emph{Expression Evaluation Area}, \emph{Constant Area} and the \emph{Instance and Array Area}. You can check what is displayed where from the \emph{user guide} of \jel{}, but I believe as we go along you will get the hang of it. 
+
+Your \jel{} window should now look like the one in fig. \ref{fig:ex1-02}. Note, that in addition to the area division, the first expression has been brought for evaluation. It is the function call for our classess' main function, \p{Example.main()}. 
+
+\subsection{Initalizing Variables and Assignment}
+
+Next click on \bu{Step} will turn the call for our main-method into an activation frame to the method area. Activation frame is a pink box that will be holding all the variables of the method inside it. Take a look at the source frame. The whole method should be highlited with red color to mark that it is what we are currently dealing with.
+
+\begin{figure}[ht]
+  \begin{minipage}[t]{.49\textwidth}
+    \begin{center}  
+      \includegraphics{images/ex1-03.eps}
+      \caption{\label{fig:ex1-03}Variable appearing to activation frame and value to constants box.}
+    \end{center}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{.49\textwidth}
+    \begin{center}  
+      \includegraphics{images/ex1-04.eps}
+      \caption{\label{fig:ex1-04}Value floating from constants box to variable.}
+    \end{center}
+  \end{minipage}
+\end{figure}
+
+The method begins with variable initialization. First, we have a variable of type \p{double} called \p{sum}, in which we also immediately assign the value \p{0.0}. Next step will show the variable appearing on the activation frame of our method (fig. \ref{fig:ex1-03}). The value of the variable is shown next to its name (except in cases that we will handle later), and all the different types of variables are drawn in different colors. At the same time, the value we are about to assign to the variable, \p{0.0} appears on top of the constants box in the lower left corner of the animation frame. Now, when you click \bu{Step}, \jel{} will slide the value \p{0.0} from the constants box to the place of \p{?\Large{?}\small{?}} in \p{sum} variable. Look at fig. \ref{fig:ex1-04} to see the value floating towards its destination.
+
+The initialization of remaining variables happens in the very same way. The only difference is, that the last two don't have any initial values set, so there will be no values coming from the constants box either. Click on \bu{step} until you reach line 10, where \p{n} is assigned a value from input, or use play- and pause-command to get there with fewer clicks.
+
+\subsection{Value Input}
+
+Now, when you click far enough, a gray-box asking for an integer value should appear to top right corner (fig. \ref{fig:ex1-05}). Insert an integer value and press enter. Note that inserting something else than integer will not be accepted. By looking at the source code, where the command for reading an integer from user is highlited, you should undertand that the number you fill in determines the amount of numbers that the average value will be calculated from. As you can see in the picture, I filled in 3.
+
+Now, the next step will do the assignment, sliding the value to its place in \p{n}.
+
+\begin{figure}[ht]
+  \begin{minipage}[t]{.49\textwidth}
+    \begin{center}  
+      \includegraphics{images/ex1-05.eps}
+      \caption{\label{fig:ex1-05}Request for input value.}
+    \end{center}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{.49\textwidth}
+    \begin{center}  
+      \includegraphics{images/ex1-06.eps}
+      \caption{\label{fig:ex1-06}Condition of loop being evaluated.}
+    \end{center}
+  \end{minipage}
+\end{figure}
+
+\subsection{Loops}
+
+\begin{wrapfigure}[13]{r}{65mm}
+\vspace{-12pt}
+``98 bottles of beer on the wall, 98 bottles of beer. Take one down, pass it around, 97 bottless of beer on the wall.''
+%\includegraphics{images_old/tmpwrap.eps}
+\end{wrapfigure}
+
+Next row in the source is the beginning of a \p{while}-loop. Here we compare whether value of \p{count} is less than the value of \p{n}. It takes total of four steps to process the comparison. The values are slided to their place, with the comparison operator appearing between them. You can see \jel{} giving a note on the result of comparison in fig. \ref{fig:ex1-06}, saying ``Entering the while-loop''.
+
+In case there would have been a false statement in the comparison, the message displayed would have been ``Not entering the while-loop.'' In the same way, when we return from the loop to evaluate the comparison again, we get either ``Continuing while-loop'' or ``Exiting the while-loop''. Similar actions are taken when \p{for}-loops and \p{if}-sentences are being evaluated.
+
+\subsection{Summing the Value and Incrementing Counter}
+
+To get the average, we first need to calculate the sum of factors. The first line in loop adds variable \p{sum} and inputted \p{double} together, assigning the result to \p{sum}. Animation of this sentence takes 5 steps. First,the value of \p{sum} is floated to \emph{expression evaluation area}. Next you are prompted for \p{double} value, in the very same way as you were prompted for \p{integer} value earlier. The values I inserted in this example tutorial were \p{6.2}, \p{7.8}, and \p{7.7}.
+
+Third, the value you inserted is floated next to the plus on the row above (see fig. \ref{fig:ex1-07}), and naturally they are calculated together. Finally the fifth step takes the result of the summing operation and floats it to \p{sum} variable.
+
+\begin{figure}[ht]
+  \begin{minipage}[t]{.49\textwidth}
+    \begin{center}  
+      \includegraphics{images/ex1-07.eps}
+      \caption{\label{fig:ex1-07}Summing operation.}
+    \end{center}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{.49\textwidth}
+    \begin{center}  
+      \includegraphics{images/ex1-08.eps}
+      \caption{\label{fig:ex1-08}Incrementation of \p{count}.}
+    \end{center}
+  \end{minipage}
+\end{figure}
+
+Next expression is incrementation of our loop counter \p{count}. This is done with the \p{++} operator. The animation takes only one step. In figure \ref{fig:ex1-08} you can see the operator popping up next to the incremented variable, and the value of variable increasing from \p{0} to \p{1}. Nothing is floated anywhere, everything happens neatly at its place.
+
+We have reached the end of the loop, and return back to the evaluation of the loop condition. Loop will be entered until the amount of read numbers is equal to the first value we inserted before the loop. As said before, when the condition is no longer true, message ``Exiting while-loop'' will be shown and execution will continue.
+
+\subsection{Outputting Values}
+
+As calculation of average goes, after adding all the factors together, we divide the gained sum with the amount of factors. This is done in the first expression after the loop. Animation goes in the same way as the addition of a new \p{double} value in the loop did, but both values are just floated to the \emph{evaluation area} from their places in variables instead of querying the user. You should already be able to handle this without explanations, so we may jump to the next expression.
+
+There is a textbox labeled ``output'' in the lower right corner of the screen. It shouldn't come to you as a surprise that this is where outputted values will end up. on line 16, we give instruction to output the value of variable \p{avg}. The value starts floating towards the output box, but before it can get that far, a hand appears and yanks the value out of the animation area (fig \ref{fig:ex1-09}). Don't worry, the value is now shown in output box, not crushed in the grip of evil hand.
+
+\begin{figure}[ht]
+  \begin{minipage}[t]{.49\textwidth}
+    \begin{center}  
+	Some funny comment here. I've been working for 8 hours, I have a bad headache and I really can't figure out anything funny. Should go look a monty python film or something... ;)
+      %\includegraphics{images/}
+      %\caption{\label{fig:ex1-07}Summing operation.}
+    \end{center}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{.49\textwidth}
+    \begin{center}  
+      \includegraphics{images/ex1-09.eps}
+      \caption{\label{fig:ex1-09}Outputting values.}
+    \end{center}
+  \end{minipage}
+\end{figure}
+
+Next step will take us to the end of the program, our task is finished. If you wish to view the animation of this algorithm again, click on \bu{Rewind} -- it will take you back to the beginning. If you wish to change to another source file, or to edit the one used here, click on \bu{Edit} to turn file and edit operations available.
+
+
+\section{Additional Hints \& Tips}
+
+\begin{wrapfigure}[8]{r}{50mm}
+\vspace{-15pt}
+``Life, Universe and Everything = 42, ask something harder.''
+%\includegraphics{images_old/tmpwrap.eps}
+\end{wrapfigure}
+
+Now you have gone through a complete animation session, and you should now understand the animative features of \jel{}. Think about it, is there anything you're still wondering about? I see atleast one point that we have not gone discussed at all. What on earth is the \emph{Instance and Array Area} for. Just like the name says, it holds arrays and instances of classes. Let's take \file{array1_char.java} as an example. 
+
+The code does nothing fancy. It just initializes and reserves space for an array of chars, filling it up with '\p{i}'s. In figure \ref{fig:ex2-01}, you can see that the execution has reached the point where the variable has been placed to activation frame, and the constructor for the array is being run. Note the electrical ground symbol coming from \p{char values[]}. It represent a \p{null} link, telling us that this variable is not yet connected anywhere. 
+
+In fig. \ref{fig:ex2-01} constructor call \p{new char[10]} is being evaluated, and as the result a new array is shown in \emph{Instance and Array Area}. When the constructor returns, it places a link to the array in the \emph{Expression Evaluation Area}, from where it is then moved to the place of the \p{null} link when the assignment \p{char values[] = new char[10]} is done. 
+
+In fig. \ref{fig:ex2-02} we are on the second iteration of the \p{for}-loop. Note how the link (the green arrow) has been placed from the variable \p{values} to the first cell of the actual array. The instruction we are currently handling assigns character '\p{i}' to the i:th cell of the variable, \p{i} being \p{1} at this iteration.
+
+The character '\p{i}' appears from the \emph{Constant Area}, and the location where it is moved is shown with a white line, originating from the variable (or number if we're using constant) that defines the cell. In fig. \ref{fig:ex2-02} we are assigning the character to \p{values[i]}, and therefore the line showing the place in array starts from the value of variable \p{i} and ends to the i:th cell in array.
+
+\begin{figure}[ht]
+  \begin{minipage}[t]{.49\textwidth}
+    \begin{center}  
+      \includegraphics{images/ex2-01.eps}
+      \caption{\label{fig:ex2-01}New Array.}
+    \end{center}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{.49\textwidth}
+    \begin{center}  
+      \includegraphics{images/ex2-02.eps}
+      \caption{\label{fig:ex2-02}Referencing an array cell.}
+    \end{center}
+  \end{minipage}
+\end{figure}
+
+
+\pagebreak
+\appendix
+\section{\label{app:ex1}Example 1: \textit{Average.java}}
+\begin{verbatim}
+import jeliot.io.*;
+
+public class MyClass {
+    public static void main() {
+        double sum = 0;
+        int count = 0;
+        int n;
+        double avg;
+
+        n = Input.readInt();
+        while (count < n) {
+            sum = sum + Input.readDouble();
+            count++;
+        }
+        avg = sum / n;
+        Output.println(avg);
+    }
+}
+\end{verbatim}
+
+\section{\label{app:ex1}Example 1: \textit{array1\_char.java}}
+\begin{verbatim}
+import jeliot.io.*;
+
+public class MyClass {
+    public static void main() {
+
+        char values[] = new char [10];
+
+        for (int i=0; i<=9;i++)
+            values[i]='i';
+    }
+}
+\end{verbatim}
+
+
+
+\end{document}

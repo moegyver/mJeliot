@@ -1,0 +1,139 @@
+\documentclass[a4paper, 12pt]{report}
+
+\usepackage{bnf}
+
+\usepackage[T1]{fontenc}
+\usepackage[dvips]{epsfig}
+
+\usepackage[latin1]{inputenc}
+
+\usepackage[english]{babel}
+\usepackage{times}
+\usepackage[dvips]{graphics}
+
+\usepackage[]{vmargin}
+\usepackage{url}
+\usepackage[]{longtable}
+
+\usepackage{natbib}
+\bibpunct{(}{)}{;}{a}{,}{,}
+
+\newcommand{\jel}{Jeliot 3}
+\newcommand{\djava}{DynamicJava}
+\newcommand{\mcode}{MCode}
+\newcommand{\andres}{Andr\'{e}s}
+%--\def\@minstr#1{\begin{tabular}[t]{@{}l@{\extracolsep{\fill}}}#1\end{tabular}} 
+\newcommand{\minstr}[1]{
+ \begin{tabular}{|p{30em}|}
+ \hline
+ \p{#1}\\ 
+ \hline
+	\end{tabular}%\par
+}
+
+%  Alternative minstr
+%\newcommand{\minstr}[1]{
+%	\framebox[32em]{\parbox[t]{31em}{\p{#1}}}
+%}
+%\newenvironment{mcodegrammar}%
+%{\begin{grammar}%
+%  [(colon){\par \begin{tabbing}$\Rightarrow$\=}]%
+%  [(semicolon){ \\ \>$|$}]%
+%  [(period){ .\\\end{tabbing}}]%
+%  [(quote){`}{'}]%
+%{\end{grammar}}
+%}
+%\newenvironment{minstr}%
+%    {\nopagebreak\par\small\addvspace{3.2ex plus 0.8ex minus 0.2ex}%
+%     \vskip -\parskip
+%     \noindent%
+%     \begin{tabular}{|l|}\hline\rule{0pt}{1em}\ignorespaces}%
+%    {\\\hline\end{tabular}\par\nopagebreak\addvspace{3.2ex plus 0.8ex
+%        minus 0.2ex}%
+%     \vskip -\parskip}
+\newcommand{\p}[1]{\texttt{#1}}
+\newcommand{\bu}[1]{\textsf{#1}}
+\newcommand{\f}[1]{\textsf{#1}}
+
+
+\setlength{\parindent}{0pt} \setlength{\parskip}{2ex}
+\linespread{1.0}
+%\sloppy
+%\fussy
+
+\setpapersize{A4}
+\setmarginsrb{35mm}{30mm}{30mm}{20mm}{0pt}{0mm}{12pt}{13mm}
+
+
+\title{\jel{} Intermediate Code Specifications\\\mcode{}}
+\author{Niko Myller and \andres{} Moreno Garc\'{\i}a}
+%\date{}
+
+\begin{document}
+% ----------------- Coverpage -------------------------------
+
+\maketitle
+\thispagestyle{empty}
+
+\newpage
+
+\thispagestyle{empty} % no page numbering
+\vfil
+
+Copyright \copyright{} 2003-2004  Niko Myller and Andr\'{e}s Moreno Garc\'{\i}a.
+\bigskip
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2
+or any later version published by the Free Software Foundation;
+with Invariant Section Appendix A GNU Free Documentation License,
+no Front-Cover Texts, and no Back-Cover Texts.
+A copy of the license is included in the section entitled ``GNU Free Documentation License''.
+
+\vfil
+\newpage
+
+% ----------------- Generation of Table of Contents -------------
+
+\thispagestyle{empty} % no page numbering
+
+\setlength{\parskip}{0ex}
+
+\tableofcontents
+\newpage
+
+\setlength{\parskip}{2ex}
+
+% ----------------- Document begins ------------------------
+
+\setcounter{page}{1}
+
+\pagenumbering{arabic} % page numbering with arabic numbers
+
+%Introduction
+\include{Introduction}
+\newpage
+
+\include{Overall}
+\newpage
+
+
+\include{MCode}
+\newpage
+
+% ----------------- References ----------------------------
+\addcontentsline{toc}{section}{Bibliography}
+
+\bibliographystyle{elsart-harv}
+\bibliography{specs}
+
+
+\appendix
+\newpage
+\include{FDL}
+
+%\newpage
+%\include{Appendix2}
+
+\end{document}
+

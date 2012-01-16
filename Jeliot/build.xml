@@ -1,0 +1,316 @@
+<!--
+  DynamicJava Ant file.
+
+Build Tools
+===========
+
+  The DynamicJava build system is based on Apache Ant, which is a Java building tool
+  used in Apache projects.
+  For more information refer to "http://jakarta.apache.org/ant/".
+
+  The distribution contains a precompiled version of Ant.
+
+  The only thing that you have to make sure, is the "JAVA_HOME" environment
+  property should be set to match the JVM you want to use.
+
+Building Instructions
+=====================
+
+First, make sure your current working directory is where this file is located.
+Then type:
+
+  [unix]  ./build.sh compile
+  [win32] .\build.bat compile
+
+This action will compile the sources to the 'classes' directory.
+
+You can now launch the interpreter GUI by typing:
+
+  [unix]  ./build.sh gui
+  [win32] .\build.bat gui
+
+Build Targets
+=============
+
+To display the available targets type:
+
+  [unix]  ./build.sh  help
+  [win32] .\build.bat help
+
+  $Id: build.xml,v 1.44 2007/08/22 13:41:39 jeliot Exp $
+
+-->
+
+<project default="help" basedir=".">
+	<target name="init-args" unless="args">
+		<property name="args" value="" />
+	</target>
+
+	<target name="init" depends="init-args">
+		<tstamp />
+
+		<!-- This properties modify the output of the build process-->
+		<property name="versionJ" value="3" />
+		<property name="minor" value=".7.2" />
+
+		<!-- dist: Used to create the folder where to place the binary distribuition, jar files and images-->
+		<property name="dist" value="Jeliot${versionJ}" />
+
+		<property name="package-prefix" value="" />
+
+		<!-- directory names -->
+		<property name="src" value="src" />
+		<property name="resources" value="resources" />
+		<property name="dest" value="classes" />
+		<property name="release" value="Release" />
+
+		<!-- dest : Compiled classes will be stored here, if no exists, create it -->
+		<mkdir dir="${dest}" />
+		<mkdir dir="${dest}/blueJExtension" />
+
+		<mkdir dir="${release}" />
+		<mkdir dir="${release}/ws" />
+
+	</target>
+
+	<!-- Help ==================================================== -->
+	<target name="help">
+		<echo message="" />
+		<echo message="Jeliot build usage." />
+		<echo message="" />
+		<echo message="Available targets:" />
+		<echo message=" dist   : builds a distribution." />
+		<echo message=" compile: compiles the source code." />
+		<echo message=" clean  : cleans everything.." />
+		<echo message="" />
+	</target>
+
+	<!-- Compilation ==================================================== -->
+	<target name="compile" depends="init">
+		<javac target="1.4" source="1.4" sourcepath="" destdir="${dest}" deprecation="on" srcdir="${src}">
+			<classpath>
+				<fileset dir="lib">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+			<include name="**/*.java" />
+			<exclude name="**/examples/*.java" />
+		</javac>
+		<delete>
+			<!-- Example classes are compiled too, delete them -->
+			<fileset dir="${dest}/examples" includes="*.class" />
+		</delete>
+        <copy todir="${dest}/docs"><fileset dir="${src}/docs" id="id">
+            </fileset>
+        </copy>
+	</target>
+
+	<target name="clean-compile" depends="">
+		<delete dir="${dest}" quiet="false" verbose="true">
+		</delete>
+	</target>
+
+	<!-- Applications ================================================= -->
+
+	<!-- Distribution ================================================= -->
+
+	<target name="dist" depends="clean, prepare-dist, jars, blueJExt, signedjar"><!--signed jar-->
+		<!-- After targets prepare-dist and jars we create the 2 diferent zip files
+    that will contain the 2 distribuition files (source and binary)-->
+		<zip zipfile="${release}/${dist}${minor}.zip" basedir="${dist}" includes="**/*" excludes="jeliotKeystore" />
+		<zip zipfile="${release}/${dist}${minor}-src.zip">
+			<zipfileset dir="src" prefix="src" />
+			<zipfileset dir="lib" prefix="lib">
+				<exclude name="*/JeliotJNI.dll"/>
+				<exclude name="*/src.jar"/>
+			</zipfileset>	
+			<zipfileset dir="resources" prefix="resources" />
+            <zipfileset dir="for_source_dist" prefix="" />            
+			<zipfileset dir="doc" prefix="doc">
+				<exclude name="**/old_help/**"/>
+				<exclude name="**/ug/**" />
+			</zipfileset>
+			<fileset dir="">
+				<include name="**/build.*" />
+			</fileset>
+		</zip>
+		<zip zipfile="${release}/${dist}${minor}-JRE.zip">
+			<zipfileset dir="${dist}" prefix="" />
+			<zipfileset dir="jre" prefix="jre" />
+		</zip>
+	</target>
+
+	<!-- Installers for Windows ===================================-->
+	<!-- Time consuming, moved out of dist -->
+	<target name="createInstallers" depends="clean, prepare-dist, jars">
+		<exec dir="." executable="C:\program files\Inno Setup 5\iscc.exe" output="output.txt">
+			<arg line="jeliot.iss" />
+		</exec>
+		<move file="${release}/setup.exe" tofile="${release}/${dist}${minor}.exe" />
+		<exec dir="." executable="C:\program files\Inno Setup 5\iscc.exe" output="outputJRE.txt">
+			<arg line="jeliotJRE-Bundled.iss" />
+		</exec>
+		<move file="${release}/setup.exe" tofile="${release}/${dist}${minor}-JRE.exe" />
+	</target>
+
+	<target name="jars" depends="compile, prepare-dist">
+		<!-- We create the jar file in the distribution (Jeliot3) directory -->
+		<jar manifest="${src}/jeliot.mf" jarfile="${dist}/jeliot.jar" basedir="${dest}">
+			<fileset dir="${dest}">
+				<include name="${package-prefix}/**/*" />
+			</fileset>
+			<fileset dir="${resources}">
+				<include name="${package-prefix}/**/*" />
+				<!-- <exclude name="${package-prefix}/properties.properties"/> -->
+				<exclude name="${package-prefix}/jeliot.defs" />
+			</fileset>
+		</jar>
+		<!--After creating the jar files we copy the instalation config file and run it-->
+		<copy file="${src}/jeliot.ico" todir="${dist}" />
+		<copy file="${src}/logo3d.ico" todir="${dist}" />
+	</target>
+
+	<target name="prepare-dist" depends="init">
+		<!-- We place everything in its right place before start creating the jar file
+      and zipping the files-->
+		<mkdir dir="${dist}" />
+		<copy todir="${dist}/docs">
+			<fileset dir="${src}/docs" />
+		</copy>
+		<!--
+    <copy todir="${dist}/images">
+      <fileset dir="${src}/images"/>
+    </copy>-->
+		<copy todir="${dist}/examples">
+			<fileset dir="${src}/examples" />
+		</copy>
+		<copy todir="${dest}/images">
+			<fileset dir="${src}/images" />
+		</copy>
+		<copy todir="${dest}/examples">
+			<fileset dir="${src}/examples" />
+		</copy>
+
+		<copy todir="${dest}">
+			<fileset dir="${resources}" />
+		</copy>
+
+		<copy file="doc/quicktutorial/quicktutorial.pdf" todir="${dist}" />
+		<copy file="doc/userguide/userguide.pdf" todir="${dist}" />
+
+		<copy file="${src}/docs/Jeliot_license.txt" todir="${dist}/docs" />
+		<copy file="${src}/docs/DJava_license.txt" todir="${dist}/docs" />
+		<copy file="${src}/docs/JEdit_license.txt" todir="${dist}/docs" />
+		<copy file="${src}/docs/KunststoffPLAF_license.txt" todir="${dist}/docs" />
+		<copy file="${src}/jeliot.bat" todir="${dist}" />
+		<copy file="${src}/jeliot.ico" todir="${dist}" />
+		<!-- <copy file="${src}/properties.properties" todir="${dist}"/> -->
+		<!-- <copy file="${src}/jeliot.defs" todir="${dist}"/> -->
+	</target>
+
+
+	<target name="javadoc" depends="init">
+		<javadoc packagenames="*" sourcepath="${src}" destdir="${dist}/docs/javadoc" private="true" author="false" version="false" use="true" additionalparam="-breakiterator" windowtitle="Jeliot 3 Javadoc" doctitle="Jeliot 3 and DynamicJava API Specification" bottom="Copyright 2004 Stephane Hillion, Niko Myller, Andres Moreno, Erkki Sutinen, Mordechai Ben-Ari and Pekka Uronen. All Rights Reserved." />
+	</target>
+
+
+
+	<target name="javadoc_tex" depends="init">
+		<javadoc packagenames="*" sourcepath="${src}" private="true" author="false" version="false" additionalparam="-breakiterator" docletpath="doclet.jar">
+			<doclet name="com.c2_tech.doclets.TexDoclet">
+				<param name="-title" value="API Documentation for Jeliot 3 and DynamicJava Classes" />
+				<!-- <param name="-output" value="doc\JavaDoc.tex"/> -->
+			</doclet>
+		</javadoc>
+
+
+
+	</target>
+	<!-- Global clean ================================================= -->
+	<target name="clean" depends="clean-compile">
+		<delete dir="${dest}" />
+		<delete dir="${dist}" />
+		<delete file="${dist}/${dist}${minor}.zip" />
+		<delete file="${dist}/${dist}${minor}-src.zip" />
+	</target>
+
+
+
+	<!--create the jeliot extension for bluej -->
+	<target name="blueJExt" depends="compile,jars">
+		<javac sourcepath="blueJExtension/" target="1.4" source="1.4" destdir="${dest}/blueJExtension/" srcdir="blueJExtension/" classpath="${dist}/jeliot.jar;lib/bluejext.jar">
+			<classpath>
+				<fileset dir="lib">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+		<jar manifest="blueJExtension/blueJExtension.mf" jarfile="${release}/jeliotExtension.jar" basedir="${dest}">
+			<fileset dir="${dest}/blueJExtension">
+				<include name="*.class" />
+			</fileset>
+			<fileset dir="src/docs">
+				<include name="**/*" />
+			</fileset>
+			<!--
+        <fileset dir="${dist}">
+          <include name="jeliot.jar"/>
+        </fileset>
+        -->
+		</jar>
+	</target>
+	<!--create the jeliot extension for bluej -->
+	<target name="blueJExtDebug" depends="debug">
+		<javac sourcepath="blueJExtension/" destdir="blueJExtension/" srcdir="blueJExtension/" classpath="${dist}/jeliot.jar;lib/bluejext.jar">
+			<classpath>
+				<fileset dir="lib">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+		<jar manifest="blueJExtension/blueJExtension.mf" jarfile="${release}/jeliotExtension.jar" basedir="${dest}">
+			<fileset dir="blueJExtension">
+				<include name="*.class" />
+			</fileset>
+			<fileset dir="src/docs">
+				<include name="**/*" />
+			</fileset>
+			<!--
+	        <fileset dir="${dist}">
+	          <include name="jeliot.jar"/>
+	        </fileset>
+	        -->
+		</jar>
+	</target>
+
+	<!-- Debugging target ==========================================-->
+	<target name="debug" depends="prepare-dist">
+		<!-- Compile with debug flag -->
+		<javac sourcepath="" target="1.4" destdir="${dest}" deprecation="on" srcdir="${src}" debug="on" source="1.4">
+			<classpath>
+				<fileset dir="lib">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+			<include name="**/*.java" />
+			<exclude name="**/examples/*.java" />
+		</javac>
+		<!-- We create the jar file in the distribution (Jeliot3) directory -->
+		<jar manifest="${src}/jeliot.mf" jarfile="${dist}/jeliot.jar" basedir="${dest}">
+			<fileset dir="${dest}">
+				<include name="${package-prefix}/**/*" />
+			</fileset>
+			<fileset dir="${resources}">
+				<include name="${package-prefix}/**/*" />
+			</fileset>
+		</jar>
+	</target>
+
+	<target name="signedjar" depends="compile,jars">
+		<copy todir="${release}/ws" file="jeliot.jnlp" />
+		<copy todir="${release}/ws" file="${dist}/jeliot.jar" />
+
+		<signjar jar="${release}/ws/jeliot.jar" keystore="jeliotKeystore" alias="JeliotTeam" storepass="jeliotsigned" verbose="true" />
+	</target>
+
+</project>

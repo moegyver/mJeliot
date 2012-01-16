@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<TextView android:id="@+id/labelloginalias"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/alias" />
+	<EditText android:id="@+id/editloginalias"
+		android:layout_width="fill_parent"
+		android:singleLine="true"
+		android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+		android:layout_height="wrap_content" />
+	<TextView android:id="@+id/labelloginnetwork"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/selectnetwork" />
+	<TextView android:id="@+id/networklist"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
+	<RelativeLayout
+	android:orientation="horizontal"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content">
+		<Button android:id="@+id/buttonloginrescan"
+			android:layout_alignParentRight="true"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/rescan" />
+		 <Spinner 
+	        android:id="@+id/spinnerloginnetworks"
+	        android:layout_toLeftOf="@id/buttonloginrescan"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:drawSelectorOnTop="true"
+	        android:prompt="@string/availablenetworks"
+	    />
+
+	</RelativeLayout>
+	<Button android:id="@+id/buttonlogingo"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/login" />
+</LinearLayout>

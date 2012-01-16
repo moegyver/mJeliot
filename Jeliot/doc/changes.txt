@@ -1,0 +1,2 @@
+Changes in Jeliot 3.2 P3
+ * Support for System.out.print and System.out.println method
