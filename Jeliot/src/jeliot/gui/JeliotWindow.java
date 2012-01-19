@@ -2560,4 +2560,7 @@ public class JeliotWindow implements PauseListener, MouseListener {
      */
     public void mouseReleased(MouseEvent arg0) {
     }
+    public CodeEditor2 getCodeEditor() {
+    	return this.editor;
+    }
 }
