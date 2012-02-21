@@ -11,7 +11,6 @@ import ict.client.ClientListener;
 import ict.model.Lecture;
 import ict.model.User;
 import ict.model.predict.Method;
-import ict.predict.androidClient.view.ToastGenerator;
 import ict.protocol.ParserCaller;
 import ict.protocol.ProtocolParser;
 import ict.protocol.ProtocolParserListener;
@@ -170,9 +169,13 @@ public class Controller extends Application implements ClientListener,
 		if (this.isLoggedIn()) {
 			this.client.sendMessage(this.parser.generateUserLogout(this.user, this.lecture));
 		}
-		this.user = null;
-		this.lecture = null;
+		//this.user = null;
+		//this.lecture = null;
 		this.fireOnLogout();
+	}
+	
+	public void disconnect() {
+		this.client.disconnect();
 	}
 	/* (non-Javadoc)
 	 * @see ict.protocol.ParserCaller#getUser()
@@ -325,9 +328,12 @@ public class Controller extends Application implements ClientListener,
 	@Override
 	public void onUserLoggedOut(ProtocolParser protocolParser, ParserCaller parserCaller,
 			int lectureId, int userId) {
+		System.out.println("params: " + lectureId + " " + userId + " objs: " + this.user + " " + this.lecture);
 		if (this.user.getId() == userId && this.lecture.getId() == lectureId) {
 			this.fireOnLoggedOut();
 		}
+		this.user = null;
+		this.lecture = null;
 	}
 	/* (non-Javadoc)
 	 * @see ict.client.ClientListener#onClientDisconnected(ict.client.Client)
@@ -454,13 +460,11 @@ public class Controller extends Application implements ClientListener,
 	 * Informs all the listeners when the controller got disconnected.
 	 */
 	private void fireonDisconnected() {
-		this.user = null;
-		this.client = null;
 		for(int i = 0; i < this.listeners.size(); i++) {
 			this.listeners.get(i).onDisconnected(this);	
 		}
-	}
-	public void disconnect() {
-		this.client.disconnect();
+		this.user = null;
+		this.lecture = null;
+		this.client = null;
 	}
 }

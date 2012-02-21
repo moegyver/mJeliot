@@ -27,8 +27,13 @@ implements ControllerListener {
 		this.controller.removeControllerListener(this);
 	}
 	public void showToast(final int resource) {
-		Context context = getApplicationContext();
-		Toast toast = Toast.makeText(context, resource, Toast.LENGTH_SHORT);
-		toast.show();
+		this.runOnUiThread(new Runnable(){
+			@Override
+			public void run() {
+				Context context = getApplicationContext();
+				Toast toast = Toast.makeText(context, resource, Toast.LENGTH_SHORT);
+				toast.show();
+			}
+		});
 	}
 }

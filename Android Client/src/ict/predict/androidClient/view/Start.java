@@ -86,13 +86,7 @@ public class Start extends AbstractPredictActivity {
 	 */
 	@Override
 	public void onConnected(Controller controller) {
-		Context context = getApplicationContext();
-		CharSequence text = "Hello toast! start";
-		int duration = Toast.LENGTH_SHORT;
-
-		Toast toast = Toast.makeText(context, text, duration);
-		toast.show();
-		//this.showTextToastOnUi(this, R.string.connected);
+		this.showToast(R.string.connected);
 		this.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
