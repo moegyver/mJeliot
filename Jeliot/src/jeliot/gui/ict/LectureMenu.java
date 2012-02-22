@@ -4,10 +4,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
 
-import ict.model.Lecture;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+
+import org.mJeliot.model.Lecture;
+
 import jeliot.ict.ICTController;
 
 public class LectureMenu extends JMenu {

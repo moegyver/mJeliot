@@ -1,7 +1,7 @@
 package jeliot.ict;
 
-import ict.model.predict.Method;
-import ict.model.Lecture;
+import org.mJeliot.model.Lecture;
+import org.mJeliot.model.predict.Method;
 
 /**
  * @author Moritz Rogalli

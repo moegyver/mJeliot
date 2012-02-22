@@ -1,9 +1,9 @@
 package org.mJeliot.androidClient.view;
 
+import org.mJeliot.androidClient.R;
 import org.mJeliot.androidClient.controller.Controller;
+import org.mJeliot.model.Lecture;
 
-import ict.model.Lecture;
-import ict.predict.androidClient.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -112,7 +112,7 @@ public class Start extends AbstractMJeliotActivity {
 			}
 		});
 		Intent loginIntent = new Intent();
-		loginIntent.setClassName("ict.predict.androidClient",
+		loginIntent.setClassName("org.mJeliot.androidClient",
 				"org.mJeliot.androidClient.view.Login");
 		loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		this.startActivity(loginIntent);
@@ -145,7 +145,7 @@ public class Start extends AbstractMJeliotActivity {
 	 * 
 	 * @see
 	 * org.mJeliot.androidClient.view.controller.ControllerListener#onNewLecture
-	 * (org.mJeliot.androidClient.view.controller.Controller, ict.model.Lecture)
+	 * (org.mJeliot.androidClient.view.controller.Controller, org.mJeliot.model.Lecture)
 	 */
 	@Override
 	public void onNewLecture(Controller controller, Lecture lecture) {

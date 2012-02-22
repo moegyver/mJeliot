@@ -3,16 +3,17 @@ package jeliot.ict;
 import java.util.HashMap;
 import java.util.Vector;
 
-import ict.client.Client;
-import ict.client.ClientListener;
-import ict.model.Lecture;
-import ict.model.User;
-import ict.model.predict.Method;
-import ict.model.predict.Parameter;
-import ict.model.predict.ParameterPrediction;
-import ict.protocol.ProtocolParser;
-import ict.protocol.ProtocolParserListener;
-import ict.protocol.ParserCaller;
+import org.mJeliot.client.Client;
+import org.mJeliot.client.ClientListener;
+import org.mJeliot.model.Lecture;
+import org.mJeliot.model.User;
+import org.mJeliot.model.predict.Method;
+import org.mJeliot.model.predict.Parameter;
+import org.mJeliot.model.predict.ParameterPrediction;
+import org.mJeliot.protocol.ParserCaller;
+import org.mJeliot.protocol.ProtocolParser;
+import org.mJeliot.protocol.ProtocolParserListener;
+
 
 /**
  * @author Moritz Rogalli
@@ -92,7 +93,7 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	}
 	
 	/* (non-Javadoc)
-	 * @see ict.client.ClientListener#onClientConnected(ict.client.Client)
+	 * @see org.mJeliot.client.ClientListener#onClientConnected(org.mJeliot.client.Client)
 	 */
 	@Override
 	public void onClientConnected(Client client) {
@@ -112,7 +113,7 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	}
 
 	/* (non-Javadoc)
-	 * @see ict.client.ClientListener#onMessageReceived(ict.client.Client, java.lang.String)
+	 * @see org.mJeliot.client.ClientListener#onMessageReceived(org.mJeliot.client.Client, java.lang.String)
 	 */
 	@Override
 	public void onMessageReceived(Client client, String message) {
@@ -120,7 +121,7 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	}
 
 	/* (non-Javadoc)
-	 * @see ict.protocol.ProtocolParserListener#onUserLogin(ict.protocol.ProtocolParser, ict.protocol.ParserCaller, java.lang.String, int)
+	 * @see org.mJeliot.protocol.ProtocolParserListener#onUserLogin(org.mJeliot.protocol.ProtocolParser, org.mJeliot.protocol.ParserCaller, java.lang.String, int)
 	 */
 	@Override
 	public void onLogin(ProtocolParser protocolParser,
@@ -136,7 +137,7 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	}
 
 	/* (non-Javadoc)
-	 * @see ict.protocol.ProtocolParserListener#onUserLoggedIn(ict.protocol.ProtocolParser, ict.protocol.ParserCaller, java.lang.String, int)
+	 * @see org.mJeliot.protocol.ProtocolParserListener#onUserLoggedIn(org.mJeliot.protocol.ProtocolParser, org.mJeliot.protocol.ParserCaller, java.lang.String, int)
 	 */
 	@Override
 	public void onLoggedIn(ProtocolParser protocolParser,
@@ -168,7 +169,7 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	}
 
 	/* (non-Javadoc)
-	 * @see ict.protocol.ProtocolParserListener#onNewPredictMethod(ict.protocol.ProtocolParser, ict.protocol.ParserCaller, java.lang.String, java.lang.String, int, int, java.lang.String[])
+	 * @see org.mJeliot.protocol.ProtocolParserListener#onNewPredictMethod(org.mJeliot.protocol.ProtocolParser, org.mJeliot.protocol.ParserCaller, java.lang.String, java.lang.String, int, int, java.lang.String[])
 	 */
 	@Override
 	public void onNewPredictMethod(ProtocolParser protocolParser,
@@ -193,7 +194,7 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	}
 
 	/* (non-Javadoc)
-	 * @see ict.protocol.ProtocolParserListener#onUserHandedInMethod(ict.protocol.ProtocolParser, ict.protocol.ParserCaller, int, int, int, java.lang.String[], java.lang.String[])
+	 * @see org.mJeliot.protocol.ProtocolParserListener#onUserHandedInMethod(org.mJeliot.protocol.ProtocolParser, org.mJeliot.protocol.ParserCaller, int, int, int, java.lang.String[], java.lang.String[])
 	 */
 	@Override
 	public void onUserHandedInMethod(ProtocolParser protocolParser,
@@ -216,7 +217,7 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	}
 
 	/* (non-Javadoc)
-	 * @see ict.protocol.ProtocolParserListener#onPredictResult(ict.protocol.ProtocolParser, ict.protocol.ParserCaller, int, int, java.lang.String[], java.lang.String[])
+	 * @see org.mJeliot.protocol.ProtocolParserListener#onPredictResult(org.mJeliot.protocol.ProtocolParser, org.mJeliot.protocol.ParserCaller, int, int, java.lang.String[], java.lang.String[])
 	 */
 	@Override
 	public void onPredictResult(ProtocolParser protocolParser,
@@ -255,7 +256,7 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	}
 
 	/* (non-Javadoc)
-	 * @see ict.protocol.ProtocolParserListener#onUserLogout(ict.protocol.ProtocolParser, ict.protocol.ParserCaller, int)
+	 * @see org.mJeliot.protocol.ProtocolParserListener#onUserLogout(org.mJeliot.protocol.ProtocolParser, org.mJeliot.protocol.ParserCaller, int)
 	 */
 	@Override
 	public void onUserLogout(ProtocolParser protocolParser,
@@ -266,7 +267,7 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	}
 
 	/* (non-Javadoc)
-	 * @see ict.protocol.ProtocolParserListener#onUserLoggedOut(ict.protocol.ProtocolParser, ict.protocol.ParserCaller, int)
+	 * @see org.mJeliot.protocol.ProtocolParserListener#onUserLoggedOut(org.mJeliot.protocol.ProtocolParser, org.mJeliot.protocol.ParserCaller, int)
 	 */
 	@Override
 	public void onUserLoggedOut(ProtocolParser protocolParser,
@@ -304,7 +305,7 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	}
 	
 	/* (non-Javadoc)
-	 * @see ict.client.ClientListener#onClientDisconnected(ict.client.Client)
+	 * @see org.mJeliot.client.ClientListener#onClientDisconnected(org.mJeliot.client.Client)
 	 */
 	@Override
 	public void onClientDisconnected(Client client) {
@@ -334,7 +335,7 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	}
 
 	/* (non-Javadoc)
-	 * @see ict.protocol.ParserCaller#getUser()
+	 * @see org.mJeliot.protocol.ParserCaller#getUser()
 	 */
 	@Override
 	public User getUser() {
@@ -342,7 +343,7 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	}
 
 	/* (non-Javadoc)
-	 * @see ict.protocol.ParserCaller#setUser(ict.model.User)
+	 * @see org.mJeliot.protocol.ParserCaller#setUser(org.mJeliot.model.User)
 	 */
 	@Override
 	public void setUser(User user) {
@@ -374,7 +375,7 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	}
 
 	/* (non-Javadoc)
-	 * @see ict.protocol.ParserCaller#sendMessage(java.lang.String)
+	 * @see org.mJeliot.protocol.ParserCaller#sendMessage(java.lang.String)
 	 */
 	@Override
 	public void sendMessage(String message) {

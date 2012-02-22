@@ -4,17 +4,17 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Vector;
 
-import org.mJeliot.androidClient.tcp.Client;
-import org.mJeliot.androidClient.tcp.ClientListener;
+import org.mJeliot.model.Lecture;
+import org.mJeliot.model.User;
+import org.mJeliot.model.predict.Method;
+import org.mJeliot.protocol.ParserCaller;
+import org.mJeliot.protocol.ProtocolParser;
+import org.mJeliot.protocol.ProtocolParserListener;
 
 import android.app.Activity;
 import android.app.Application;
-import ict.model.Lecture;
-import ict.model.User;
-import ict.model.predict.Method;
-import ict.protocol.ParserCaller;
-import ict.protocol.ProtocolParser;
-import ict.protocol.ProtocolParserListener;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 
 /**
  * The Controller is the main application and is in charge of:
@@ -29,12 +29,12 @@ import ict.protocol.ProtocolParserListener;
  * @author Moritz Rogalli
  * 
  */
-public class Controller extends Application implements ClientListener,
+public class Controller extends Application implements AndroidClientListener,
 		ProtocolParserListener, ParserCaller {
 	// state-variables
 	private Lecture lecture = null;
 	private User user = null;
-	private Client client = null;
+	private AndroidClient client = null;
 	private Activity currentActivity = null;
 	private Vector<ControllerListener> listeners = new Vector<ControllerListener>();
 	// parser
@@ -137,8 +137,12 @@ public class Controller extends Application implements ClientListener,
 	 */
 	public void connect(String url) {
 		this.fireOnConnect();
-		this.client = new Client(url);
-		this.client.addClientListener(this);
+		this.client = new AndroidClient(url,
+				(ConnectivityManager) this
+						.getSystemService(CONNECTIVITY_SERVICE));
+		this.client.addAndroidClientListener(this);
+		registerReceiver(this.client, new IntentFilter(
+				ConnectivityManager.CONNECTIVITY_ACTION));
 		Thread clientThread = new Thread(this.client);
 		clientThread.start();
 		this.client.connect();
@@ -210,20 +214,10 @@ public class Controller extends Application implements ClientListener,
 		this.client.disconnect();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ict.protocol.ParserCaller#getUser()
-	 */
 	public User getUser() {
 		return this.user;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ict.protocol.ParserCaller#setUser(ict.model.User)
-	 */
 	@Override
 	public void setUser(User user) {
 		this.user = user;
@@ -236,23 +230,13 @@ public class Controller extends Application implements ClientListener,
 		return this.availableLectures.values();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ict.protocol.ParserCaller#sendMessage(java.lang.String)
-	 */
 	@Override
 	public void sendMessage(String message) {
 		client.sendMessage(message);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.mJeliot.androidClient.tcp.ClientListener#onClientConnected(org.mJeliot.androidClient.tcp.Client)
-	 */
 	@Override
-	public void onClientConnected(Client client) {
+	public void onClientConnected(AndroidClient client) {
 		this.fireOnConnected();
 		this.scanForNetworks();
 	}
@@ -260,32 +244,20 @@ public class Controller extends Application implements ClientListener,
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.mJeliot.androidClient.tcp.ClientListener#onMessageReceived(org.mJeliot.androidClient.tcp.Client,
-	 * java.lang.String)
+	 * @see
+	 * org.mJeliot.androidClient.tcp.ClientListener#onMessageReceived(org.mJeliot
+	 * .androidClient.tcp.Client, java.lang.String)
 	 */
 	@Override
-	public void onMessageReceived(Client client, String message) {
+	public void onMessageReceived(AndroidClient client, String message) {
 		parser.parseMessage(message, this);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ict.protocol.ProtocolParserListener#onLectureQuery(ict.protocol.
-	 * ProtocolParser, ict.protocol.ParserCaller)
-	 */
 	@Override
 	public void onLectureQuery(ProtocolParser protocolParser,
 			ParserCaller parserCaller) {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ict.protocol.ProtocolParserListener#onNewLecture(ict.protocol.ProtocolParser
-	 * , ict.protocol.ParserCaller, int, java.lang.String)
-	 */
 	@Override
 	public void onNewLecture(ProtocolParser protocolParser,
 			ParserCaller parserCaller, int lectureId, String lectureName) {
@@ -294,13 +266,6 @@ public class Controller extends Application implements ClientListener,
 		this.fireOnNewLecture(lecture);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ict.protocol.ProtocolParserListener#onLectureList(ict.protocol.ProtocolParser
-	 * , ict.protocol.ParserCaller, int, int[], java.lang.String[])
-	 */
 	@Override
 	public void onLectureList(ProtocolParser protocolParser,
 			ParserCaller parserCaller, int lectureCount, int[] lectureIds,
@@ -312,25 +277,12 @@ public class Controller extends Application implements ClientListener,
 		this.fireOnScanFinished();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ict.protocol.ProtocolParserListener#onUserLogin(ict.protocol.ProtocolParser
-	 * , ict.protocol.ParserCaller, java.lang.String, int)
-	 */
 	@Override
 	public void onLogin(ProtocolParser protocolParser,
 			ParserCaller parserCaller, int lectureId, String userName,
 			int userId) {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ict.protocol.ProtocolParserListener#onUserLoggedIn(ict.protocol.
-	 * ProtocolParser, ict.protocol.ParserCaller, java.lang.String, int)
-	 */
 	@Override
 	public void onLoggedIn(ProtocolParser protocolParser,
 			ParserCaller parserCaller, int lectureId, String userName,
@@ -341,26 +293,12 @@ public class Controller extends Application implements ClientListener,
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ict.protocol.ProtocolParserListener#onUserList(ict.protocol.ProtocolParser
-	 * , ict.protocol.ParserCaller, int, int, int[], java.lang.String[])
-	 */
 	@Override
 	public void onUserList(ProtocolParser protocolParser,
 			ParserCaller parserCaller, int lectureId, int userCount,
 			int[] userIds, String[] userNames) {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ict.protocol.ProtocolParserListener#onNewPredictMethod(ict.protocol.
-	 * ProtocolParser, ict.protocol.ParserCaller, java.lang.String,
-	 * java.lang.String, int, int, java.lang.String[])
-	 */
 	@Override
 	public void onNewPredictMethod(ProtocolParser protocolParser,
 			ParserCaller parserCaller, int lectureId, String className,
@@ -371,14 +309,6 @@ public class Controller extends Application implements ClientListener,
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ict.protocol.ProtocolParserListener#onUserHandedInMethod(ict.protocol
-	 * .ProtocolParser, ict.protocol.ParserCaller, int, int, int,
-	 * java.lang.String[], java.lang.String[])
-	 */
 	@Override
 	public void onUserHandedInMethod(ProtocolParser protocolParser,
 			ParserCaller parserCaller, int lectureId, int userId, int methodId,
@@ -387,14 +317,6 @@ public class Controller extends Application implements ClientListener,
 		// won't happen
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ict.protocol.ProtocolParserListener#onMasterSentOutPredictResult(ict.
-	 * protocol.ProtocolParser, ict.protocol.ParserCaller, int, int,
-	 * java.lang.String[], java.lang.String[])
-	 */
 	@Override
 	public void onPredictResult(ProtocolParser protocolParser,
 			ParserCaller parserCaller, int lectureId, int methodId,
@@ -414,13 +336,6 @@ public class Controller extends Application implements ClientListener,
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * ict.protocol.ProtocolParserListener#onUserLogout(ict.protocol.ProtocolParser
-	 * , ict.protocol.ParserCaller, int)
-	 */
 	@Override
 	public void onUserLogout(ProtocolParser protocolParser,
 			ParserCaller parserCaller, int lectureId, int userId) {
@@ -428,12 +343,6 @@ public class Controller extends Application implements ClientListener,
 		// others
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see ict.protocol.ProtocolParserListener#onUserLoggedOut(ict.protocol.
-	 * ProtocolParser, ict.protocol.ParserCaller, int)
-	 */
 	@Override
 	public void onUserLoggedOut(ProtocolParser protocolParser,
 			ParserCaller parserCaller, int lectureId, int userId) {
@@ -446,13 +355,8 @@ public class Controller extends Application implements ClientListener,
 		this.lecture = null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.mJeliot.androidClient.tcp.ClientListener#onClientDisconnected(org.mJeliot.androidClient.tcp.Client)
-	 */
 	@Override
-	public void onClientDisconnected(Client client) {
+	public void onClientDisconnected(AndroidClient client) {
 		this.fireonDisconnected();
 	}
 

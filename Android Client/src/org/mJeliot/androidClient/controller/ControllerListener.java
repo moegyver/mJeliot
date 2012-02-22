@@ -1,6 +1,7 @@
 package org.mJeliot.androidClient.controller;
 
-import ict.model.Lecture;
+import org.mJeliot.model.Lecture;
+
 import android.app.Activity;
 
 /**

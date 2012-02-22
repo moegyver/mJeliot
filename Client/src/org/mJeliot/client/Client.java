@@ -1,4 +1,4 @@
-package org.mJeliot.androidClient.tcp;
+package org.mJeliot.client;
 
 
 import java.io.BufferedReader;
@@ -9,8 +9,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Vector;
 
-import org.mJeliot.androidClient.tcp.ClientListener;
-import org.mJeliot.androidClient.tcp.InputThread;
 import org.mJeliot.model.User;
 import org.mJeliot.server.Defaults;
 

@@ -2,10 +2,10 @@ package org.mJeliot.androidClient.view;
 
 import java.util.Vector;
 
+import org.mJeliot.androidClient.R;
 import org.mJeliot.androidClient.controller.Controller;
+import org.mJeliot.model.Lecture;
 
-import ict.model.Lecture;
-import ict.predict.androidClient.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -184,7 +184,7 @@ public class Login extends AbstractMJeliotActivity {
 	 * 
 	 * @see
 	 * org.mJeliot.androidClient.controller.ControllerListener#onNewLecture(
-	 * org.mJeliot.androidClient.controller.Controller, ict.model.Lecture)
+	 * org.mJeliot.androidClient.controller.Controller, org.mJeliot.model.Lecture)
 	 */
 	@Override
 	public void onNewLecture(Controller controller, Lecture lecture) {
@@ -226,7 +226,7 @@ public class Login extends AbstractMJeliotActivity {
 		if (this.controller.getCurrentActivity() == this) {
 			this.showToast(R.string.loggedin);
 			Intent waitIntent = new Intent();
-			waitIntent.setClassName("ict.predict.androidClient",
+			waitIntent.setClassName("org.mJeliot.androidClient",
 					"org.mJeliot.androidClient.view.Wait");
 			waitIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			this.startActivity(waitIntent);
@@ -244,7 +244,7 @@ public class Login extends AbstractMJeliotActivity {
 	public void onNewMethod(Controller controller) {
 		if (this.controller.getCurrentActivity() == this) {
 			Intent newPrediction = new Intent();
-			newPrediction.setClassName("ict.predict.androidClient",
+			newPrediction.setClassName("org.mJeliot.androidClient",
 					"org.mJeliot.androidClient.view.Predict");
 			this.startActivity(newPrediction);
 		}
@@ -262,7 +262,7 @@ public class Login extends AbstractMJeliotActivity {
 		if (this.controller.hasCurrentMethod()
 				&& this.controller.getCurrentActivity() == this) {
 			Intent showResult = new Intent();
-			showResult.setClassName("ict.predict.androidClient",
+			showResult.setClassName("org.mJeliot.androidClient",
 					"org.mJeliot.androidClient.view.ViewResult");
 			this.startActivity(showResult);
 		}

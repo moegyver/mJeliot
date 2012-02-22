@@ -1,8 +1,5 @@
 package jeliot.gui.ict;
 
-import ict.model.Lecture;
-import ict.model.predict.Method;
-import ict.model.predict.Parameter;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,6 +7,10 @@ import java.util.Vector;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+
+import org.mJeliot.model.Lecture;
+import org.mJeliot.model.predict.Method;
+import org.mJeliot.model.predict.Parameter;
 
 import jeliot.Jeliot;
 import jeliot.ict.ICTController;

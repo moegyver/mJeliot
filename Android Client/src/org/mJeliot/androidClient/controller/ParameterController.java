@@ -1,7 +1,8 @@
 package org.mJeliot.androidClient.controller;
 
-import ict.model.User;
-import ict.model.predict.Parameter;
+import org.mJeliot.model.User;
+import org.mJeliot.model.predict.Parameter;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 

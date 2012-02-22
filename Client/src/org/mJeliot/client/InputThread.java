@@ -1,10 +1,9 @@
-package org.mJeliot.androidClient.tcp;
+package org.mJeliot.client;
 
 
 import java.io.BufferedReader;
 import java.io.IOException;
 
-import org.mJeliot.androidClient.tcp.Client;
 import org.mJeliot.protocol.ProtocolParser;
 
 /**

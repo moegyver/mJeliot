@@ -1,7 +1,5 @@
 package jeliot.gui.ict;
 
-import ict.model.Lecture;
-import ict.model.predict.Method;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -9,6 +7,9 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+
+import org.mJeliot.model.Lecture;
+import org.mJeliot.model.predict.Method;
 
 import jeliot.Jeliot;
 import jeliot.ict.ICTController;
@@ -178,7 +179,7 @@ public class ICTPredictUsersStats extends Component implements ICTControllerList
 	}
 	
 	/* (non-Javadoc)
-	 * @see jeliot.ict.ICTControllerListener#onNewMethod(jeliot.ict.ICTController, ict.model.predict.Method)
+	 * @see jeliot.ict.ICTControllerListener#onNewMethod(jeliot.ict.ICTController, org.mJeliot.model.predict.Method)
 	 */
 	@Override
 	public void onNewMethod(ICTController ictController, Method method) {
@@ -186,21 +187,21 @@ public class ICTPredictUsersStats extends Component implements ICTControllerList
 	}
 	
 	/* (non-Javadoc)
-	 * @see jeliot.ict.ICTControllerListener#onResultPosted(jeliot.ict.ICTController, ict.model.predict.Method)
+	 * @see jeliot.ict.ICTControllerListener#onResultPosted(jeliot.ict.ICTController, org.mJeliot.model.predict.Method)
 	 */
 	@Override
 	public void onResultPosted(ICTController ictController, Method method) {
 	}
 	
 	/* (non-Javadoc)
-	 * @see jeliot.ict.ICTControllerListener#onMethodCalled(jeliot.ict.ICTController, ict.model.predict.Method)
+	 * @see jeliot.ict.ICTControllerListener#onMethodCalled(jeliot.ict.ICTController, org.mJeliot.model.predict.Method)
 	 */
 	@Override
 	public void onMethodCalled(ICTController ictController, Method method) {
 	}
 	
 	/* (non-Javadoc)
-	 * @see jeliot.ict.ICTControllerListener#onMethodReturned(jeliot.ict.ICTController, ict.model.predict.Method)
+	 * @see jeliot.ict.ICTControllerListener#onMethodReturned(jeliot.ict.ICTController, org.mJeliot.model.predict.Method)
 	 */
 	@Override
 	public void onMethodReturned(ICTController ictController, Method method) {

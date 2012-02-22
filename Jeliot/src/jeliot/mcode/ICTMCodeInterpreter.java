@@ -1,12 +1,13 @@
 package jeliot.mcode;
 
-import ict.model.predict.Method;
-import ict.model.predict.Parameter;
 
 import java.io.BufferedReader;
 import java.util.HashMap;
 import java.util.Stack;
 import java.util.Vector;
+
+import org.mJeliot.model.predict.Method;
+import org.mJeliot.model.predict.Parameter;
 
 import jeliot.ict.ICTController;
 

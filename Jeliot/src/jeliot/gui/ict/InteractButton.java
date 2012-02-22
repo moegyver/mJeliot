@@ -6,13 +6,14 @@ import java.awt.event.MouseListener;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import ict.model.Lecture;
-import ict.model.predict.Method;
 
 import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+
+import org.mJeliot.model.Lecture;
+import org.mJeliot.model.predict.Method;
 
 import jeliot.Jeliot;
 import jeliot.ict.ICTController;
@@ -157,28 +158,28 @@ public class InteractButton extends JButton implements ICTControllerListener {
 	}
 
 	/* (non-Javadoc)
-	 * @see jeliot.ict.ICTControllerListener#onNewMethod(jeliot.ict.ICTController, ict.model.predict.Method)
+	 * @see jeliot.ict.ICTControllerListener#onNewMethod(jeliot.ict.ICTController, org.mJeliot.model.predict.Method)
 	 */
 	@Override
 	public void onNewMethod(ICTController ictController, Method method) {
 	}
 
 	/* (non-Javadoc)
-	 * @see jeliot.ict.ICTControllerListener#onResultPosted(jeliot.ict.ICTController, ict.model.predict.Method)
+	 * @see jeliot.ict.ICTControllerListener#onResultPosted(jeliot.ict.ICTController, org.mJeliot.model.predict.Method)
 	 */
 	@Override
 	public void onResultPosted(ICTController ictController, Method method) {
 	}
 
 	/* (non-Javadoc)
-	 * @see jeliot.ict.ICTControllerListener#onMethodCalled(jeliot.ict.ICTController, ict.model.predict.Method)
+	 * @see jeliot.ict.ICTControllerListener#onMethodCalled(jeliot.ict.ICTController, org.mJeliot.model.predict.Method)
 	 */
 	@Override
 	public void onMethodCalled(ICTController ictController, Method method) {
 	}
 
 	/* (non-Javadoc)
-	 * @see jeliot.ict.ICTControllerListener#onMethodReturned(jeliot.ict.ICTController, ict.model.predict.Method)
+	 * @see jeliot.ict.ICTControllerListener#onMethodReturned(jeliot.ict.ICTController, org.mJeliot.model.predict.Method)
 	 */
 	@Override
 	public void onMethodReturned(ICTController ictController, Method method) {
