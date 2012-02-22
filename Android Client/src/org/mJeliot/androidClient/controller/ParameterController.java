@@ -1,4 +1,4 @@
-package ict.predict.androidClient.controller;
+package org.mJeliot.androidClient.controller;
 
 import ict.model.User;
 import ict.model.predict.Parameter;

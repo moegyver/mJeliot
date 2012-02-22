@@ -1,8 +1,9 @@
-package ict.predict.androidClient.view;
+package org.mJeliot.androidClient.view;
+
+import org.mJeliot.androidClient.controller.Controller;
 
 import ict.model.Lecture;
 import ict.predict.androidClient.R;
-import ict.predict.androidClient.controller.Controller;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,7 +17,7 @@ import android.widget.LinearLayout;
  * ViewResult is an Activity that shows a ResultList with the result for every parameter
  * and a "done"-button to return to the previous activity on the activity stack.
  */
-public class ViewResult extends AbstractPredictActivity {
+public class ViewResult extends AbstractMJeliotActivity {
 	/**
 	 * The layout for the activity.
 	 */
@@ -47,7 +48,7 @@ public class ViewResult extends AbstractPredictActivity {
     }
 
     /* (non-Javadoc)
-     * @see ict.predict.androidClient.controller.ControllerListener#onCurrentActivityChanged(ict.predict.androidClient.controller.Controller, android.app.Activity)
+     * @see org.mJeliot.androidClient.controller.ControllerListener#onCurrentActivityChanged(org.mJeliot.androidClient.controller.Controller, android.app.Activity)
      */
     @Override
 	public void onCurrentActivityChanged(Controller controller,
@@ -58,83 +59,83 @@ public class ViewResult extends AbstractPredictActivity {
 	}
 
 	/* (non-Javadoc)
-	 * @see ict.predict.androidClient.controller.
-	 * ControllerListener#onConnect(ict.predict.androidClient.controller.Controller)
+	 * @see org.mJeliot.androidClient.controller.
+	 * ControllerListener#onConnect(org.mJeliot.androidClient.controller.Controller)
 	 */
 	@Override
 	public void onConnect(Controller controller) {
 	}
 
 	/* (non-Javadoc)
-	 * @see ict.predict.androidClient.controller.
-	 * ControllerListener#onConnected(ict.predict.androidClient.controller.Controller)
+	 * @see org.mJeliot.androidClient.controller.
+	 * ControllerListener#onConnected(org.mJeliot.androidClient.controller.Controller)
 	 */
 	@Override
 	public void onConnected(Controller controller) {
 	}
 
 	/* (non-Javadoc)
-	 * @see ict.predict.androidClient.controller.
-	 * ControllerListener#onScanStart(ict.predict.androidClient.controller.Controller)
+	 * @see org.mJeliot.androidClient.controller.
+	 * ControllerListener#onScanStart(org.mJeliot.androidClient.controller.Controller)
 	 */
 	@Override
 	public void onScanStart(Controller controller) {
 	}
 
 	/* (non-Javadoc)
-	 * @see ict.predict.androidClient.controller.
-	 * ControllerListener#onScanFinished(ict.predict.androidClient.controller.Controller)
+	 * @see org.mJeliot.androidClient.controller.
+	 * ControllerListener#onScanFinished(org.mJeliot.androidClient.controller.Controller)
 	 */
 	@Override
 	public void onScanFinished(Controller controller) {
 	}
 
 	/* (non-Javadoc)
-	 * @see ict.predict.androidClient.controller.ControllerListener#onNewLecture(ict.predict.androidClient.controller.Controller, ict.model.Lecture)
+	 * @see org.mJeliot.androidClient.controller.ControllerListener#onNewLecture(org.mJeliot.androidClient.controller.Controller, ict.model.Lecture)
 	 */
 	@Override
 	public void onNewLecture(Controller controller, Lecture lecture) {
 	}
 
 	/* (non-Javadoc)
-	 * @see ict.predict.androidClient.controller.ControllerListener#onLoggingIn(ict.predict.androidClient.controller.Controller)
+	 * @see org.mJeliot.androidClient.controller.ControllerListener#onLoggingIn(org.mJeliot.androidClient.controller.Controller)
 	 */
 	@Override
 	public void onLoggingIn(Controller controller) {
 	}
 
 	/* (non-Javadoc)
-	 * @see ict.predict.androidClient.controller.ControllerListener#onLoggedIn(ict.predict.androidClient.controller.Controller)
+	 * @see org.mJeliot.androidClient.controller.ControllerListener#onLoggedIn(org.mJeliot.androidClient.controller.Controller)
 	 */
 	@Override
 	public void onLoggedIn(Controller controller) {
 	}
 
 	/* (non-Javadoc)
-	 * @see ict.predict.androidClient.controller.
-	 * ControllerListener#onNewMethod(ict.predict.androidClient.controller.Controller)
+	 * @see org.mJeliot.androidClient.controller.
+	 * ControllerListener#onNewMethod(org.mJeliot.androidClient.controller.Controller)
 	 */
 	@Override
 	public void onNewMethod(Controller controller) {
 		if (this.controller.getCurrentActivity() == this) {
 			Intent newPrediction = new Intent();
 			newPrediction.setClassName("ict.predict.androidClient",
-					"ict.predict.androidClient.view.Predict");
+					"org.mJeliot.androidClient.view.Predict");
 			this.startActivityIfNeeded(newPrediction, -1);
 			this.finish();
 		}
 	}
 
 	/* (non-Javadoc)
-	 * @see ict.predict.androidClient.controller.
-	 * ControllerListener#onResult(ict.predict.androidClient.controller.Controller)
+	 * @see org.mJeliot.androidClient.controller.
+	 * ControllerListener#onResult(org.mJeliot.androidClient.controller.Controller)
 	 */
 	@Override
 	public void onResult(Controller controller) {
 	}
 
 	/* (non-Javadoc)
-	 * @see ict.predict.androidClient.controller.ControllerListener#onLoggingOut(ict.predict.androidClient.controller.Controller)
+	 * @see org.mJeliot.androidClient.controller.ControllerListener#onLoggingOut(org.mJeliot.androidClient.controller.Controller)
 	 */
 	@Override
 	public void onLoggingOut(Controller controller) {
@@ -142,7 +143,7 @@ public class ViewResult extends AbstractPredictActivity {
 	}
 
 	/* (non-Javadoc)
-	 * @see ict.predict.androidClient.controller.ControllerListener#onLoggedOut(ict.predict.androidClient.controller.Controller)
+	 * @see org.mJeliot.androidClient.controller.ControllerListener#onLoggedOut(org.mJeliot.androidClient.controller.Controller)
 	 */
 	@Override
 	public void onLoggedOut(Controller controller) {
@@ -150,8 +151,8 @@ public class ViewResult extends AbstractPredictActivity {
 	}
 
 	/* (non-Javadoc)
-	 * @see ict.predict.androidClient.controller.
-	 * ControllerListener#onDisconnected(ict.predict.androidClient.controller.Controller)
+	 * @see org.mJeliot.androidClient.controller.
+	 * ControllerListener#onDisconnected(org.mJeliot.androidClient.controller.Controller)
 	 */
 	@Override
 	public void onDisconnected(Controller controller) {

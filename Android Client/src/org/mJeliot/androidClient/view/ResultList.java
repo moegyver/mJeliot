@@ -1,4 +1,4 @@
-package ict.predict.androidClient.view;
+package org.mJeliot.androidClient.view;
 
 import ict.model.User;
 import ict.model.predict.Method;

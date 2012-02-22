@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
     <application android:icon="@drawable/icon"
     				android:label="@string/app_name"
-    				android:name=".controller.Controller">
+    				android:name="org.mJeliot.androidClient.controller.Controller">
     	<activity android:name=".view.Start"
                   android:label="@string/app_name">
                 <intent-filter>
@@ -33,7 +33,7 @@
 				<action android:name="ict.predict.PREDICT" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".view.ViewResult"
+		<activity android:name="org.mJeliot.androidClient.view.ViewResult"
 		android:label="@string/app_name"
 		android:noHistory="true">
 			<intent-filter>

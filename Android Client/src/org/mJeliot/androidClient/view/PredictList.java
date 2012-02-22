@@ -1,9 +1,10 @@
-package ict.predict.androidClient.view;
+package org.mJeliot.androidClient.view;
+
+import org.mJeliot.androidClient.controller.ParameterController;
 
 import ict.model.User;
 import ict.model.predict.Method;
 import ict.model.predict.Parameter;
-import ict.predict.androidClient.controller.ParameterController;
 import android.content.Context;
 import android.widget.EditText;
 import android.widget.TableLayout;

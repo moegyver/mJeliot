@@ -1,4 +1,4 @@
-package ict.predict.androidClient.controller;
+package org.mJeliot.androidClient.controller;
 
 import ict.model.Lecture;
 import android.app.Activity;

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="address">Address</string>
+
+    <string name="address">Address</string>
     <string name="alias">Choose an Alias</string>
     <string name="app_name">mJeliot</string>
     <string name="availablenetworks">Available Lectures</string>
@@ -9,20 +10,21 @@
     <string name="connected">Connected</string>
     <string name="disconnect">Disconnect</string>
     <string name="disconnected">Disconnected</string>
-    <string name="disconnecting">Disconnecting...</string>
+    <string name="disconnecting">Disconnecting…</string>
     <string name="done">Done</string>
-	<string name="lock">Lock</string>
-	<string name="login">Login</string>
-	<string name="loggedin">Logged in</string>
-	<string name="logout">Logout</string>
-	<string name="loggedout">Logged Out</string>
-	<string name="newassignment">A new assignment got posted.</string>
-	<string name="rescan">Rescan</string>
-	<string name="scanning">Scanning</string>
-	<string name="scanfinished">Scan finished</string>
+    <string name="lock">Lock</string>
+    <string name="login">Login</string>
+    <string name="loggedin">Logged in</string>
+    <string name="logout">Logout</string>
+    <string name="loggedout">Logged Out</string>
+    <string name="newassignment">A new assignment got posted.</string>
+    <string name="rescan">Rescan</string>
+    <string name="scanning">Scanning</string>
+    <string name="scanfinished">Scan finished</string>
     <string name="selectnetwork">Select a Lecture</string>
-	<string name="waitforassignment">At this moment there are no values to predict. Please wait for the lecturer to post a task.</string>
-	<string name="waitforconnection">Connecting, please wait...</string>
-	<string name="waitforresult">Waiting for result...</string>
-	<string name="waitforscan">Waiting for scan to complete...</string>
+    <string name="waitforassignment">At this moment there are no values to predict. Please wait for the lecturer to post a task.</string>
+    <string name="waitforconnection">Connecting, please wait…</string>
+    <string name="waitforresult">Waiting for result…</string>
+    <string name="waitforscan">Waiting for scan to complete…</string>
+
 </resources>
