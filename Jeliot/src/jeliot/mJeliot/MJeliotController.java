@@ -69,7 +69,6 @@ public class MJeliotController implements ClientListener, ProtocolParserListener
 
 	private void reset() {
 		this.lecture = null;
-		this.availableLectures = new HashMap<Integer, Lecture>();
 	}
 	
 	/**

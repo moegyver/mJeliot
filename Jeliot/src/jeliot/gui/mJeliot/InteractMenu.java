@@ -46,7 +46,7 @@ public class InteractMenu extends JPopupMenu implements MJeliotControllerListene
 	 */
 	public InteractMenu(final Jeliot jeliot) {
 		super();
-		this.controller = jeliot.getIctController();
+		this.controller = jeliot.getMJeliotController();
 		this.controller.addICTControllerListener(this);
 		this.lectureMenu = new LectureMenu("Available Lectures", controller);
 		this.add(lectureMenu);
@@ -57,7 +57,7 @@ public class InteractMenu extends JPopupMenu implements MJeliotControllerListene
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false);
-				jeliot.getIctController().disconnectClient();
+				jeliot.getMJeliotController().disconnectClient();
 			}		
     	});
 		this.add(disconnectItem);

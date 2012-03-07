@@ -99,8 +99,8 @@ public class PredictUsersStats extends Component implements MJeliotControllerLis
 	 * @see java.awt.Component#paint(java.awt.Graphics)
 	 */
 	public void paint(Graphics g) {
-		int connectedClients = Math.max(this.jeliot.getIctController().getUserCount() - 1, 0);
-		int receivedAnswers = this.jeliot.getIctController().getReceivedAnswerCount();
+		int connectedClients = Math.max(this.jeliot.getMJeliotController().getUserCount() - 1, 0);
+		int receivedAnswers = this.jeliot.getMJeliotController().getReceivedAnswerCount();
 		Font f = getFont();
 		FontMetrics fm = getFontMetrics (f);
 		int fontWidthConnectedClients = (int) fm.getStringBounds(Integer.toString(connectedClients), g).getWidth();

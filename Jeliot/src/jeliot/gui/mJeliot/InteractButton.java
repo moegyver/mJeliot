@@ -49,7 +49,7 @@ public class InteractButton extends JButton implements MJeliotControllerListener
 	public InteractButton(Jeliot jeliot, UserProperties propertiesBundle, ResourceBundle messageBundle) {
 		super();
 		this.jeliot = jeliot;
-		this.controller = jeliot.getIctController();
+		this.controller = jeliot.getMJeliotController();
 		this.buildMenu();
 		this.messageBundle = messageBundle;
         URL imageURLConnect = this.getClass().getClassLoader().getResource(

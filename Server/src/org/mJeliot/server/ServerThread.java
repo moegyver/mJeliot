@@ -74,7 +74,6 @@ public class ServerThread implements Runnable, ParserCaller {
 		pingTimer = new Timer();
 		pingTimer.schedule(new PingGenerator(this), 200, PING_INTERVAL);
 		pingTimer.scheduleAtFixedRate(new CheckTimeoutTask(this), 200,  PING_INTERVAL);
-		//pingTimer.schedule(new Timeout, time)
 	}
 
 	/* (non-Javadoc)
@@ -91,7 +90,7 @@ public class ServerThread implements Runnable, ParserCaller {
 	protected void disconnectClient() {
 		System.out.println("Server: disconnecting client... ");
 		if (this.user != null) {
-			this.controller.disconnectUser(this.user, this.user.getLecture());
+			this.controller.disconnectUser(this.user, this.user.getLecture().getId());
 		}
 		this.server.removeServerThread(this);
 		try {

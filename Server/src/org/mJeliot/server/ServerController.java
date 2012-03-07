@@ -165,7 +165,7 @@ public class ServerController implements ProtocolParserListener {
 			}
 		}
 		if (removeUser != null && this.lectures.get(lectureId) != null) {
-			this.disconnectUser(removeUser, this.lectures.get(lectureId));
+			this.disconnectUser(removeUser, lectureId);
 		}
 	}
 
@@ -175,17 +175,25 @@ public class ServerController implements ProtocolParserListener {
 	 * @param user
 	 *            the user to log out
 	 */
-	public void disconnectUser(User user, Lecture lecture) {
-		TimerTask userTimerTask = this.userTimeoutTimers.get(new Pair<Integer, Integer>(lecture.getId(), user.getId()));
+	public void disconnectUser(User user, int lectureId) {
+		System.out.println("disconnecting user " + user.getId() + " from lecture " + lectureId); 
+		TimerTask userTimerTask = this.userTimeoutTimers.get(new Pair<Integer, Integer>(lectureId, user.getId()));
 		if (userTimerTask != null) {
 			userTimerTask.cancel();
+			System.out.println("stopping timer task");
 		}
+		if (null == this.userTimeoutTimers.remove(new Pair<Integer, Integer>(lectureId, user.getId()))) {
+			System.err.println("could not remove userTimeoutTimer");
+		}
+		Lecture lecture = this.lectures.get(lectureId);
 		if (lecture.containsUser(user)) {
-			lecture.removeUser(user);
+			System.out.println("removing user from lecture: " + lecture.removeUser(user));
 			String message = this.parser.generateUserLoggedOut(user, lecture);
 			for (ServerThread serverThread : this.server.getServerThreads()) {
 				serverThread.sendMessage(message);
 			}
+		} else {
+			System.err.println("could not find user " + user + " for disconnecting.");
 		}
 	}
 
@@ -460,8 +468,6 @@ public class ServerController implements ProtocolParserListener {
 	}
 
 	public void resetUserTimer(int lectureId, int userId) {
-		System.out.println("resetting user timer, lecture: " + lectureId
-				+ " userId: " + userId);
 		UserTimerTimeoutTask userTimerTask = this.userTimeoutTimers
 				.get(new Pair<Integer, Integer>(lectureId, userId));
 		if (userTimerTask != null) {

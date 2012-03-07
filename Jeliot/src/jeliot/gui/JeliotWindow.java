@@ -695,13 +695,13 @@ public class JeliotWindow implements PauseListener, MouseListener {
             this.statsPane.setVisible(jeliotUserProperties.getBooleanProperty("show_ict_view"));
             this.statsPane.setLayout(new BoxLayout(this.statsPane, BoxLayout.Y_AXIS));
             PredictUsersStats userStats = new PredictUsersStats(this.jeliot);
-            this.jeliot.getIctController().addICTControllerListener(userStats);
+            this.jeliot.getMJeliotController().addICTControllerListener(userStats);
             this.statsPane.add(userStats);
             if (this.statsPane.isVisible()) {
             	userStats.repaint();
             }
             PredictResultStats resultStats = new PredictResultStats();
-            this.jeliot.getIctController().addICTControllerListener(resultStats);
+            this.jeliot.getMJeliotController().addICTControllerListener(resultStats);
             this.statsPane.add(resultStats);
             
             // /MOE

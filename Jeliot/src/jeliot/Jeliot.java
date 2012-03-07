@@ -458,7 +458,7 @@ public class Jeliot {
                     .addRegisteredSecondaryMCodeConnections(new PrintWriter(pw,
                             true));
             this.mCodeInterpreterForICT = new ICTMCodeInterpreter(
-                    new BufferedReader(pr), gui.getProgram(), this.getIctController());
+                    new BufferedReader(pr), gui.getProgram(), this.getMJeliotController());
         } catch (Exception e) {
             if (DebugUtil.DEBUGGING) {
                 e.printStackTrace();
@@ -1046,7 +1046,7 @@ public class Jeliot {
     }
 
     // MOE
-	public MJeliotController getIctController() {
+	public MJeliotController getMJeliotController() {
 		return this.ictController;
 	}
 	// /MOE

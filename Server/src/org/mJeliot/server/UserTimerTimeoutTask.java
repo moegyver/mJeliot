@@ -19,8 +19,8 @@ public class UserTimerTimeoutTask extends TimerTask {
 		if (lastSeen + 3 * ServerThread.PING_INTERVAL
 				- System.currentTimeMillis() < 0) {
 			System.out.println("User timeout, User " + user.getId()
-					+ " disconnecting...");
-			controller.disconnectUser(user, user.getLecture());
+					+ " disconnecting from lecture " + user.getLecture().getId());
+			controller.disconnectUser(user, user.getLecture().getId());
 		}
 	}
 

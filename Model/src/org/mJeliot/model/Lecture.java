@@ -167,7 +167,7 @@ public class Lecture {
 	 * @return a copy of the users connected to this lecture.
 	 */
 	public User[] getUsers() {
-		return (User[]) this.users.values().toArray();
+		return (User[]) this.users.values().toArray(new User[0]);
 	}
 
 	public User getUser(int id) {
@@ -193,8 +193,8 @@ public class Lecture {
 	 * @param user
 	 *            the user to remove
 	 */
-	public void removeUser(User user) {
-		this.users.remove(user);
+	public boolean removeUser(User user) {
+		return null != this.users.remove(user.getId());
 	}
 
 	public boolean containsUser(User user) {
