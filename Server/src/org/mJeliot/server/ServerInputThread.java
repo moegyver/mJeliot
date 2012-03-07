@@ -65,8 +65,8 @@ public class ServerInputThread implements Runnable {
 						int lectureId = Integer.parseInt(ids[0]);
 						int userId = Integer.parseInt(ids[1]);
 						this.serverThread.resetUserTimer(lectureId, userId);
-					} catch(NumberFormatException e) {
-						
+					} catch(Exception e) {
+						System.err.println(e.getMessage());
 					}
 					message = "";
 				} else {
@@ -83,7 +83,7 @@ public class ServerInputThread implements Runnable {
 					this.stop = true;
 					return;
 				}
-				
+
 			}
 		}
 	}
