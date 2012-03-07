@@ -1,6 +1,5 @@
 package org.mJeliot.test;
 
-import org.mJeliot.model.User;
 import org.mJeliot.protocol.ParserCaller;
 import org.mJeliot.protocol.ProtocolParser;
 import org.mJeliot.protocol.ProtocolParserListener;
@@ -147,13 +146,6 @@ public class ProtocolParserTester implements ProtocolParserListener, ParserCalle
 	}
 	@Override
 	public void sendMessage(String message) {
-	}
-	@Override
-	public User getUser() {
-		return null;
-	}
-	@Override
-	public void setUser(User user) {
 	}
 	@Override
 	public void onNewLecture(ProtocolParser protocolParser,

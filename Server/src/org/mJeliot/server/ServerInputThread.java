@@ -56,6 +56,19 @@ public class ServerInputThread implements Runnable {
 				if (input.contains(ProtocolParser.endActionTag)) {
 					serverThread.getController().getParser().parseMessage(message, serverThread);
 					message = "";
+				} else if (input.contains("pong")) {
+					serverThread.resetTimeout();
+					System.out.println("resetting timer");
+					String idStrings = input.replace("pong ", "").replace("\n", "");
+					String[] ids = idStrings.split(" ");
+					try{
+						int lectureId = Integer.parseInt(ids[0]);
+						int userId = Integer.parseInt(ids[1]);
+						this.serverThread.resetUserTimer(lectureId, userId);
+					} catch(NumberFormatException e) {
+						
+					}
+					message = "";
 				} else {
 				}
 			} else {

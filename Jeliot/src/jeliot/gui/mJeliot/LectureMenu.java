@@ -1,4 +1,4 @@
-package jeliot.gui.ict;
+package jeliot.gui.mJeliot;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,15 +10,15 @@ import javax.swing.JMenuItem;
 
 import org.mJeliot.model.Lecture;
 
-import jeliot.ict.ICTController;
+import jeliot.mJeliot.MJeliotController;
 
 public class LectureMenu extends JMenu {
 
 	private static final long serialVersionUID = -5002553511422141949L;
-	private final ICTController controller;
+	private final MJeliotController controller;
 	private Vector<Integer> lectureIds = new Vector<Integer>();
 
-	public LectureMenu(String menuTitle, ICTController controller) {
+	public LectureMenu(String menuTitle, MJeliotController controller) {
 		super(menuTitle);
 		this.controller = controller;
 		for (Lecture lecture : this.controller.getAvailableLectures()) {
@@ -33,7 +33,7 @@ public class LectureMenu extends JMenu {
 			lectureItem.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					if (controller.getCurrentLecture() != null) {
+					if (controller.getLecture() != null) {
 						logout();
 					}
 					controller.setLecture(lecture);
@@ -45,8 +45,8 @@ public class LectureMenu extends JMenu {
 	}
 
 	public void onLoggedIn() {
-		if (this.controller.getCurrentLecture() != null) {
-			System.out.println("Index is: " + this.lectureIds.indexOf(this.controller.getCurrentLecture().getId()));
+		if (this.controller.getLecture() != null) {
+			System.out.println("Index is: " + this.lectureIds.indexOf(this.controller.getLecture().getId()));
 			JMenuItem logoutItem = new JMenuItem("Logout");
 			logoutItem.addActionListener(new ActionListener() {
 				@Override

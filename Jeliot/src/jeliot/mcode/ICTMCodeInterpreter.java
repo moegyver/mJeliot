@@ -9,7 +9,7 @@ import java.util.Vector;
 import org.mJeliot.model.predict.Method;
 import org.mJeliot.model.predict.Parameter;
 
-import jeliot.ict.ICTController;
+import jeliot.mJeliot.MJeliotController;
 
 /**
  * @author Moritz Rogalli
@@ -47,7 +47,7 @@ public class ICTMCodeInterpreter extends MCodeInterpreter {
 	 * The parameters' values the current method got called with.
 	 */
 	private Vector<String> currentCallValues = new Vector<String>();
-	private ICTController controller = null;
+	private MJeliotController controller = null;
 
 	/**
 	 * Pretty standard mCodeInterpreter-constructor.
@@ -55,7 +55,7 @@ public class ICTMCodeInterpreter extends MCodeInterpreter {
 	 * @param programCode
 	 * @param interactMenu
 	 */
-	public ICTMCodeInterpreter(BufferedReader bf, String programCode, ICTController controller) {
+	public ICTMCodeInterpreter(BufferedReader bf, String programCode, MJeliotController controller) {
 		super(bf);
 		this.programCode = programCode;
 		this.controller = controller;

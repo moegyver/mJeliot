@@ -153,7 +153,7 @@ public class Predict extends AbstractMJeliotActivity {
 	public void onNewMethod(Controller controller) {
 		if (this.controller.getCurrentActivity() == this) {
 			Intent newPrediction = new Intent();
-			newPrediction.setClassName("ict.predict.androidClient",
+			newPrediction.setClassName("org.mJeliot.androidClient",
 					"org.mJeliot.androidClient.view.Predict");
 			this.startActivityIfNeeded(newPrediction, -1);
 			this.finish();
@@ -171,8 +171,8 @@ public class Predict extends AbstractMJeliotActivity {
 	public void onResult(Controller controller) {
 		if (this.controller.getCurrentActivity() == this) {
 			Intent showResult = new Intent();
-			showResult.setClassName("ict.predict.androidClient",
-					"org.mJeliot.androidClient.view.ViewResult");
+			showResult.setClassName("org.mJeliot.androidClient",
+					"org.mJeliot.androidClient.view.predict.ViewResult");
 			this.startActivity(showResult);
 			this.finish();
 		}

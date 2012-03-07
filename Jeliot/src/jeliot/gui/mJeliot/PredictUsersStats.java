@@ -1,4 +1,4 @@
-package jeliot.gui.ict;
+package jeliot.gui.mJeliot;
 
 
 import java.awt.Color;
@@ -12,10 +12,10 @@ import org.mJeliot.model.Lecture;
 import org.mJeliot.model.predict.Method;
 
 import jeliot.Jeliot;
-import jeliot.ict.ICTController;
-import jeliot.ict.ICTControllerListener;
+import jeliot.mJeliot.MJeliotController;
+import jeliot.mJeliot.MJeliotControllerListener;
 
-public class ICTPredictUsersStats extends Component implements ICTControllerListener {
+public class PredictUsersStats extends Component implements MJeliotControllerListener {
 	private static final long serialVersionUID = -8666907288749625379L;
 	/**
 	 * Padding to make it look pretty.
@@ -59,7 +59,7 @@ public class ICTPredictUsersStats extends Component implements ICTControllerList
 	 * Constructor.
 	 * @param jeliot The jeliot main object.
 	 */
-	public ICTPredictUsersStats(Jeliot jeliot) {
+	public PredictUsersStats(Jeliot jeliot) {
 		this.jeliot  = jeliot;
 	}
 	
@@ -163,85 +163,85 @@ public class ICTPredictUsersStats extends Component implements ICTControllerList
 	}
 	
 	/* (non-Javadoc)
-	 * @see jeliot.ict.ICTControllerListener#onUserCountChanged(jeliot.ict.ICTController)
+	 * @see jeliot.mJeliot.MJeliotControllerListener#onUserCountChanged(jeliot.mJeliot.MJeliotController)
 	 */
 	@Override
-	public void onUserCountChanged(ICTController ictController) {
+	public void onUserCountChanged(MJeliotController ictController) {
 		repaint();
 	}
 	
 	/* (non-Javadoc)
-	 * @see jeliot.ict.ICTControllerListener#onAnswerCountChanged(jeliot.ict.ICTController)
+	 * @see jeliot.mJeliot.MJeliotControllerListener#onAnswerCountChanged(jeliot.mJeliot.MJeliotController)
 	 */
 	@Override
-	public void onAnswerCountChanged(ICTController ictController) {
+	public void onAnswerCountChanged(MJeliotController ictController) {
 		repaint();
 	}
 	
 	/* (non-Javadoc)
-	 * @see jeliot.ict.ICTControllerListener#onNewMethod(jeliot.ict.ICTController, org.mJeliot.model.predict.Method)
+	 * @see jeliot.mJeliot.MJeliotControllerListener#onNewMethod(jeliot.mJeliot.MJeliotController, org.mJeliot.model.predict.Method)
 	 */
 	@Override
-	public void onNewMethod(ICTController ictController, Method method) {
+	public void onNewMethod(MJeliotController ictController, Method method) {
 		repaint();
 	}
 	
 	/* (non-Javadoc)
-	 * @see jeliot.ict.ICTControllerListener#onResultPosted(jeliot.ict.ICTController, org.mJeliot.model.predict.Method)
+	 * @see jeliot.mJeliot.MJeliotControllerListener#onResultPosted(jeliot.mJeliot.MJeliotController, org.mJeliot.model.predict.Method)
 	 */
 	@Override
-	public void onResultPosted(ICTController ictController, Method method) {
+	public void onResultPosted(MJeliotController ictController, Method method) {
 	}
 	
 	/* (non-Javadoc)
-	 * @see jeliot.ict.ICTControllerListener#onMethodCalled(jeliot.ict.ICTController, org.mJeliot.model.predict.Method)
+	 * @see jeliot.mJeliot.MJeliotControllerListener#onMethodCalled(jeliot.mJeliot.MJeliotController, org.mJeliot.model.predict.Method)
 	 */
 	@Override
-	public void onMethodCalled(ICTController ictController, Method method) {
+	public void onMethodCalled(MJeliotController ictController, Method method) {
 	}
 	
 	/* (non-Javadoc)
-	 * @see jeliot.ict.ICTControllerListener#onMethodReturned(jeliot.ict.ICTController, org.mJeliot.model.predict.Method)
+	 * @see jeliot.mJeliot.MJeliotControllerListener#onMethodReturned(jeliot.mJeliot.MJeliotController, org.mJeliot.model.predict.Method)
 	 */
 	@Override
-	public void onMethodReturned(ICTController ictController, Method method) {
+	public void onMethodReturned(MJeliotController ictController, Method method) {
 	}
 
 	/* (non-Javadoc)
-	 * @see jeliot.ict.ICTControllerListener#onClientConnected(jeliot.ict.ICTController)
+	 * @see jeliot.mJeliot.MJeliotControllerListener#onClientConnected(jeliot.mJeliot.MJeliotController)
 	 */
 	@Override
-	public void onClientConnected(ICTController ictController) {
+	public void onClientConnected(MJeliotController ictController) {
 	}
 
 	/* (non-Javadoc)
-	 * @see jeliot.ict.ICTControllerListener#onClientDisconnected(jeliot.ict.ICTController)
+	 * @see jeliot.mJeliot.MJeliotControllerListener#onClientDisconnected(jeliot.mJeliot.MJeliotController)
 	 */
 	@Override
-	public void onClientDisconnected(ICTController ictController) {
+	public void onClientDisconnected(MJeliotController ictController) {
 	}
 
 	@Override
-	public void onNewLecture(ICTController ictController, Lecture lecture) {
+	public void onNewLecture(MJeliotController ictController, Lecture lecture) {
 	}
 
 	@Override
-	public void onLogin(ICTController ictController, Lecture lecture) {
+	public void onLogin(MJeliotController ictController, Lecture lecture) {
 	}
 
 	@Override
-	public void onLoggedIn(ICTController ictController, Lecture currentLecture) {
+	public void onLoggedIn(MJeliotController ictController, Lecture currentLecture) {
 	}
 
 	@Override
-	public void onLogout(ICTController ictController, Lecture lecture) {
+	public void onLogout(MJeliotController ictController, Lecture lecture) {
 	}
 
 	@Override
-	public void onLectureUpdated(ICTController ictController, Lecture lecture) {
+	public void onLectureUpdated(MJeliotController ictController, Lecture lecture) {
 	}
 
 	@Override
-	public void onLoggedOut(ICTController ictController, Lecture lecture) {
+	public void onLoggedOut(MJeliotController ictController, Lecture lecture) {
 	}
 }

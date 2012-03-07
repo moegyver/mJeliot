@@ -1,8 +1,7 @@
 package org.mJeliot.model;
 
+import java.util.HashMap;
 import java.util.Random;
-import java.util.Vector;
-
 import org.mJeliot.model.predict.Method;
 
 
@@ -39,7 +38,7 @@ public class Lecture {
 	/**
 	 * the users that are connected.
 	 */
-	private Vector<User> users = new Vector<User>();
+	private HashMap<Integer, User> users = new HashMap<Integer, User>();
 
 	/**
 	 * Creates a lecture with a randomly selected id.
@@ -167,11 +166,14 @@ public class Lecture {
 	/**
 	 * @return a copy of the users connected to this lecture.
 	 */
-	@SuppressWarnings("unchecked")
-	public Vector<User> getUsers() {
-		return (Vector<User>) this.users.clone();
+	public User[] getUsers() {
+		return (User[]) this.users.values().toArray();
 	}
 
+	public User getUser(int id) {
+		return this.users.get(id);
+	}
+	
 	/**
 	 * Adds a user to the lecture's user list. Does not do anything if the user
 	 * is already in the list.
@@ -180,8 +182,8 @@ public class Lecture {
 	 *            the user to add
 	 */
 	public void addUser(User user) {
-		if (!this.users.contains(user)) {
-			this.users.add(user);
+		if (!this.users.containsKey(user.getId())) {
+			this.users.put(user.getId(), user);
 		}
 	}
 
@@ -193,5 +195,9 @@ public class Lecture {
 	 */
 	public void removeUser(User user) {
 		this.users.remove(user);
+	}
+
+	public boolean containsUser(User user) {
+		return this.users.containsKey(user.getId());
 	}
 }

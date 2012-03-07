@@ -7,8 +7,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Vector;
 
+import org.mJeliot.model.Lecture;
 import org.mJeliot.model.User;
 import org.mJeliot.server.Defaults;
 
@@ -18,7 +18,7 @@ import org.mJeliot.server.Defaults;
  * received messages on to its listeners as soon as they are complete and informs the
  * listeners when the state of the connection changes. It does not parse the messages.
  */
-public class Client implements Runnable {
+public class Client {
 	/**
 	 * The actual socket that keeps the connection with the server.
 	 */
@@ -27,7 +27,7 @@ public class Client implements Runnable {
 	 * The listeners are informed whenever the client receives a message or the state
 	 * of the socket changes.
 	 */
-	private Vector<ClientListener> listeners = new Vector<ClientListener>();
+	private ClientListener clientListener = null;
 	/**
 	 * The input thread takes care of the receiving from the socket and passes messages
 	 * on as soon as they are complete.
@@ -42,35 +42,19 @@ public class Client implements Runnable {
 	 */
 	private BufferedReader in = null;
 	/**
-	 * The user associated with the client for user-specific messages.
-	 */
-	private User user = null;
-	/**
 	 * The server's uri. Usually defined by the Defaults class.
 	 */
 	private String uri = null;
+
 	/**
 	 * @param uri The uri to use to connect the socket.
 	 */
-	public Client(String uri) {
+	public Client(ClientListener listener, String uri) {
 		this.uri = uri;
-	}
-	/**
-	 * For adding a ClientListener that should be informed when a message is received
-	 * or the Client state changes.
-	 * @param clientListener the listener that should be added
-	 */
-	public void addClientListener(ClientListener clientListener) {
-		if (!listeners.contains(clientListener)) {
-			this.listeners.add(clientListener);
-		}
-	}
-	/**
-	 * This function removes a Listener so that it no longer receives notifications.
-	 * @param clientListener listener to remove.
-	 */
-	public void removeClientListener(ClientListener clientListener) {
-		this.listeners.remove(clientListener);
+		this.clientListener = listener;
+		System.out.println("new client created");
+	    //Timer timer = new Timer();
+	    //timer.schedule(new PingGenerator(this), 5 * 1000);
 	}
 	/**
 	 * Passes a message on to the server. This function does not check any kind of state
@@ -79,7 +63,7 @@ public class Client implements Runnable {
 	 * @param message the message to send
 	 */
 	public void sendMessage(String message) {
-		System.out.println(message);
+		System.out.println("new message to send: " + message);
 		this.out.write(message);
 		this.out.flush();
 	}
@@ -89,6 +73,7 @@ public class Client implements Runnable {
 	 * @param message The received message
 	 */
 	protected void receive(String message) {
+		System.out.println("message received: " + message);
 		this.fireOnMessageReceived(message);
 	}
 	/**
@@ -96,11 +81,7 @@ public class Client implements Runnable {
 	 * @param message
 	 */
 	private void fireOnMessageReceived(String message) {
-		synchronized (this.listeners) {
-			for (ClientListener listener : this.listeners) {
-				listener.onMessageReceived(this, message);
-			}
-		}
+			clientListener.onMessageReceived(this, message);
 	}
 	/**
 	 * Connects the socket, handles Exceptions that might occur on establishing the 
@@ -108,35 +89,37 @@ public class Client implements Runnable {
 	 */
 	public void connect() {
 		try {
+			System.out.println("trying to connect the client: " + this);
 			this.socket = new Socket(this.uri, Defaults.PORT);
 			this.out = new PrintWriter(socket.getOutputStream(), true);
 		    this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		} catch (UnknownHostException e) {
+			System.out.println("error connecting client: " + e.getMessage());
 			this.disconnect();
 			return;
 		} catch (IOException e) {
+			System.out.println("error connecting client: " + e.getMessage());
 			this.disconnect();
 			return;
 		}
+		System.out.println("new input thread starting");
 		this.inputThread = new InputThread(this, in);
 		Thread thread = new Thread(this.inputThread);
 		thread.start();
+		System.out.println("client connected");
 		this.fireOnClientConnected();
 	}
 	/**
 	 * Informs the listeners when the connection is established.
 	 */
 	private void fireOnClientConnected() {
-		synchronized (this.listeners) {
-			for (ClientListener listener : this.listeners) {
-				listener.onClientConnected(this);
-			}
-		}
+		clientListener.onClientConnected(this);
 	}
 	/**
 	 * Disconnects the socket, closes all the open resources
 	 */
 	public void disconnect() {
+		System.out.println("client disconnecting");
 		if (this.inputThread != null) {
 			this.inputThread.stop();
 		}
@@ -147,7 +130,10 @@ public class Client implements Runnable {
 			this.in.close();
 			this.socket.close();
 		} catch (Exception e) {
+			System.out.println("error disconnecting");
+			e.printStackTrace();
 		}
+		System.out.println("client disconnected");
 		fireOnClientDisconnected();
 	}
 	
@@ -155,40 +141,23 @@ public class Client implements Runnable {
 	 * Informs all the listeners when the connection is no longer available.
 	 */
 	private void fireOnClientDisconnected() {
-		synchronized (this.listeners) {
-			for (ClientListener listener : this.listeners) {
-				listener.onClientDisconnected(this);
-			}
-		}
-	}
-	/**
-	 * Sets the user associated with the Client. Might be needed by the listeners to build
-	 * user-specific messages.
-	 * @param user the user associated with the client
-	 */
-	public void setUser(User user) {
-		this.user = user;
+		clientListener.onClientDisconnected(this);
 	}
 
-	/**
-	 * Returns the user associated to the Client.
-	 * @return a valid user if set, null otherwise
-	 */
-	public User getUser() {
-		return user;
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Runnable#run()
-	 */
-	@Override
-	public void run() {
-	}
 	/**
 	 * Returns the state of the client.
 	 * @return true if the socket is connected, false otherwise
 	 */
 	public boolean isConnected() {
 		return this.socket.isConnected();
+	}
+	/**
+	 * @return the user
+	 */
+	public User getUser() {
+		return this.clientListener.getUser();
+	}
+	public Lecture getLecture() {
+		return this.clientListener.getLecture();
 	}
 }

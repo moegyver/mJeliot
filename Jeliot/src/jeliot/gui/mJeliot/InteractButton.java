@@ -1,4 +1,4 @@
-package jeliot.gui.ict;
+package jeliot.gui.mJeliot;
 
 import java.awt.Insets;
 import java.awt.event.MouseEvent;
@@ -16,8 +16,8 @@ import org.mJeliot.model.Lecture;
 import org.mJeliot.model.predict.Method;
 
 import jeliot.Jeliot;
-import jeliot.ict.ICTController;
-import jeliot.ict.ICTControllerListener;
+import jeliot.mJeliot.MJeliotController;
+import jeliot.mJeliot.MJeliotControllerListener;
 import jeliot.tracker.Tracker;
 import jeliot.tracker.TrackerClock;
 import jeliot.util.UserProperties;
@@ -28,14 +28,14 @@ import jeliot.util.UserProperties;
  * JeliotWindow class. However, it does implement a ClientListener to react on connect
  * and disconnect events from the Client that connects Jeliot to the ICT system.
  */
-public class InteractButton extends JButton implements ICTControllerListener {
+public class InteractButton extends JButton implements MJeliotControllerListener {
 	private static final long serialVersionUID = -542245276585071664L;
 	private final ResourceBundle messageBundle;
 	private final ImageIcon connectIcon;
 	private final ImageIcon interactIcon;
 	private InteractMenu menu;
 	private MouseListener mouseListener = null;
-	private final ICTController controller;
+	private final MJeliotController controller;
 	private Jeliot jeliot;
 
 	/**
@@ -144,62 +144,62 @@ public class InteractButton extends JButton implements ICTControllerListener {
 	}
 
 	/* (non-Javadoc)
-	 * @see jeliot.ict.ICTControllerListener#onUserCountChanged(jeliot.ict.ICTController)
+	 * @see jeliot.mJeliot.MJeliotControllerListener#onUserCountChanged(jeliot.mJeliot.MJeliotController)
 	 */
 	@Override
-	public void onUserCountChanged(ICTController ictController) {
+	public void onUserCountChanged(MJeliotController ictController) {
 	}
 
 	/* (non-Javadoc)
-	 * @see jeliot.ict.ICTControllerListener#onAnswerCountChanged(jeliot.ict.ICTController)
+	 * @see jeliot.mJeliot.MJeliotControllerListener#onAnswerCountChanged(jeliot.mJeliot.MJeliotController)
 	 */
 	@Override
-	public void onAnswerCountChanged(ICTController ictController) {
+	public void onAnswerCountChanged(MJeliotController ictController) {
 	}
 
 	/* (non-Javadoc)
-	 * @see jeliot.ict.ICTControllerListener#onNewMethod(jeliot.ict.ICTController, org.mJeliot.model.predict.Method)
+	 * @see jeliot.mJeliot.MJeliotControllerListener#onNewMethod(jeliot.mJeliot.MJeliotController, org.mJeliot.model.predict.Method)
 	 */
 	@Override
-	public void onNewMethod(ICTController ictController, Method method) {
+	public void onNewMethod(MJeliotController ictController, Method method) {
 	}
 
 	/* (non-Javadoc)
-	 * @see jeliot.ict.ICTControllerListener#onResultPosted(jeliot.ict.ICTController, org.mJeliot.model.predict.Method)
+	 * @see jeliot.mJeliot.MJeliotControllerListener#onResultPosted(jeliot.mJeliot.MJeliotController, org.mJeliot.model.predict.Method)
 	 */
 	@Override
-	public void onResultPosted(ICTController ictController, Method method) {
+	public void onResultPosted(MJeliotController ictController, Method method) {
 	}
 
 	/* (non-Javadoc)
-	 * @see jeliot.ict.ICTControllerListener#onMethodCalled(jeliot.ict.ICTController, org.mJeliot.model.predict.Method)
+	 * @see jeliot.mJeliot.MJeliotControllerListener#onMethodCalled(jeliot.mJeliot.MJeliotController, org.mJeliot.model.predict.Method)
 	 */
 	@Override
-	public void onMethodCalled(ICTController ictController, Method method) {
+	public void onMethodCalled(MJeliotController ictController, Method method) {
 	}
 
 	/* (non-Javadoc)
-	 * @see jeliot.ict.ICTControllerListener#onMethodReturned(jeliot.ict.ICTController, org.mJeliot.model.predict.Method)
+	 * @see jeliot.mJeliot.MJeliotControllerListener#onMethodReturned(jeliot.mJeliot.MJeliotController, org.mJeliot.model.predict.Method)
 	 */
 	@Override
-	public void onMethodReturned(ICTController ictController, Method method) {
+	public void onMethodReturned(MJeliotController ictController, Method method) {
 	}
 
 	/* (non-Javadoc)
-	 * @see jeliot.ict.ICTControllerListener#onClientDisconnected(jeliot.ict.ICTController)
+	 * @see jeliot.mJeliot.MJeliotControllerListener#onClientDisconnected(jeliot.mJeliot.MJeliotController)
 	 */
 	@Override
-	public void onClientDisconnected(ICTController ictController) {
+	public void onClientDisconnected(MJeliotController ictController) {
 		this.setText(this.messageBundle.getString("button.connect"));
 		this.setIcon(this.connectIcon);
 		this.setFunctionToConnect();
 	}
 
 	/* (non-Javadoc)
-	 * @see jeliot.ict.ICTControllerListener#onClientConnected(jeliot.ict.ICTController)
+	 * @see jeliot.mJeliot.MJeliotControllerListener#onClientConnected(jeliot.mJeliot.MJeliotController)
 	 */
 	@Override
-	public void onClientConnected(ICTController ictController) {
+	public void onClientConnected(MJeliotController ictController) {
 		this.setText(this.messageBundle.getString("button.interact"));
 		this.setIcon(this.interactIcon);
 		reset();
@@ -232,35 +232,35 @@ public class InteractButton extends JButton implements ICTControllerListener {
 	}
 
 	@Override
-	public void onNewLecture(ICTController ictController, Lecture lecture) {
+	public void onNewLecture(MJeliotController ictController, Lecture lecture) {
 	}
 
 	@Override
-	public void onLogin(ICTController ictController, Lecture lecture) {
+	public void onLogin(MJeliotController ictController, Lecture lecture) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onLoggedIn(ICTController ictController, Lecture currentLecture) {
+	public void onLoggedIn(MJeliotController ictController, Lecture currentLecture) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onLogout(ICTController ictController, Lecture lecture) {
+	public void onLogout(MJeliotController ictController, Lecture lecture) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onLectureUpdated(ICTController ictController, Lecture lecture) {
+	public void onLectureUpdated(MJeliotController ictController, Lecture lecture) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onLoggedOut(ICTController ictController, Lecture lecture) {
+	public void onLoggedOut(MJeliotController ictController, Lecture lecture) {
 		// TODO Auto-generated method stub
 		
 	}

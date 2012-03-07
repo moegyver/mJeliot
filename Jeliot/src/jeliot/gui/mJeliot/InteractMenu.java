@@ -1,4 +1,4 @@
-package jeliot.gui.ict;
+package jeliot.gui.mJeliot;
 
 
 import java.awt.event.ActionEvent;
@@ -13,15 +13,15 @@ import org.mJeliot.model.predict.Method;
 import org.mJeliot.model.predict.Parameter;
 
 import jeliot.Jeliot;
-import jeliot.ict.ICTController;
-import jeliot.ict.ICTControllerListener;
+import jeliot.mJeliot.MJeliotController;
+import jeliot.mJeliot.MJeliotControllerListener;
 
 /**
  * @author Moritz Rogalli
  * The InteractMenu presents the user with a list of methods that can be predicted at the 
  * moment. When clicked the controller is informed. 
  */
-public class InteractMenu extends JPopupMenu implements ICTControllerListener {
+public class InteractMenu extends JPopupMenu implements MJeliotControllerListener {
 	private static final long serialVersionUID = 4156769001504511178L;
 	/**
 	 * The available methods.
@@ -34,12 +34,12 @@ public class InteractMenu extends JPopupMenu implements ICTControllerListener {
 	/**
 	 * The controller to inform when a menu item is clicked.
 	 */
-	private ICTController controller = null;
+	private MJeliotController controller = null;
 	
 	private LectureMenu lectureMenu = null;
 
 	/**
-	 * Builds an InteractMenu. The menu registers itself to the ICTController. No other
+	 * Builds an InteractMenu. The menu registers itself to the MJeliotController. No other
 	 * methods have to be called to make it work, everything is managed by the event-
 	 * handlers. 
 	 * @param jeliot The main jeliot class
@@ -116,64 +116,64 @@ public class InteractMenu extends JPopupMenu implements ICTControllerListener {
 	}
 
 	@Override
-	public void onUserCountChanged(ICTController ictController) {
+	public void onUserCountChanged(MJeliotController ictController) {
 	}
 
 	@Override
-	public void onAnswerCountChanged(ICTController ictController) {
+	public void onAnswerCountChanged(MJeliotController ictController) {
 	}
 
 	@Override
-	public void onNewMethod(ICTController ictController, Method method) {
+	public void onNewMethod(MJeliotController ictController, Method method) {
 	}
 
 	@Override
-	public void onResultPosted(ICTController ictController, Method method) {
+	public void onResultPosted(MJeliotController ictController, Method method) {
 	}
 
 	@Override
-	public void onMethodCalled(ICTController ictController, Method method) {
+	public void onMethodCalled(MJeliotController ictController, Method method) {
 		this.addMethod(method);
 	}
 
 	@Override
-	public void onMethodReturned(ICTController ictController, Method method) {
+	public void onMethodReturned(MJeliotController ictController, Method method) {
 		this.removeMethod(method);
 	}
 
 	@Override
-	public void onClientConnected(ICTController ictController) {
+	public void onClientConnected(MJeliotController ictController) {
 	}
 
 	@Override
-	public void onClientDisconnected(ICTController ictController) {
+	public void onClientDisconnected(MJeliotController ictController) {
 	}
 
 	@Override
-	public void onNewLecture(ICTController ictController, Lecture lecture) {
+	public void onNewLecture(MJeliotController ictController, Lecture lecture) {
 		this.lectureMenu.addLecture(lecture);
 	}
 
 	@Override
-	public void onLogin(ICTController ictController, Lecture lecture) {
+	public void onLogin(MJeliotController ictController, Lecture lecture) {
 	}
 
 	@Override
-	public void onLoggedIn(ICTController ictController, Lecture currentLecture) {
+	public void onLoggedIn(MJeliotController ictController, Lecture currentLecture) {
 		this.lectureMenu.onLoggedIn();
 	}
 
 	@Override
-	public void onLogout(ICTController ictController, Lecture lecture) {
+	public void onLogout(MJeliotController ictController, Lecture lecture) {
 	}
 
 	@Override
-	public void onLectureUpdated(ICTController ictController, Lecture lecture) {
+	public void onLectureUpdated(MJeliotController ictController, Lecture lecture) {
 		this.lectureMenu.updateLecture(lecture);
 	}
 
 	@Override
-	public void onLoggedOut(ICTController ictController, Lecture lecture) {
+	public void onLoggedOut(MJeliotController ictController, Lecture lecture) {
 		this.remove(0);
 		this.lectureMenu = new LectureMenu("Available lectures", ictController);
 		this.add(lectureMenu, 0);

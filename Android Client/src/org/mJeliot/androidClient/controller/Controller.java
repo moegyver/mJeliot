@@ -136,16 +136,16 @@ public class Controller extends Application implements AndroidClientListener,
 	 * user in.
 	 */
 	public void connect(String url) {
-		this.fireOnConnect();
-		this.client = new AndroidClient(url,
-				(ConnectivityManager) this
-						.getSystemService(CONNECTIVITY_SERVICE));
-		this.client.addAndroidClientListener(this);
-		registerReceiver(this.client, new IntentFilter(
-				ConnectivityManager.CONNECTIVITY_ACTION));
-		Thread clientThread = new Thread(this.client);
-		clientThread.start();
-		this.client.connect();
+		if (this.client == null) {
+			System.out.println("mJeliot Controller: connect");
+			this.fireOnConnect();
+			this.client = new AndroidClient(this, url);
+			Thread clientThread = new Thread(this.client);
+			clientThread.start();
+			registerReceiver(this.client, new IntentFilter(
+					ConnectivityManager.CONNECTIVITY_ACTION));
+			this.client.connect();
+		}
 	}
 
 	/**
@@ -211,16 +211,12 @@ public class Controller extends Application implements AndroidClientListener,
 	}
 
 	public void disconnect() {
+		System.out.println("mJeliot Controller: disconnect");
 		this.client.disconnect();
 	}
 
 	public User getUser() {
 		return this.user;
-	}
-
-	@Override
-	public void setUser(User user) {
-		this.user = user;
 	}
 
 	/**
@@ -236,9 +232,11 @@ public class Controller extends Application implements AndroidClientListener,
 	}
 
 	@Override
-	public void onClientConnected(AndroidClient client) {
-		this.fireOnConnected();
-		this.scanForNetworks();
+	public void onClientConnected(AndroidClient client, boolean reconnected) {
+		if (!reconnected) {
+			this.fireOnConnected();
+			this.scanForNetworks();
+		}
 	}
 
 	/*
@@ -346,8 +344,6 @@ public class Controller extends Application implements AndroidClientListener,
 	@Override
 	public void onUserLoggedOut(ProtocolParser protocolParser,
 			ParserCaller parserCaller, int lectureId, int userId) {
-		System.out.println("params: " + lectureId + " " + userId + " objs: "
-				+ this.user + " " + this.lecture);
 		if (this.user.getId() == userId && this.lecture.getId() == lectureId) {
 			this.fireOnLoggedOut();
 		}
@@ -358,6 +354,7 @@ public class Controller extends Application implements AndroidClientListener,
 	@Override
 	public void onClientDisconnected(AndroidClient client) {
 		this.fireonDisconnected();
+		this.client = null;
 	}
 
 	/**
@@ -502,5 +499,10 @@ public class Controller extends Application implements AndroidClientListener,
 		this.user = null;
 		this.lecture = null;
 		this.client = null;
+	}
+
+	@Override
+	public Lecture getLecture() {
+		return this.lecture;
 	}
 }

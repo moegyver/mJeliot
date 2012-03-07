@@ -1,5 +1,8 @@
 package org.mJeliot.client;
 
+import org.mJeliot.model.Lecture;
+import org.mJeliot.model.User;
+
 /**
  * @author Moritz Rogalli
  * A ClientListener can be registered to a client and gets event notifications when the
@@ -22,4 +25,15 @@ public interface ClientListener {
 	 * @param client The client
 	 */
 	public void onClientConnected(Client client);
+	
+	/**
+	 * Returns the user associated with the listener
+	 * @return 
+	 */
+	public User getUser();
+	/**
+	 * Returns the lecture associated with the listener
+	 * @return
+	 */
+	public Lecture getLecture();
 }

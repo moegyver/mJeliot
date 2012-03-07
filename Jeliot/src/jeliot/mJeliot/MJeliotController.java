@@ -1,4 +1,4 @@
-package jeliot.ict;
+package jeliot.mJeliot;
 
 import java.util.HashMap;
 import java.util.Vector;
@@ -17,12 +17,12 @@ import org.mJeliot.protocol.ProtocolParserListener;
 
 /**
  * @author Moritz Rogalli
- * The ICTController keeps track of the state, sends notifications and messages to the
+ * The MJeliotController keeps track of the state, sends notifications and messages to the
  * server.
  */
-public class ICTController implements ClientListener, ProtocolParserListener,
+public class MJeliotController implements ClientListener, ProtocolParserListener,
 		ParserCaller {
-	private Lecture currentLecture = null;
+	private Lecture lecture = null;
 	private HashMap<Integer, Lecture> availableLectures = new HashMap<Integer, Lecture>();
 	/**
 	 * The client keeps the connection to the Server
@@ -39,37 +39,36 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	/**
 	 * The listeners to be informed whenever there is something happening.
 	 */
-	private Vector<ICTControllerListener> listeners = new Vector<ICTControllerListener>();
-	private Thread clientThread = null;
+	private Vector<MJeliotControllerListener> listeners = new Vector<MJeliotControllerListener>();
 	/**
-	 * Creates an ICTController and sets up all the necessary structures.
+	 * Creates an MJeliotController and sets up all the necessary structures.
 	 */
-	public ICTController() {
+	public MJeliotController() {
 		this.parser.addProtocolParserListener(this);
 		reset();
 	}
 	
 	/**
-	 * Adds a listener to the ICTController. If the listener is already registered it is
+	 * Adds a listener to the MJeliotController. If the listener is already registered it is
 	 * not added again.
 	 * @param listener the listener to add
 	 */
-	public void addICTControllerListener(ICTControllerListener listener) {
+	public void addICTControllerListener(MJeliotControllerListener listener) {
 		if (!this.listeners.contains(listener)) {
 			this.listeners.add(listener);
 		}
 	}
 
 	/**
-	 * Unregisters a listener from the ICTController.
+	 * Unregisters a listener from the MJeliotController.
 	 * @param listener The listener to remove
 	 */
-	public void removeICTControllerListener(ICTControllerListener listener) {
+	public void removeICTControllerListener(MJeliotControllerListener listener) {
 		this.listeners.remove(listener);
 	}
 
 	private void reset() {
-		this.currentLecture = null;
+		this.lecture = null;
 		this.availableLectures = new HashMap<Integer, Lecture>();
 	}
 	
@@ -84,11 +83,7 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	 * Connects the controller's client.
 	 */
 	public void connectClient(String url) {
-		this.client = new Client(url);
-		this.client.setUser(this.user);
-		this.client.addClientListener(this);
-		this.clientThread = new Thread(this.client);
-		this.clientThread.start();
+		this.client = new Client(this, url);
 		this.client.connect();
 	}
 	
@@ -130,7 +125,7 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 
 	private void fireOnLogin(Lecture lecture) {
 		synchronized (this.listeners) {
-			for(ICTControllerListener listener : this.listeners) {
+			for(MJeliotControllerListener listener : this.listeners) {
 				listener.onLogin(this, lecture);
 			}
 		}
@@ -146,15 +141,15 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 			User user = new User(userName, userId);
 			this.addUser(user, lectureId);
 		} else if(this.user.getId() == userId) {
-			this.currentLecture = this.availableLectures.get(lectureId);
+			this.lecture = this.availableLectures.get(lectureId);
 			this.fireOnLoggedIn();
 		}
 	}
 
 	private void fireOnLoggedIn() {
 		synchronized (this.listeners) {
-			for(ICTControllerListener listener : this.listeners) {
-				listener.onLoggedIn(this, this.currentLecture);
+			for(MJeliotControllerListener listener : this.listeners) {
+				listener.onLoggedIn(this, this.lecture);
 			}
 		}
 	}
@@ -164,8 +159,8 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	 * @param method the method that is 
 	 */
 	public void sendMethodToPredict(Method method) {
-		this.currentLecture.setMethod(method);
-		this.client.sendMessage(parser.generateNewMethodPredict(this.currentLecture));
+		this.lecture.setMethod(method);
+		this.client.sendMessage(parser.generateNewMethodPredict(this.lecture));
 	}
 
 	/* (non-Javadoc)
@@ -175,11 +170,11 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	public void onNewPredictMethod(ProtocolParser protocolParser,
 			ParserCaller parserCaller, int lectureId, String className, String methodName,
 			int methodId, int parameterCount, String[] parameterNames) {
-		if (this.currentLecture != null) {
+		if (this.lecture != null) {
 			Method method = new Method(className, methodName, methodId);
-			this.currentLecture.setMethod(method);
+			this.lecture.setMethod(method);
 			for (int i = 0; i < parameterCount; i++) {
-				this.currentLecture.getMethod().addParameter(parameterNames[i]);
+				this.lecture.getMethod().addParameter(parameterNames[i]);
 			}
 			this.fireOnNewMethod(method);
 		}
@@ -187,7 +182,7 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 
 	private void fireOnNewMethod(Method method) {
 		synchronized (this.listeners) {
-			for (ICTControllerListener listener : this.listeners) {
+			for (MJeliotControllerListener listener : this.listeners) {
 				listener.onNewMethod(this, method);
 			}
 		}
@@ -202,14 +197,14 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 			int parameterCount, String[] parameterNames,
 			String[] predictedValues) {
 		User user = null;
-		for (User u : this.currentLecture.getUsers()) {
+		for (User u : this.lecture.getUsers()) {
 			if (u.getId() == userId) {
 				user = u;
 			}
 		}
-		if (this.currentLecture.getId() == lectureId && this.currentLecture.getMethod().getId() == methodId && user != null) {
+		if (this.lecture.getId() == lectureId && this.lecture.getMethod().getId() == methodId && user != null) {
 			for (int i = 0; i < parameterCount; i++) {
-				this.currentLecture.getMethod().getParameterByName(parameterNames[i]).
+				this.lecture.getMethod().getParameterByName(parameterNames[i]).
 				setPredictedValue(user, predictedValues[i]);
 			}
 		}
@@ -224,8 +219,8 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 			ParserCaller parserCaller, int lectureId, int methodId, int parameterCount,
 			String[] parameterNames, String[] parameterValues) {
 		for (int i = 0; i < parameterCount; i++) {
-			if (this.currentLecture.getMethod() != null) {
-				this.currentLecture.getMethod().getParameterByName(parameterNames[i]).
+			if (this.lecture.getMethod() != null) {
+				this.lecture.getMethod().getParameterByName(parameterNames[i]).
 				setActualValue(parameterValues[i]);
 			}
 		}
@@ -237,8 +232,8 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	 */
 	private void fireOnPredictResult() {
 		synchronized (this.listeners) {
-			for (ICTControllerListener listener : this.listeners) {
-				listener.onResultPosted(this, this.currentLecture.getMethod());
+			for (MJeliotControllerListener listener : this.listeners) {
+				listener.onResultPosted(this, this.lecture.getMethod());
 			}
 		}
 	}
@@ -249,7 +244,7 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	 */
 	private void fireOnAnswerCountChanged() {
 		synchronized (this.listeners) {
-			for (ICTControllerListener listener : listeners) {
+			for (MJeliotControllerListener listener : listeners) {
 				listener.onAnswerCountChanged(this);
 			}
 		}
@@ -272,21 +267,21 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	@Override
 	public void onUserLoggedOut(ProtocolParser protocolParser,
 			ParserCaller parserCaller, int lectureId, int userId) {
-		if (this.currentLecture.getId() == lectureId && this.user.getId() == userId) {
+		if (this.lecture.getId() == lectureId && this.user.getId() == userId) {
 			this.fireOnLoggedOut(this.availableLectures.get(lectureId));
 			this.reset();
-		} else if (this.currentLecture.getId() == lectureId){
+		} else if (this.lecture.getId() == lectureId){
 			User user = null;
-			for (int i = 0; i < this.currentLecture.getUsers().size(); i++) {
-				if (this.currentLecture.getUsers().get(i).getId() == userId) {
-					user = this.currentLecture.getUsers().get(i);
-					this.currentLecture.removeUser(user);
+			for (int i = 0; i < this.lecture.getUsers().length; i++) {
+				if (this.lecture.getUsers()[i].getId() == userId) {
+					user = this.lecture.getUsers()[i];
+					this.lecture.removeUser(user);
 				}
 			}
-			if (this.currentLecture.getMethod() != null) {
-				for (int i = 0; i < this.currentLecture.getMethod().getParameters().size(); i++) {
-					ParameterPrediction prediction = this.currentLecture.getMethod().getParameters().get(i).getPredictionForUser(user);
-					this.currentLecture.getMethod().getParameters().get(i).removePrediction(prediction);
+			if (this.lecture.getMethod() != null) {
+				for (int i = 0; i < this.lecture.getMethod().getParameters().size(); i++) {
+					ParameterPrediction prediction = this.lecture.getMethod().getParameters().get(i).getPredictionForUser(user);
+					this.lecture.getMethod().getParameters().get(i).removePrediction(prediction);
 				}
 			}
 		}
@@ -298,8 +293,8 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	 * Disconnects the controller's client.
 	 */
 	public void disconnectClient() {
-		if (this.currentLecture != null) {
-			this.sendMessage(this.parser.generateUserLogout(this.user, this.currentLecture));
+		if (this.lecture != null) {
+			this.sendMessage(this.parser.generateUserLogout(this.user, this.lecture));
 		}
 		this.client.disconnect();
 	}
@@ -318,36 +313,20 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	 */
 	private void fireOnClientDisconnected() {
 		synchronized (this.listeners) {
-			for (ICTControllerListener listener : this.listeners) {
+			for (MJeliotControllerListener listener : this.listeners) {
 				listener.onClientDisconnected(this);
 			}
 		}
 	}
 
 	private void addUser(User user, int lectureId) {
-		if (this.currentLecture != null && this.currentLecture.getId() == lectureId) {
+		if (this.lecture != null && this.lecture.getId() == lectureId) {
 			
-			if (!currentLecture.getUsers().contains(user)) {
-				this.currentLecture.addUser(user);
+			if (!lecture.containsUser(user)) {
+				this.lecture.addUser(user);
 				this.fireOnUserCountChanged();
 			}
 		}
-	}
-
-	/* (non-Javadoc)
-	 * @see org.mJeliot.protocol.ParserCaller#getUser()
-	 */
-	@Override
-	public User getUser() {
-		return this.user;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.mJeliot.protocol.ParserCaller#setUser(org.mJeliot.model.User)
-	 */
-	@Override
-	public void setUser(User user) {
-		// we don't have to change the user
 	}
 
 	/**
@@ -355,8 +334,8 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	 * @return the user count
 	 */
 	public int getUserCount() {
-		if (this.currentLecture != null) {
-			return this.currentLecture.getUsers().size();
+		if (this.lecture != null) {
+			return this.lecture.getUsers().length;
 		} else {
 			return 0;
 		}
@@ -368,7 +347,7 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	 */
 	private void fireOnUserCountChanged() {
 		synchronized (this.listeners) {
-			for (ICTControllerListener listener : this.listeners) {
+			for (MJeliotControllerListener listener : this.listeners) {
 				listener.onUserCountChanged(this);
 			}
 		}
@@ -387,9 +366,9 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	 * @return the answer count
 	 */
 	public int getReceivedAnswerCount() {
-		if (this.currentLecture != null && this.currentLecture.getMethod() != null &&
-				this.currentLecture.getMethod().getParameters().get(0) != null) {
-			Parameter parameter = this.currentLecture.getMethod().getParameters().get(0);
+		if (this.lecture != null && this.lecture.getMethod() != null &&
+				this.lecture.getMethod().getParameters().get(0) != null) {
+			Parameter parameter = this.lecture.getMethod().getParameters().get(0);
 			return parameter.getPredictions().size();
 		} else {
 			return 0;
@@ -400,7 +379,7 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	 * @return the current method
 	 */
 	public Method getCurrentMethod() {
-		return this.currentLecture.getMethod();
+		return this.lecture.getMethod();
 	}
 
 	/**
@@ -417,7 +396,7 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	 */
 	private void fireOnMethodCalled(Method method) {
 		synchronized (this.listeners) {
-			for (ICTControllerListener listener : this.listeners) {
+			for (MJeliotControllerListener listener : this.listeners) {
 				listener.onMethodCalled(this, method);
 			}
 		}
@@ -428,14 +407,14 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	 * @param method The method that returned.
 	 */
 	public void methodReturned(Method method) {
-		if (this.currentLecture.getMethod() != null) {
-			if (this.currentLecture.getMethod().equals(method)) {
-				for (Parameter parameter : this.currentLecture.getMethod().getParameters()) {
+		if (this.lecture.getMethod() != null) {
+			if (this.lecture.getMethod().equals(method)) {
+				for (Parameter parameter : this.lecture.getMethod().getParameters()) {
 					parameter.setActualValue(method.getParameterByName(parameter.getName()).getActualValue());
 				}
-				this.client.sendMessage(this.parser.generatePredictResult(this.currentLecture));
+				this.client.sendMessage(this.parser.generatePredictResult(this.lecture));
 			} else {
-				System.out.println(this.currentLecture.getMethod());
+				System.out.println(this.lecture.getMethod());
 				System.out.println(method);
 			}
 		}
@@ -449,7 +428,7 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	 */
 	private void fireOnMethodReturned(Method method) {
 		synchronized (this.listeners) {
-			for (ICTControllerListener listener : this.listeners) {
+			for (MJeliotControllerListener listener : this.listeners) {
 				listener.onMethodReturned(this, method);
 			}
 		}
@@ -464,7 +443,7 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	public void onUserList(ProtocolParser protocolParser,
 			ParserCaller parserCaller, int lectureId, int userCount, int[] userIds,
 			String[] userNames) {
-		if (this.currentLecture != null && this.currentLecture.getId() == lectureId) {
+		if (this.lecture != null && this.lecture.getId() == lectureId) {
 			for (int i = 0; i < userCount; i++) {
 				this.addUser(new User(userNames[i], userIds[i]), lectureId);
 			}
@@ -503,7 +482,7 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 
 	private void fireOnLectureUpdated(Lecture lecture) {
 		synchronized (this.listeners) {
-			for(ICTControllerListener listener : this.listeners) {
+			for(MJeliotControllerListener listener : this.listeners) {
 				listener.onLectureUpdated(this, lecture);
 			}
 		}
@@ -511,14 +490,14 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 
 	private void fireOnNewLecture(Lecture lecture) {
 		synchronized (this.listeners) {
-			for(ICTControllerListener listener : this.listeners) {
+			for(MJeliotControllerListener listener : this.listeners) {
 				listener.onNewLecture(this, lecture);
 			}
 		}
 	}
-
-	public Lecture getCurrentLecture() {
-		return this.currentLecture;
+	@Override
+	public Lecture getLecture() {
+		return this.lecture;
 	}
 
 	public Lecture[] getAvailableLectures() {
@@ -526,28 +505,37 @@ public class ICTController implements ClientListener, ProtocolParserListener,
 	}
 
 	public void setLecture(Lecture lecture) {
+		this.login(lecture);
+	}
+
+	private void login(Lecture lecture) {
 		this.client.sendMessage(this.parser.generateUserLogin(this.user, lecture.getId()));
 		this.fireOnLogin(lecture);
 	}
 
 	public void logout() {
-		Lecture lecture = this.currentLecture;
-		this.client.sendMessage(this.parser.generateUserLogout(this.user, this.currentLecture));
+		Lecture lecture = this.lecture;
+		this.client.sendMessage(this.parser.generateUserLogout(this.user, this.lecture));
 		this.fireOnLogout(lecture);
 	}
 
 	private void fireOnLogout(Lecture lecture) {
 		synchronized (this.listeners) {
-			for(ICTControllerListener listener : this.listeners) {
+			for(MJeliotControllerListener listener : this.listeners) {
 				listener.onLogout(this, lecture);
 			}
 		}
 	}
 	private void fireOnLoggedOut(Lecture lecture) {
 		synchronized (this.listeners) {
-			for(ICTControllerListener listener : this.listeners) {
+			for(MJeliotControllerListener listener : this.listeners) {
 				listener.onLoggedOut(this, lecture);
 			}
 		}
+	}
+
+	@Override
+	public User getUser() {
+		return this.user;
 	}
 }

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Timer;
 
 import org.mJeliot.model.User;
 import org.mJeliot.protocol.ParserCaller;
@@ -17,6 +18,7 @@ import org.mJeliot.protocol.ParserCaller;
  */
 public class ServerThread implements Runnable, ParserCaller {
 
+	protected static final long PING_INTERVAL = 3000;
 	/**
 	 * The corresponding Server.
 	 */
@@ -46,6 +48,8 @@ public class ServerThread implements Runnable, ParserCaller {
 	 * The user associated with the connection
 	 */
 	private User user = null;
+	private long lastPong = System.currentTimeMillis();
+	private Timer pingTimer;
 
 	/**
 	 * Establishes asynchronous 2-way communication with a client over the socket.
@@ -67,6 +71,10 @@ public class ServerThread implements Runnable, ParserCaller {
 		this.inputThread = new ServerInputThread(this, in);
 		Thread thread = new Thread(inputThread);
 		thread.start();
+		pingTimer = new Timer();
+		pingTimer.schedule(new PingGenerator(this), 200, PING_INTERVAL);
+		pingTimer.scheduleAtFixedRate(new CheckTimeoutTask(this), 200,  PING_INTERVAL);
+		//pingTimer.schedule(new Timeout, time)
 	}
 
 	/* (non-Javadoc)
@@ -81,6 +89,7 @@ public class ServerThread implements Runnable, ParserCaller {
 	 * closed connection.
 	 */
 	protected void disconnectClient() {
+		System.out.println("Server: disconnecting client... ");
 		if (this.user != null) {
 			this.controller.disconnectUser(this.user, this.user.getLecture());
 		}
@@ -93,6 +102,7 @@ public class ServerThread implements Runnable, ParserCaller {
 			System.err.println("Failed to close socket.");
 		}
 		System.out.println("Socket closed.");
+		this.pingTimer.cancel();
 	}
 	
 	/* (non-Javadoc)
@@ -102,14 +112,6 @@ public class ServerThread implements Runnable, ParserCaller {
 		this.out.write(message);
 		this.out.flush();
 	}
-
-	/* (non-Javadoc)
-	 * @see org.mJeliot.protocol.ParserCaller#getUser()
-	 */
-	@Override
-	public User getUser() {
-		return this.user;
-	}
 	
 	/**
 	 * @return returns the controller
@@ -118,11 +120,19 @@ public class ServerThread implements Runnable, ParserCaller {
 		return this.controller;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.mJeliot.protocol.ParserCaller#setUser(org.mJeliot.model.User)
+	public void resetTimeout() {
+		this.lastPong = System.currentTimeMillis();
+		
+	}
+
+	/**
+	 * @return the lastPong
 	 */
-	@Override
-	public void setUser(User user) {
-		this.user = user;
+	public long getLastPong() {
+		return lastPong;
+	}
+
+	public void resetUserTimer(int lectureId, int userId) {
+		this.controller.resetUserTimer(lectureId, userId);
 	}
 }

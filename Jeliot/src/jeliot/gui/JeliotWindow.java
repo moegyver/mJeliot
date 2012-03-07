@@ -61,9 +61,9 @@ import javax.swing.event.ChangeListener;
 
 import jeliot.Jeliot;
 import jeliot.calltree.TreeDraw;
-import jeliot.gui.ict.ICTPredictResultStats;
-import jeliot.gui.ict.ICTPredictUsersStats;
-import jeliot.gui.ict.InteractButton;
+import jeliot.gui.mJeliot.PredictResultStats;
+import jeliot.gui.mJeliot.PredictUsersStats;
+import jeliot.gui.mJeliot.InteractButton;
 import jeliot.historyview.HistoryView;
 import jeliot.mcode.InterpreterError;
 import jeliot.printing.PrintingUtil;
@@ -694,13 +694,13 @@ public class JeliotWindow implements PauseListener, MouseListener {
             this.statsPane = new JPanel();
             this.statsPane.setVisible(jeliotUserProperties.getBooleanProperty("show_ict_view"));
             this.statsPane.setLayout(new BoxLayout(this.statsPane, BoxLayout.Y_AXIS));
-            ICTPredictUsersStats userStats = new ICTPredictUsersStats(this.jeliot);
+            PredictUsersStats userStats = new PredictUsersStats(this.jeliot);
             this.jeliot.getIctController().addICTControllerListener(userStats);
             this.statsPane.add(userStats);
             if (this.statsPane.isVisible()) {
             	userStats.repaint();
             }
-            ICTPredictResultStats resultStats = new ICTPredictResultStats();
+            PredictResultStats resultStats = new PredictResultStats();
             this.jeliot.getIctController().addICTControllerListener(resultStats);
             this.statsPane.add(resultStats);
             

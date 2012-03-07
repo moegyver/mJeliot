@@ -42,8 +42,8 @@ import jeliot.gui.CodePane2;
 import jeliot.gui.JeliotWindow;
 import jeliot.gui.LoadJeliot;
 import jeliot.historyview.HistoryView;
-import jeliot.ict.ICTController;
 import jeliot.launcher.Launcher;
+import jeliot.mJeliot.MJeliotController;
 import jeliot.mcode.AVInteractionMCodeInterpreter;
 import jeliot.mcode.CallTreeMCodeInterpreter;
 import jeliot.mcode.Highlight;
@@ -143,7 +143,7 @@ public class Jeliot {
      * The controller that is in charge for the connection to the server and events that
      * originate from it.
      */
-    private ICTController ictController = new ICTController();
+    private MJeliotController ictController = new MJeliotController();
     /**
      * A thread for running the ICTMCodeInterpreter in
      */
@@ -1046,7 +1046,7 @@ public class Jeliot {
     }
 
     // MOE
-	public ICTController getIctController() {
+	public MJeliotController getIctController() {
 		return this.ictController;
 	}
 	// /MOE

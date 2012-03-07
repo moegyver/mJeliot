@@ -1,5 +1,8 @@
 package org.mJeliot.androidClient.controller;
 
+import org.mJeliot.model.Lecture;
+import org.mJeliot.model.User;
+
 /**
  * @author Moritz Rogalli A ClientListener can be registered to a client and
  *         gets event notifications when the client's state changes and when a
@@ -29,6 +32,23 @@ public interface AndroidClientListener {
 	 * 
 	 * @param client
 	 *            The client
+	 * @param reconnected
+	 *            was it a reconnect or a first time connect
 	 */
-	public void onClientConnected(AndroidClient client);
+	public void onClientConnected(AndroidClient client, boolean reconnected);
+
+	/**
+	 * returns the user associated with the AndroidClientListener
+	 * 
+	 * @return
+	 */
+	public User getUser();
+
+	/**
+	 * returns the lecture associated with the AndroidClientListener, null if
+	 * the AndroidClientListener is not associated with any lecture.
+	 * 
+	 * @return
+	 */
+	public Lecture getLecture();
 }

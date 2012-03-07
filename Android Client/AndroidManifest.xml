@@ -34,7 +34,7 @@
 				<action android:name="org.mJeliot.androidClient.predict.PREDICT" />
 			</intent-filter>
 		</activity>
-		<activity android:name="view.predict.ViewResult"
+		<activity android:name=".view.predict.ViewResult"
 		android:label="@string/app_name"
 		android:noHistory="true">
 			<intent-filter>
