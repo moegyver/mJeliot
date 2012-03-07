@@ -53,6 +53,10 @@ public class ProtocolParser {
 	private static final String endLectureName = "</lectureName>";
 	private static final String startLectureName = "<lectureName>";
 	private static final String userBegin = "<user ";
+	private static final String startCode = "<code>";
+	private static final String endCode = "</code>";
+	private static final String startCursorPosition = "<cursorPosition>";
+	private static final String endCursorPosition = "</cursorPosition>";
 
 	/**
 	 * A list of listeners to inform on understood messages.
@@ -110,6 +114,8 @@ public class ProtocolParser {
 		Integer userCount = null;
 		int[] userIds = null;
 		String[] userNames = null;
+		String code = null;
+		Integer cursorPosition = null;
 		try {
 			document = this.documentBuilder.parse(new InputSource(
 					new StringReader(message)));
@@ -126,6 +132,7 @@ public class ProtocolParser {
 				if (node != null) {
 					action = node.getAttributes().getNamedItem("action")
 							.getNodeValue();
+					System.out.println("parser action: " + action);
 				}
 				node = document.getElementsByTagName("className").item(0);
 				if (node != null) {
@@ -134,6 +141,16 @@ public class ProtocolParser {
 				node = document.getElementsByTagName("methodName").item(0);
 				if (node != null) {
 					methodName = node.getTextContent();
+				}
+				node = document.getElementsByTagName("code").item(0);
+				if (node != null) {
+					code = node.getTextContent().replace("&gt;", ">").replace("&lt;","<");
+					System.out.println("parser: code: " + code);
+				}
+				node = document.getElementsByTagName("cursorPosition").item(0);
+				if (node != null) {
+					cursorPosition = Integer.parseInt(node.getTextContent());
+					System.out.println("parser: cursorPosition:" + cursorPosition);
 				}
 				node = document.getElementsByTagName("methodId").item(0);
 				if (node != null) {
@@ -270,6 +287,10 @@ public class ProtocolParser {
 						&& userIds != null && userNames != null) {
 					this.fireOnUserList(parserCaller, lectureId, userCount,
 							userIds, userNames);
+				} else if (action.equalsIgnoreCase("codeUpdate")
+						&& userId != null && lectureId != null && code != null && cursorPosition != null) {
+					this.fireOnCodeUpdate(parserCaller, lectureId, userId,
+							code, cursorPosition);
 				} else {
 					System.err
 							.println("Something missing in the parser or error in the message.");
@@ -280,6 +301,13 @@ public class ProtocolParser {
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println("Message not understood.");
+		}
+	}
+
+	private void fireOnCodeUpdate(ParserCaller parserCaller, Integer lectureId,
+			Integer userId, String code, Integer cursorPosition) {
+		for (ProtocolParserListener listener : this.listeners) {
+			listener.onCodeUpdate(this, parserCaller, lectureId, userId, code, cursorPosition);
 		}
 	}
 
@@ -708,6 +736,18 @@ public class ProtocolParser {
 					+ "\" name=\"" + user.getName() + "\"" + endShortTag ;
 		}
 		result += "</userList>";
+		result += endAction;
+		return result;
+	}
+
+	public String generateCodeUpdate(CharSequence s, int cursorPosition, User user, Lecture lecture) {
+		String code = s.toString().replace(">", "&gt;").replace("<", "&lt;");
+		String result = xmlHeader ;
+		result += startActionBegin + "codeUpdate\"" + end ;
+		result += startUserId + user.getId() + endUserId ;
+		result += startLectureId + lecture.getId() + endLectureId ;
+		result += startCode + code + endCode;
+		result += startCursorPosition + cursorPosition + endCursorPosition;
 		result += endAction;
 		return result;
 	}

@@ -178,4 +178,9 @@ public class ProtocolParserTester implements ProtocolParserListener, ParserCalle
 		}
 		System.out.println();	
 	}
+	@Override
+	public void onCodeUpdate(ProtocolParser protocolParser,
+			ParserCaller parserCaller, Integer lectureId, Integer userId,
+			String code, Integer cursorPosition) {
+	}
 }

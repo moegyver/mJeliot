@@ -109,4 +109,9 @@ public interface ProtocolParserListener {
 	public void onUserList(ProtocolParser protocolParser,
 			ParserCaller parserCaller, int lectureId, int userCount, int[] userIds,
 			String[] userNames);
+
+
+	public void onCodeUpdate(ProtocolParser protocolParser,
+			ParserCaller parserCaller, Integer lectureId, Integer userId,
+			String code, Integer cursorPosition);
 }

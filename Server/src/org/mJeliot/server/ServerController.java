@@ -474,4 +474,11 @@ public class ServerController implements ProtocolParserListener {
 			userTimerTask.resetTimer();
 		}
 	}
+
+	@Override
+	public void onCodeUpdate(ProtocolParser protocolParser,
+			ParserCaller parserCaller, Integer lectureId, Integer userId,
+			String code, Integer cursorPosition) {
+		System.out.println("got the code: " + code);
+	}
 }

@@ -17,31 +17,35 @@ public final class R {
         public static final int x=0x7f020003;
     }
     public static final class id {
-        public static final int ImageView01=0x7f05000a;
-        public static final int buttonconnect=0x7f05000d;
-        public static final int buttonlogingo=0x7f050008;
-        public static final int buttonloginrescan=0x7f050006;
-        public static final int disconnecting=0x7f050001;
-        public static final int editloginalias=0x7f050003;
-        public static final int editurl=0x7f05000c;
-        public static final int labelloginalias=0x7f050002;
-        public static final int labelloginnetwork=0x7f050004;
-        public static final int labelwaitmessage=0x7f05000f;
-        public static final int linearwaitlayout=0x7f05000e;
-        public static final int logonwaittext=0x7f050000;
-        public static final int networklist=0x7f050005;
-        public static final int scanwait=0x7f050009;
-        public static final int spinnerloginnetworks=0x7f050007;
-        public static final int textviewurl=0x7f05000b;
+        public static final int ImageView01=0x7f05000d;
+        public static final int buttonconnect=0x7f050010;
+        public static final int buttonlogingo=0x7f05000b;
+        public static final int buttonloginrescan=0x7f050009;
+        public static final int codeEditor=0x7f050001;
+        public static final int disconnecting=0x7f050004;
+        public static final int editloginalias=0x7f050006;
+        public static final int editurl=0x7f05000f;
+        public static final int fakeedit=0x7f050012;
+        public static final int getoutput=0x7f050002;
+        public static final int labelloginalias=0x7f050005;
+        public static final int labelloginnetwork=0x7f050007;
+        public static final int labelwaitmessage=0x7f050011;
+        public static final int linearwaitlayout=0x7f050000;
+        public static final int logonwaittext=0x7f050003;
+        public static final int networklist=0x7f050008;
+        public static final int scanwait=0x7f05000c;
+        public static final int spinnerloginnetworks=0x7f05000a;
+        public static final int textviewurl=0x7f05000e;
     }
     public static final class layout {
-        public static final int connectdialog=0x7f030000;
-        public static final int disconnectingdialog=0x7f030001;
-        public static final int login=0x7f030002;
-        public static final int predict=0x7f030003;
-        public static final int scanningdialog=0x7f030004;
-        public static final int start=0x7f030005;
-        public static final int wait=0x7f030006;
+        public static final int codeeditor=0x7f030000;
+        public static final int connectdialog=0x7f030001;
+        public static final int disconnectingdialog=0x7f030002;
+        public static final int login=0x7f030003;
+        public static final int predict=0x7f030004;
+        public static final int scanningdialog=0x7f030005;
+        public static final int start=0x7f030006;
+        public static final int wait=0x7f030007;
     }
     public static final class string {
         public static final int address=0x7f040000;

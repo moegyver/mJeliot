@@ -505,4 +505,14 @@ public class Controller extends Application implements AndroidClientListener,
 	public Lecture getLecture() {
 		return this.lecture;
 	}
+
+	public void sendCode(CharSequence s, int cursorPosition) {
+		this.client.sendMessage(this.parser.generateCodeUpdate(s, cursorPosition, user, lecture));
+	}
+
+	@Override
+	public void onCodeUpdate(ProtocolParser protocolParser,
+			ParserCaller parserCaller, Integer lectureId, Integer userId,
+			String code, Integer cursorPosition) {
+	}
 }

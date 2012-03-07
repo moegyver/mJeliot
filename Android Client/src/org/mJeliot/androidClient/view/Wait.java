@@ -7,6 +7,9 @@ import org.mJeliot.model.Lecture;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
 /**
  * A Wait-Activity shows a wait message and reacts on new lectures and results.
@@ -27,6 +30,16 @@ public class Wait extends AbstractMJeliotActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.wait);
+		Button fakeedit = (Button)findViewById(R.id.fakeedit);
+		fakeedit.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent editor = new Intent();
+				editor.setClassName("org.mJeliot.androidClient",
+						"org.mJeliot.androidClient.view.edit.CodeEditor");
+				startActivity(editor);
+			}
+		});
 	}
 
 	/*
