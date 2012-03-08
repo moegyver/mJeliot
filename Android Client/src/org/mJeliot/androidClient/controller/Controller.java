@@ -140,8 +140,6 @@ public class Controller extends Application implements AndroidClientListener,
 			System.out.println("mJeliot Controller: connect");
 			this.fireOnConnect();
 			this.client = new AndroidClient(this, url);
-			Thread clientThread = new Thread(this.client);
-			clientThread.start();
 			registerReceiver(this.client, new IntentFilter(
 					ConnectivityManager.CONNECTIVITY_ACTION));
 			this.client.connect();

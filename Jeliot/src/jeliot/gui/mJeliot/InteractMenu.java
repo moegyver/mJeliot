@@ -142,7 +142,7 @@ public class InteractMenu extends JPopupMenu implements MJeliotControllerListene
 	}
 
 	@Override
-	public void onClientConnected(MJeliotController ictController) {
+	public void onClientConnected(MJeliotController ictController, boolean isReconnected) {
 	}
 
 	@Override

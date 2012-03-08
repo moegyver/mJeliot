@@ -13,7 +13,7 @@ public interface MJeliotControllerListener {
 	 * Called when a controller's client is connected.
 	 * @param ictController the controller
 	 */
-	public void onClientConnected(MJeliotController ictController);
+	public void onClientConnected(MJeliotController ictController, boolean isReconnected);
 	/**
 	 * Called when a controller's client is disconnected.
 	 * @param ictController the controller

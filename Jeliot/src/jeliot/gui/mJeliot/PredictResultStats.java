@@ -267,7 +267,7 @@ public class PredictResultStats extends Component implements MJeliotControllerLi
 	 * @see jeliot.mJeliot.MJeliotControllerListener#onClientConnected(jeliot.mJeliot.MJeliotController)
 	 */
 	@Override
-	public void onClientConnected(MJeliotController ictController) {
+	public void onClientConnected(MJeliotController ictController, boolean isReconnected) {
 	}
 
 	/* (non-Javadoc)

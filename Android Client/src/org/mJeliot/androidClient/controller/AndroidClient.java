@@ -10,35 +10,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 
-public class AndroidClient extends BroadcastReceiver implements Runnable,
-		ClientListener {
-	private String url;
+public class AndroidClient extends BroadcastReceiver implements ClientListener {
 	private AndroidClientListener listener = null;
 	private Client client;
-	private boolean stop = false;
-	private boolean userDisconnected = false;
-	private boolean reconnected = false;
 
 	public AndroidClient(AndroidClientListener listener, String url) {
 		this.listener = listener;
-		this.url = url;
 		this.client = new Client(this, url);
-	}
-
-	@Override
-	public void run() {
-		while(!stop) {
-			
-		}
 	}
 
 	public void connect() {
 		System.out.println("AndroidClient: connect");
-		if (this.client == null) {
-			this.reconnect();
-		} else {
-			this.client.connect();
-		}
+		this.client.connect(false);
 	}
 
 	public boolean isConnected() {
@@ -46,15 +29,11 @@ public class AndroidClient extends BroadcastReceiver implements Runnable,
 	}
 
 	public void sendMessage(String generateLectureQuery) {
-		if (this.client == null || !this.client.isConnected()) {
-			this.reconnect();
-		}
 		this.client.sendMessage(generateLectureQuery);
 	}
 
 	public void disconnect() {
-		this.userDisconnected  = true;
-		this.client.disconnect();
+		this.client.disconnect(true, false);
 	}
 
 	@Override
@@ -62,20 +41,12 @@ public class AndroidClient extends BroadcastReceiver implements Runnable,
 		boolean hasConnectivity = !intent.getBooleanExtra(
 				ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
 		if (this.client != null && !hasConnectivity) {
-			this.client.disconnect();
+			// We don't do anything while not connected
 		} else if (hasConnectivity){
-			this.reconnect();
+			this.client.reconnect();
 		}
 	}
 
-	private void reconnect() {
-		if (this.client == null) {
-			System.out.println("AndroidClient: reconnect");
-			this.reconnected = true;
-			this.client = new Client(this, url);
-			this.client.connect();
-		}
-	}
 
 	@Override
 	public void onMessageReceived(Client client, String message) {
@@ -87,17 +58,11 @@ public class AndroidClient extends BroadcastReceiver implements Runnable,
 	}
 
 	@Override
-	public void onClientDisconnected(Client client) {
-		if (this.userDisconnected) {
-			System.out.println("AndroidClient: user disconnected");
+	public void onClientDisconnected(Client client, boolean isIntentional, boolean isForced) {
+		if (isIntentional || !isIntentional && isForced) {
+			System.out.println("AndroidClient: user disconnected or disconnect forced");
 			this.fireOnClientDisconnected(client);
-			this.stop = true;
-			this.client = null;
-		} else {
-			System.out.println("AndroidClient: disconnected");
-			this.client = null;
-			this.reconnect();
-		}
+		} 
 	}
 
 	private void fireOnClientDisconnected(Client client) {
@@ -105,12 +70,12 @@ public class AndroidClient extends BroadcastReceiver implements Runnable,
 	}
 
 	@Override
-	public void onClientConnected(Client client) {
-		fireOnClientConnected(client);
+	public void onClientConnected(Client client, boolean isReconnected) {
+		fireOnClientConnected(client, isReconnected);
 	}
 
-	private void fireOnClientConnected(Client client) {
-		listener.onClientConnected(this, this.reconnected);
+	private void fireOnClientConnected(Client client, boolean isReconnected) {
+		listener.onClientConnected(this, isReconnected);
 	}
 
 	@Override

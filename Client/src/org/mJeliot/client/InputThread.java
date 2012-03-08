@@ -46,7 +46,7 @@ public class InputThread implements Runnable {
 				 System.out.println("line: " + line);
 			} catch (IOException e) {
 				System.out.println("error receiving data: " + e.getMessage());
-				this.client.disconnect();
+				this.client.disconnect(false, false);
 				this.stop();
 				e.printStackTrace();
 			}
@@ -75,12 +75,12 @@ public class InputThread implements Runnable {
 				try {
 					if (!this.in.ready()) {
 						System.out.println("socket not ready for receiving");
-						this.client.disconnect();
+						this.client.disconnect(false, false);
 						this.stop();
 					}
 				} catch (IOException e) {
 					System.out.println("error receiving: " + e.getMessage());
-					this.client.disconnect();
+					this.client.disconnect(false, false);
 					this.stop();
 					e.printStackTrace();
 				}

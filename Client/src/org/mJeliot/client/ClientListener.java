@@ -18,13 +18,15 @@ public interface ClientListener {
 	/**
 	 * Called when a client gets disconnected.
 	 * @param client The client
+	 * @param isIntentional 
+	 * @param isForced 
 	 */
-	public void onClientDisconnected(Client client);
+	public void onClientDisconnected(Client client, boolean isIntentional, boolean isForced);
 	/**
 	 * Called when a client gets connected.
 	 * @param client The client
 	 */
-	public void onClientConnected(Client client);
+	public void onClientConnected(Client client, boolean isReconnected);
 	
 	/**
 	 * Returns the user associated with the listener

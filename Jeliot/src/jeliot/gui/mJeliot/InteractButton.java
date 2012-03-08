@@ -199,11 +199,13 @@ public class InteractButton extends JButton implements MJeliotControllerListener
 	 * @see jeliot.mJeliot.MJeliotControllerListener#onClientConnected(jeliot.mJeliot.MJeliotController)
 	 */
 	@Override
-	public void onClientConnected(MJeliotController ictController) {
-		this.setText(this.messageBundle.getString("button.interact"));
-		this.setIcon(this.interactIcon);
-		reset();
-		this.setFunctionToInteract();
+	public void onClientConnected(MJeliotController ictController, boolean isReconnected) {
+		if (!isReconnected) {
+			this.setText(this.messageBundle.getString("button.interact"));
+			this.setIcon(this.interactIcon);
+			reset();
+			this.setFunctionToInteract();
+		}
 	}
 	
 	/**

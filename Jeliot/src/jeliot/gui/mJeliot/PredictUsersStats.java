@@ -211,7 +211,7 @@ public class PredictUsersStats extends Component implements MJeliotControllerLis
 	 * @see jeliot.mJeliot.MJeliotControllerListener#onClientConnected(jeliot.mJeliot.MJeliotController)
 	 */
 	@Override
-	public void onClientConnected(MJeliotController ictController) {
+	public void onClientConnected(MJeliotController ictController, boolean isReconnected) {
 	}
 
 	/* (non-Javadoc)

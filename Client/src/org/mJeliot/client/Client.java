@@ -45,6 +45,8 @@ public class Client {
 	 * The server's uri. Usually defined by the Defaults class.
 	 */
 	private String uri = null;
+	private int reconnectCounter = 0;
+	protected static int RECONNECT_BACKOFF = 500;
 
 	/**
 	 * @param uri The uri to use to connect the socket.
@@ -63,9 +65,16 @@ public class Client {
 	 * @param message the message to send
 	 */
 	public void sendMessage(String message) {
+		if (this.out != null) {
 		System.out.println("new message to send: " + message);
 		this.out.write(message);
-		this.out.flush();
+		new Thread(new Runnable(){
+
+			@Override
+			public void run() {
+				out.flush();
+			}}).start();
+		}
 	}
 	/**
 	 * Gets called every time the inputThread receives a message. Helper function to stick
@@ -87,19 +96,20 @@ public class Client {
 	 * Connects the socket, handles Exceptions that might occur on establishing the 
 	 * connection and initialises the inputThread. 
 	 */
-	public void connect() {
+	public void connect(boolean isReconnected) {
 		try {
 			System.out.println("trying to connect the client: " + this);
 			this.socket = new Socket(this.uri, Defaults.PORT);
-			this.out = new PrintWriter(socket.getOutputStream(), true);
+			this.out = new PrintWriter(socket.getOutputStream(), false);
 		    this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		    reconnectCounter = 0;
 		} catch (UnknownHostException e) {
 			System.out.println("error connecting client: " + e.getMessage());
-			this.disconnect();
+			this.disconnect(false, false);
 			return;
 		} catch (IOException e) {
 			System.out.println("error connecting client: " + e.getMessage());
-			this.disconnect();
+			this.disconnect(false, false);
 			return;
 		}
 		System.out.println("new input thread starting");
@@ -107,18 +117,36 @@ public class Client {
 		Thread thread = new Thread(this.inputThread);
 		thread.start();
 		System.out.println("client connected");
-		this.fireOnClientConnected();
+		this.fireOnClientConnected(isReconnected);
+	}
+	public void reconnect() {
+		reconnectCounter++;
+		if (reconnectCounter > 4) {
+			disconnect(true, true);
+		} else {
+			new Thread(new Runnable(){
+				@Override
+				public void run() {
+					try {
+						Thread.sleep(reconnectCounter * RECONNECT_BACKOFF );
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					System.out.println("AndroidClient: reconnect");
+					connect(true);
+				}}).start();
+		}
 	}
 	/**
 	 * Informs the listeners when the connection is established.
 	 */
-	private void fireOnClientConnected() {
-		clientListener.onClientConnected(this);
+	private void fireOnClientConnected(boolean isReconnected) {
+		clientListener.onClientConnected(this, isReconnected);
 	}
 	/**
 	 * Disconnects the socket, closes all the open resources
 	 */
-	public void disconnect() {
+	public void disconnect(boolean isIntentional, boolean isForced) {
 		System.out.println("client disconnecting");
 		if (this.inputThread != null) {
 			this.inputThread.stop();
@@ -133,15 +161,17 @@ public class Client {
 			System.out.println("error disconnecting");
 			e.printStackTrace();
 		}
-		System.out.println("client disconnected");
-		fireOnClientDisconnected();
+		if (!isIntentional) {
+			reconnect();
+		}
+		fireOnClientDisconnected(isIntentional, isForced);
 	}
 	
 	/**
 	 * Informs all the listeners when the connection is no longer available.
 	 */
-	private void fireOnClientDisconnected() {
-		clientListener.onClientDisconnected(this);
+	private void fireOnClientDisconnected(boolean isIntentional, boolean isForced) {
+		clientListener.onClientDisconnected(this, isIntentional, isForced);
 	}
 
 	/**
@@ -149,7 +179,7 @@ public class Client {
 	 * @return true if the socket is connected, false otherwise
 	 */
 	public boolean isConnected() {
-		return this.socket.isConnected();
+		return this.socket != null && this.socket.isConnected();
 	}
 	/**
 	 * @return the user

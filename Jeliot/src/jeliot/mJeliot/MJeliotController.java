@@ -83,25 +83,27 @@ public class MJeliotController implements ClientListener, ProtocolParserListener
 	 */
 	public void connectClient(String url) {
 		this.client = new Client(this, url);
-		this.client.connect();
+		this.client.connect(false);
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.mJeliot.client.ClientListener#onClientConnected(org.mJeliot.client.Client)
 	 */
 	@Override
-	public void onClientConnected(Client client) {
-		this.client.sendMessage(this.parser.generateLectureQuery());
-		this.fireOnClientConnected();
+	public void onClientConnected(Client client, boolean isReconnected) {
+		if (!isReconnected) {
+			this.client.sendMessage(this.parser.generateLectureQuery());
+		}
+		this.fireOnClientConnected(isReconnected);
 	}
 
 	/**
 	 * Notifies all the registered listeners when the client gets connected.
 	 */
-	private void fireOnClientConnected() {
+	private void fireOnClientConnected(boolean isReconnected) {
 		synchronized (this.listeners) {
 			for (int i = 0; i < this.listeners.size(); i++) {
-				this.listeners.get(i).onClientConnected(this);
+				this.listeners.get(i).onClientConnected(this, isReconnected);
 			}
 		}
 	}
@@ -295,16 +297,18 @@ public class MJeliotController implements ClientListener, ProtocolParserListener
 		if (this.lecture != null) {
 			this.sendMessage(this.parser.generateUserLogout(this.user, this.lecture));
 		}
-		this.client.disconnect();
+		this.client.disconnect(true, false);
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.mJeliot.client.ClientListener#onClientDisconnected(org.mJeliot.client.Client)
 	 */
 	@Override
-	public void onClientDisconnected(Client client) {
-		this.reset();
-		this.fireOnClientDisconnected();
+	public void onClientDisconnected(Client client, boolean isIntentional, boolean isForced) {
+		if (isIntentional || !isIntentional && isForced) {
+			this.reset();
+			this.fireOnClientDisconnected();
+		}
 	}
 
 	/**
@@ -536,5 +540,13 @@ public class MJeliotController implements ClientListener, ProtocolParserListener
 	@Override
 	public User getUser() {
 		return this.user;
+	}
+
+	@Override
+	public void onCodeUpdate(ProtocolParser protocolParser,
+			ParserCaller parserCaller, Integer lectureId, Integer userId,
+			String code, Integer cursorPosition) {
+		// TODO Auto-generated method stub
+		
 	}
 }
