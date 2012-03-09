@@ -137,7 +137,20 @@ public class Login extends AbstractMJeliotActivity {
 			this.finish();
 		}
 	}
-
+	@Override
+	public void onRestart() {
+		super.onRestart();
+		if (!controller.isConnected()) {
+			finish();
+		}
+	}
+	@Override
+	public void onResume() {
+		super.onResume();
+		if (!controller.isConnected()) {
+			finish();
+		}
+	}
 	/*
 	 * (non-Javadoc)
 	 * 

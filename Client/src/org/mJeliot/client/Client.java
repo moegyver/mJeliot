@@ -46,7 +46,6 @@ public class Client {
 	 */
 	private String uri = null;
 	private int reconnectCounter = 0;
-	private boolean isNetworkReady;
 	protected static int RECONNECT_BACKOFF = 1000;
 
 	/**
@@ -124,24 +123,24 @@ public class Client {
 	public void reconnect() {
 		reconnectCounter++;
 		if (reconnectCounter > 4) {
-			disconnect(true, true);
+			disconnect(false, true);
 		} else {
 			new Thread(new Runnable(){
 				@Override
 				public void run() {
 					try {
 						Thread.sleep(reconnectCounter * RECONNECT_BACKOFF );
-						int i = 0;
-						while (!isNetworkReady && i < 4) {
-							i++;
-							Thread.sleep(reconnectCounter * RECONNECT_BACKOFF);
-						}
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					System.out.println("AndroidClient: reconnect");
-					connect(true);
-				}}).start();
+					if (clientListener.isNetworkReady()) {
+						System.out.println("AndroidClient: reconnect");
+						connect(true);
+						} else{
+							reconnect();
+						}
+					}
+				}).start();
 		}
 	}
 	/**
@@ -167,9 +166,8 @@ public class Client {
 		} catch (Exception e) {
 			System.err.println("error disconnecting: " + e.getMessage());
 		}
-		System.err.println("resetting client socket to null");
 		this.socket = null;
-		if (!isIntentional) {
+		if (!isIntentional && !isForced) {
 			reconnect();
 		}
 		fireOnClientDisconnected(isIntentional, isForced);
@@ -207,8 +205,5 @@ public class Client {
 	}
 	public boolean hasUri() {
 		return this.uri != null;
-	}
-	public void setNetworkReady(boolean isNetworkReady) {
-		this.isNetworkReady = isNetworkReady;
 	}
 }

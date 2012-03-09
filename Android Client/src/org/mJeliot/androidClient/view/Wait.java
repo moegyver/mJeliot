@@ -28,6 +28,7 @@ public class Wait extends AbstractMJeliotActivity {
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		System.out.println("Wait: new activity");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.wait);
 		Button fakeedit = (Button)findViewById(R.id.fakeedit);
@@ -40,6 +41,20 @@ public class Wait extends AbstractMJeliotActivity {
 				startActivity(editor);
 			}
 		});
+	}
+	@Override
+	public void onRestart() {
+		super.onRestart();
+		if (!controller.isLoggedIn()) {
+			finish();
+		}
+	}
+	@Override
+	public void onResume() {
+		super.onResume();
+		if (!controller.isLoggedIn()) {
+			finish();
+		}
 	}
 
 	/*

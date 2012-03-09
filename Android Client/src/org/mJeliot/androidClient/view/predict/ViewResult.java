@@ -48,6 +48,20 @@ public class ViewResult extends AbstractMJeliotActivity {
         setContentView(this.layout);
     }
 
+    @Override
+	public void onRestart() {
+		super.onRestart();
+		if (!controller.isLoggedIn()) {
+			finish();
+		}
+	}
+	@Override
+	public void onResume() {
+		super.onResume();
+		if (!controller.isLoggedIn()) {
+			finish();
+		}
+	}
     /* (non-Javadoc)
      * @see org.mJeliot.androidClient.controller.ControllerListener#onCurrentActivityChanged(org.mJeliot.androidClient.controller.Controller, android.app.Activity)
      */

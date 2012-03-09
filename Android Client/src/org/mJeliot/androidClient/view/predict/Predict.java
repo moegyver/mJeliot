@@ -52,6 +52,21 @@ public class Predict extends AbstractMJeliotActivity {
 		this.layout.addView(lockButton);
 		this.showToast(R.string.newassignment);
 	}
+	
+	@Override
+	public void onRestart() {
+		super.onRestart();
+		if (!controller.isLoggedIn()) {
+			finish();
+		}
+	}
+	@Override
+	public void onResume() {
+		super.onResume();
+		if (!controller.isLoggedIn()) {
+			finish();
+		}
+	}
 
 	/*
 	 * (non-Javadoc)

@@ -15,6 +15,7 @@ import org.mJeliot.protocol.ProtocolParserListener;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 
@@ -529,5 +530,12 @@ public class Controller extends Application implements ClientListener,
 	public boolean isEditorInLiveMode() {
 		// TODO
 		return false;
+	}
+
+	@Override
+	public boolean isNetworkReady() {
+	    ConnectivityManager cm =
+	            (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+	        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
 	}
 }

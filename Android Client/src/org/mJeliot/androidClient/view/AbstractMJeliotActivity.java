@@ -27,8 +27,8 @@ public abstract class AbstractMJeliotActivity extends Activity implements
 
 	@Override
 	public void finish() {
-		super.finish();
 		this.controller.removeControllerListener(this);
+		super.finish();
 	}
 
 	public void showToast(final int resource) {

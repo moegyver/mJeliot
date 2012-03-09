@@ -38,4 +38,6 @@ public interface ClientListener {
 	 * @return
 	 */
 	public Lecture getLecture();
+	
+	public boolean isNetworkReady();
 }

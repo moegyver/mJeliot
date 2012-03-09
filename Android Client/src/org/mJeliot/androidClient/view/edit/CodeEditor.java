@@ -89,6 +89,21 @@ public class CodeEditor extends AbstractMJeliotActivity {
 				}
 			});
 		}
+		
+		@Override
+		public void onRestart() {
+			super.onRestart();
+			if (!controller.isLoggedIn()) {
+				finish();
+			}
+		}
+		@Override
+		public void onResume() {
+			super.onResume();
+			if (!controller.isLoggedIn()) {
+				finish();
+			}
+		}
 
 		protected void done() {
 			//this.controller.done();
@@ -231,6 +246,7 @@ public class CodeEditor extends AbstractMJeliotActivity {
 		 */
 		@Override
 		public void onLoggedOut(Controller controller) {
+			System.out.println("CodeEditor: closing activity, user logged out.");
 			this.finish();
 		}
 
@@ -243,6 +259,7 @@ public class CodeEditor extends AbstractMJeliotActivity {
 		 */
 		@Override
 		public void onDisconnected(Controller controller, boolean isForced) {
+			System.out.println("CodeEditor: closing activity, disconnected.");
 			this.finish();
 		}
 
