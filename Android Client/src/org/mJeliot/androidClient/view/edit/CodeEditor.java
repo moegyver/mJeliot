@@ -1,16 +1,28 @@
 package org.mJeliot.androidClient.view.edit;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.EditText;
+import android.widget.ImageButton;
+
 import org.mJeliot.androidClient.R;
 import org.mJeliot.androidClient.controller.Controller;
-import org.mJeliot.androidClient.edit.CodeChangeWatcher;
 import org.mJeliot.androidClient.view.AbstractMJeliotActivity;
 import org.mJeliot.model.Lecture;
 
 public class CodeEditor extends AbstractMJeliotActivity {
 	
+
+		private static final long UPDATE_INTERVAL = 5000;
+		private long lastUpdate = System.currentTimeMillis();
+		private EditText editor;
+		private String originalCode = "";
 
 		/*
 		 * (non-Javadoc)
@@ -23,9 +35,68 @@ public class CodeEditor extends AbstractMJeliotActivity {
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.codeeditor);
-			EditText editor = (EditText)findViewById(R.id.codeEditor);
-			final CodeChangeWatcher codeChangeWatcher = new CodeChangeWatcher(this);
-			editor.addTextChangedListener(codeChangeWatcher);
+			editor = (EditText)findViewById(R.id.codeEditor);
+			editor.addTextChangedListener(new TextWatcher() {
+					@Override
+					public void onTextChanged(CharSequence s, int start, int before, int count) {
+						CodeEditor.this.onCodeUpdate(s, start);
+					}
+					@Override
+					public void afterTextChanged(Editable arg0) {
+					}
+					@Override
+					public void beforeTextChanged(CharSequence arg0, int arg1,
+							int arg2, int arg3) {
+					}
+			});
+			
+			ImageButton discardButton = (ImageButton) findViewById(R.id.discardbutton);
+			discardButton.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					AlertDialog.Builder builder = new AlertDialog.Builder(CodeEditor.this);
+					builder.setMessage(R.string.reallydiscard)
+					       .setCancelable(false)
+					       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+					           public void onClick(DialogInterface dialog, int id) {
+					        	   editor.setText(originalCode);
+					        	   dialog.dismiss();
+					           }
+					       })
+					       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+					           public void onClick(DialogInterface dialog, int id) {
+					                dialog.cancel();
+					           }
+					       });
+					AlertDialog alert = builder.create();
+					alert.show();
+				}
+			});
+			
+			ImageButton attentionButton = (ImageButton) findViewById(R.id.attentionbutton);
+			attentionButton.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					requestAttention();
+				}
+			});
+			
+			ImageButton doneButton = (ImageButton) findViewById(R.id.donebutton);
+			doneButton.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					done();
+				}
+			});
+		}
+
+		protected void done() {
+			//this.controller.done();
+			System.out.println("CodeEditor: user is done");
+		}
+
+		protected void requestAttention() {
+			System.out.println("CodeEditor: user requested attention");
 		}
 
 		/*
@@ -175,8 +246,23 @@ public class CodeEditor extends AbstractMJeliotActivity {
 			this.finish();
 		}
 
-		public void updateText(CharSequence s, int cursorPosition) {
-			this.controller.sendCode(s, cursorPosition);
+		public void onCodeUpdate(CharSequence s, int cursorPosition) {
+			if (this.controller.isEditorInLiveMode() || this.isUpdateNeeded()) {
+				this.lastUpdate = System.currentTimeMillis();
+				this.controller.sendCode(s, cursorPosition);	
+			}
 		}
 
+		private boolean isUpdateNeeded() {
+			return lastUpdate  + UPDATE_INTERVAL < System.currentTimeMillis();
+		}
+		
+		public String getCode() {
+			return this.editor.getText().toString();
+		}
+		
+		public void setCode(String code) {
+			this.originalCode  = code;
+			this.editor.setText(code);
+		}
 }

@@ -78,13 +78,14 @@ public class Login extends AbstractMJeliotActivity {
 		this.scanWaitProgressDialog = new ProgressDialog(this);
 		this.scanWaitProgressDialog.setMessage(res.getString(R.string.scanning));
 		this.scanWaitProgressDialog.show();
+		this.controller.scanForLectures();
 		this.loggingInWaitProgressDialog = new ProgressDialog(this);
 		this.loggingInWaitProgressDialog.setMessage(res.getString(R.string.login));
 		this.rescanButton = (Button) findViewById(R.id.buttonloginrescan);
 		this.rescanButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				scanWaitProgressDialog.show();
-				controller.scanForNetworks();
+				controller.scanForLectures();
 			}
 		});
 

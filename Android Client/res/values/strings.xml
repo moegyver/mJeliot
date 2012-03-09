@@ -27,5 +27,8 @@
     <string name="waitforconnection">Connecting, please wait…</string>
     <string name="waitforresult">Waiting for result…</string>
     <string name="waitforscan">Waiting for scan to complete…</string>
+    <string name="discard">Discard changes</string>
+    <string name="requestattention">Request the teacher\'s attention</string>
+    <string name="reallydiscard">Do you really want to discard your changes?</string>
 
 </resources>

@@ -47,12 +47,14 @@ public class Controller extends Application implements ClientListener,
 		parser.addProtocolParserListener(this);
 		this.client = new Client(this);
 	}
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
 		registerReceiver(new NetworkChangeBroadcastReceiver(this.client),
 				new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 	}
+
 	/**
 	 * Adds a ControllerListener to the Controller, however only if the listener
 	 * is not already in the list of listeners.
@@ -164,7 +166,7 @@ public class Controller extends Application implements ClientListener,
 	/**
 	 * Calls the Android-API and gets all available wireless networks.
 	 */
-	public void scanForNetworks() {
+	public void scanForLectures() {
 		this.client.sendMessage(parser.generateLectureQuery());
 		this.fireOnScanStart();
 	}
@@ -239,8 +241,9 @@ public class Controller extends Application implements ClientListener,
 	@Override
 	public void onClientConnected(Client client, boolean reconnected) {
 		if (!reconnected) {
+			// only when really connected, the rest of the app doesn't have to
+			// know about it when the client reconnects transparently.
 			this.fireOnConnected();
-			this.scanForNetworks();
 		}
 	}
 
@@ -357,7 +360,8 @@ public class Controller extends Application implements ClientListener,
 	}
 
 	@Override
-	public void onClientDisconnected(Client client, boolean isIntentional, boolean isForced) {
+	public void onClientDisconnected(Client client, boolean isIntentional,
+			boolean isForced) {
 		if (isIntentional || !isIntentional && isForced) {
 			this.fireonDisconnected(isForced);
 		}
@@ -512,12 +516,18 @@ public class Controller extends Application implements ClientListener,
 	}
 
 	public void sendCode(CharSequence s, int cursorPosition) {
-		this.client.sendMessage(this.parser.generateCodeUpdate(s, cursorPosition, user, lecture));
+		this.client.sendMessage(this.parser.generateCodeUpdate(s,
+				cursorPosition, user, lecture));
 	}
 
 	@Override
 	public void onCodeUpdate(ProtocolParser protocolParser,
 			ParserCaller parserCaller, Integer lectureId, Integer userId,
 			String code, Integer cursorPosition) {
+	}
+
+	public boolean isEditorInLiveMode() {
+		// TODO
+		return false;
 	}
 }

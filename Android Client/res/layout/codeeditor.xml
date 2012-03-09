@@ -2,21 +2,42 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="match_parent"
-	android:id="@+id/linearwaitlayout" >
+	android:id="@+id/lineareditorlayout" >
+
+    <LinearLayout
+        android:id="@+id/editorbuttonlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/discardbutton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/discard" android:contentDescription="@string/discard"/>
+
+        <ImageButton
+            android:id="@+id/attentionbutton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/alert" android:contentDescription="@string/requestattention"/>
+
+        <ImageButton
+            android:id="@+id/donebutton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/accept" android:contentDescription="@string/done"/>
+    </LinearLayout>
 
     <EditText
         android:id="@+id/codeEditor"
+        android:gravity= "top" 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:inputType="textMultiLine" >
-
+        android:inputType="textMultiLine"
+        android:scrollbars="vertical">
         <requestFocus />
     </EditText>
-
-    <Button
-        android:id="@+id/getoutput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Get Output" />
-
 </LinearLayout>

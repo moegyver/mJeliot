@@ -235,6 +235,7 @@ public class Start extends AbstractMJeliotActivity {
 	 */
 	@Override
 	public void onDisconnected(Controller controller, boolean isForced) {
+		this.connectingWaitDialog.dismiss();
 		if (isForced) {
 			this.showToast(R.string.disconnectedforced);	
 		} else {
