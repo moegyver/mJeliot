@@ -120,7 +120,7 @@ public class ViewResult extends AbstractMJeliotActivity {
 	public void onNewMethod(Controller controller) {
 		if (this.controller.getCurrentActivity() == this) {
 			Intent newPrediction = new Intent();
-			newPrediction.setClassName("ict.predict.androidClient",
+			newPrediction.setClassName("org.mJeliot.androidClient",
 					"org.mJeliot.androidClient.view.Predict");
 			this.startActivityIfNeeded(newPrediction, -1);
 			this.finish();
@@ -156,7 +156,7 @@ public class ViewResult extends AbstractMJeliotActivity {
 	 * ControllerListener#onDisconnected(org.mJeliot.androidClient.controller.Controller)
 	 */
 	@Override
-	public void onDisconnected(Controller controller) {
+	public void onDisconnected(Controller controller, boolean isForced) {
 		this.finish();
 	}
 }

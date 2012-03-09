@@ -1,4 +1,4 @@
-package org.mJeliot.model.helpers;
+package org.mJeliot.helpers;
 
 public class Pair<L,R> {
 

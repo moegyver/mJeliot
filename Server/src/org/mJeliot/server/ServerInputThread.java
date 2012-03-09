@@ -66,7 +66,6 @@ public class ServerInputThread implements Runnable {
 						int userId = Integer.parseInt(ids[1]);
 						this.serverThread.resetUserTimer(lectureId, userId);
 					} catch(Exception e) {
-						System.err.println(e.getMessage());
 					}
 					message = "";
 				} else {

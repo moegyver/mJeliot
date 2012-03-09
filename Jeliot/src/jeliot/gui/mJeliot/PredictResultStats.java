@@ -194,21 +194,21 @@ public class PredictResultStats extends Component implements MJeliotControllerLi
 	 * @see jeliot.mJeliot.MJeliotControllerListener#onUserCountChanged(jeliot.mJeliot.MJeliotController)
 	 */
 	@Override
-	public void onUserCountChanged(MJeliotController ictController) {
+	public void onUserCountChanged(MJeliotController mJeliotController) {
 	}
 	
 	/* (non-Javadoc)
 	 * @see jeliot.mJeliot.MJeliotControllerListener#onAnswerCountChanged(jeliot.mJeliot.MJeliotController)
 	 */
 	@Override
-	public void onAnswerCountChanged(MJeliotController ictController) {
+	public void onAnswerCountChanged(MJeliotController mJeliotController) {
 	}
 	
 	/* (non-Javadoc)
 	 * @see jeliot.mJeliot.MJeliotControllerListener#onNewMethod(jeliot.mJeliot.MJeliotController, org.mJeliot.model.predict.Method)
 	 */
 	@Override
-	public void onNewMethod(MJeliotController ictController, Method method) {
+	public void onNewMethod(MJeliotController mJeliotController, Method method) {
 		this.active = false;
 		this.repaint();
 	}
@@ -217,11 +217,11 @@ public class PredictResultStats extends Component implements MJeliotControllerLi
 	 * @see jeliot.mJeliot.MJeliotControllerListener#onResultPosted(jeliot.mJeliot.MJeliotController, org.mJeliot.model.predict.Method)
 	 */
 	@Override
-	public void onResultPosted(MJeliotController ictController, Method method) {
+	public void onResultPosted(MJeliotController mJeliotController, Method method) {
 		int partlyCorrect = 0;
 		int notCorrect = 0;
 		int correct = 0;
-		for (int i = 0; i < ictController.getReceivedAnswerCount(); i++) {
+		for (int i = 0; i < mJeliotController.getReceivedAnswerCount(); i++) {
 
 			boolean correctAnswer = false;
 			boolean falseAnswer = false;
@@ -240,10 +240,10 @@ public class PredictResultStats extends Component implements MJeliotControllerLi
 				notCorrect++;
 			}
 		}
-		if (ictController.getReceivedAnswerCount() != 0) {
-			this.correctPercentage = (double)correct / (double)(ictController.getUserCount() - 1);
-			this.partlyCorrectPercentage = (double)partlyCorrect / (double)(ictController.getUserCount() - 1);
-			this.falsePercentage = (double)notCorrect / (double)(ictController.getUserCount() - 1);
+		if (mJeliotController.getReceivedAnswerCount() != 0) {
+			this.correctPercentage = (double)correct / (double)(mJeliotController.getUserCount() - 1);
+			this.partlyCorrectPercentage = (double)partlyCorrect / (double)(mJeliotController.getUserCount() - 1);
+			this.falsePercentage = (double)notCorrect / (double)(mJeliotController.getUserCount() - 1);
 		}
 		this.active = true;
 		this.repaint();
@@ -253,51 +253,51 @@ public class PredictResultStats extends Component implements MJeliotControllerLi
 	 * @see jeliot.mJeliot.MJeliotControllerListener#onMethodCalled(jeliot.mJeliot.MJeliotController, org.mJeliot.model.predict.Method)
 	 */
 	@Override
-	public void onMethodCalled(MJeliotController ictController, Method method) {
+	public void onMethodCalled(MJeliotController mJeliotController, Method method) {
 	}
 	
 	/* (non-Javadoc)
 	 * @see jeliot.mJeliot.MJeliotControllerListener#onMethodReturned(jeliot.mJeliot.MJeliotController, org.mJeliot.model.predict.Method)
 	 */
 	@Override
-	public void onMethodReturned(MJeliotController ictController, Method method) {
+	public void onMethodReturned(MJeliotController mJeliotController, Method method) {
 	}
 	
 	/* (non-Javadoc)
 	 * @see jeliot.mJeliot.MJeliotControllerListener#onClientConnected(jeliot.mJeliot.MJeliotController)
 	 */
 	@Override
-	public void onClientConnected(MJeliotController ictController, boolean isReconnected) {
+	public void onClientConnected(MJeliotController mJeliotController, boolean isReconnected) {
 	}
 
 	/* (non-Javadoc)
 	 * @see jeliot.mJeliot.MJeliotControllerListener#onClientDisconnected(jeliot.mJeliot.MJeliotController)
 	 */
 	@Override
-	public void onClientDisconnected(MJeliotController ictController) {
+	public void onClientDisconnected(MJeliotController mJeliotController) {
 	}
 
 	@Override
-	public void onNewLecture(MJeliotController ictController, Lecture lecture) {
+	public void onNewLecture(MJeliotController mJeliotController, Lecture lecture) {
 	}
 
 	@Override
-	public void onLogin(MJeliotController ictController, Lecture lecture) {
+	public void onLogin(MJeliotController mJeliotController, Lecture lecture) {
 	}
 
 	@Override
-	public void onLoggedIn(MJeliotController ictController, Lecture currentLecture) {
+	public void onLoggedIn(MJeliotController mJeliotController, Lecture currentLecture) {
 	}
 
 	@Override
-	public void onLogout(MJeliotController ictController, Lecture lecture) {
+	public void onLogout(MJeliotController mJeliotController, Lecture lecture) {
 	}
 
 	@Override
-	public void onLectureUpdated(MJeliotController ictController, Lecture lecture) {
+	public void onLectureUpdated(MJeliotController mJeliotController, Lecture lecture) {
 	}
 
 	@Override
-	public void onLoggedOut(MJeliotController ictController, Lecture lecture) {
+	public void onLoggedOut(MJeliotController mJeliotController, Lecture lecture) {
 	}
 }

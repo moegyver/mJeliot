@@ -13,13 +13,13 @@ import jeliot.mJeliot.MJeliotController;
 
 /**
  * @author Moritz Rogalli
- * The ICTMCodeInterpreter gets invoked by Jeliot while walking through the code of the 
+ * The MJeliotMCodeInterpreter gets invoked by Jeliot while walking through the code of the 
  * user. It builds data structures to identify methods and variables when the user clicks
  * the compile-button, since parameters are represented by variables in mCode. When the
  * user walks through the code, method calls and returns get identified and sent to the
  * interactMenu.
  */
-public class ICTMCodeInterpreter extends MCodeInterpreter {
+public class MJeliotMCodeInterpreter extends MCodeInterpreter {
 
 	/**
 	 * All the methods from the source code.
@@ -55,7 +55,7 @@ public class ICTMCodeInterpreter extends MCodeInterpreter {
 	 * @param programCode
 	 * @param interactMenu
 	 */
-	public ICTMCodeInterpreter(BufferedReader bf, String programCode, MJeliotController controller) {
+	public MJeliotMCodeInterpreter(BufferedReader bf, String programCode, MJeliotController controller) {
 		super(bf);
 		this.programCode = programCode;
 		this.controller = controller;

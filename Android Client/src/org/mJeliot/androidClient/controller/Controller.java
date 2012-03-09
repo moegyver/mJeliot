@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Vector;
 
+import org.mJeliot.client.Client;
+import org.mJeliot.client.ClientListener;
 import org.mJeliot.model.Lecture;
 import org.mJeliot.model.User;
 import org.mJeliot.model.predict.Method;
@@ -29,12 +31,12 @@ import android.net.ConnectivityManager;
  * @author Moritz Rogalli
  * 
  */
-public class Controller extends Application implements AndroidClientListener,
+public class Controller extends Application implements ClientListener,
 		ProtocolParserListener, ParserCaller {
 	// state-variables
 	private Lecture lecture = null;
 	private User user = null;
-	private AndroidClient client = null;
+	private Client client = null;
 	private Activity currentActivity = null;
 	private Vector<ControllerListener> listeners = new Vector<ControllerListener>();
 	// parser
@@ -43,8 +45,14 @@ public class Controller extends Application implements AndroidClientListener,
 
 	public Controller() {
 		parser.addProtocolParserListener(this);
+		this.client = new Client(this);
 	}
-
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		registerReceiver(new NetworkChangeBroadcastReceiver(this.client),
+				new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+	}
 	/**
 	 * Adds a ControllerListener to the Controller, however only if the listener
 	 * is not already in the list of listeners.
@@ -136,21 +144,21 @@ public class Controller extends Application implements AndroidClientListener,
 	 * user in.
 	 */
 	public void connect(String url) {
-		if (this.client == null) {
-			System.out.println("mJeliot Controller: connect");
-			this.fireOnConnect();
-			this.client = new AndroidClient(this, url);
-			registerReceiver(this.client, new IntentFilter(
-					ConnectivityManager.CONNECTIVITY_ACTION));
-			this.client.connect();
-		}
+		this.client.setUri(url);
+		this.client.connect(false);
+		this.fireOnConnect();
 	}
 
 	/**
 	 * @return wether or not the client is connected to the server
 	 */
 	public boolean isConnected() {
-		return this.client != null && this.client.isConnected();
+		if (this.client == null) {
+			System.err.println("client is null");
+			return false;
+		} else {
+			return this.client.isConnected();
+		}
 	}
 
 	/**
@@ -203,14 +211,13 @@ public class Controller extends Application implements AndroidClientListener,
 			this.client.sendMessage(this.parser.generateUserLogout(this.user,
 					this.lecture));
 		}
-		// this.user = null;
-		// this.lecture = null;
 		this.fireOnLogout();
 	}
 
 	public void disconnect() {
+		this.logout();
 		System.out.println("mJeliot Controller: disconnect");
-		this.client.disconnect();
+		this.client.disconnect(true, false);
 	}
 
 	public User getUser() {
@@ -230,7 +237,7 @@ public class Controller extends Application implements AndroidClientListener,
 	}
 
 	@Override
-	public void onClientConnected(AndroidClient client, boolean reconnected) {
+	public void onClientConnected(Client client, boolean reconnected) {
 		if (!reconnected) {
 			this.fireOnConnected();
 			this.scanForNetworks();
@@ -245,7 +252,7 @@ public class Controller extends Application implements AndroidClientListener,
 	 * .androidClient.tcp.Client, java.lang.String)
 	 */
 	@Override
-	public void onMessageReceived(AndroidClient client, String message) {
+	public void onMessageReceived(Client client, String message) {
 		parser.parseMessage(message, this);
 	}
 
@@ -350,9 +357,10 @@ public class Controller extends Application implements AndroidClientListener,
 	}
 
 	@Override
-	public void onClientDisconnected(AndroidClient client) {
-		this.fireonDisconnected();
-		this.client = null;
+	public void onClientDisconnected(Client client, boolean isIntentional, boolean isForced) {
+		if (isIntentional || !isIntentional && isForced) {
+			this.fireonDisconnected(isForced);
+		}
 	}
 
 	/**
@@ -490,13 +498,12 @@ public class Controller extends Application implements AndroidClientListener,
 	/**
 	 * Informs all the listeners when the controller got disconnected.
 	 */
-	private void fireonDisconnected() {
+	private void fireonDisconnected(boolean isForced) {
 		for (int i = 0; i < this.listeners.size(); i++) {
-			this.listeners.get(i).onDisconnected(this);
+			this.listeners.get(i).onDisconnected(this, isForced);
 		}
 		this.user = null;
 		this.lecture = null;
-		this.client = null;
 	}
 
 	@Override

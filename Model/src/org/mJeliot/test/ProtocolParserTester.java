@@ -14,39 +14,39 @@ public class ProtocolParserTester implements ProtocolParserListener, ParserCalle
 	
 	private ProtocolParser parser = null;
 	private static String login = "<?xml version=\"1.0\"?>\n" +
-		"<ict action=\"userLogin\">\n" +
+		"<mJeliot action=\"userLogin\">\n" +
 		"<lectureId>123456</lectureId>\n" + 
 		"<userName>Moe</userName>\n" +
 		"<userId>123456</userId>\n" +
 		"<address>www.heise.de</address>\n" +
-		"</ict>";
+		"</mJeliot>";
 	private static String loggedIn = "<?xml version=\"1.0\"?>\n" +
-	"<ict action=\"userLoggedIn\">\n" +
+	"<mJeliot action=\"userLoggedIn\">\n" +
 	"<lectureId>123456</lectureId>\n" +
 	"<userName>Moe</userName>\n" +
 	"<userId>123456</userId>\n" +
-	"</ict>";
+	"</mJeliot>";
 	private static String logout = "<?xml version=\"1.0\"?>\n" +
-	"<ict action=\"userLogout\">\n" +
+	"<mJeliot action=\"userLogout\">\n" +
 	"<lectureId>123456</lectureId>\n" +
 	"<userId>123456</userId>\n" +
-	"</ict>";
+	"</mJeliot>";
 	private static String loggedOut = "<?xml version=\"1.0\"?>\n" +
-	"<ict action=\"userLoggedOut\">\n" +
+	"<mJeliot action=\"userLoggedOut\">\n" +
 	"<lectureId>123456</lectureId>\n" +
 	"<userId>123456</userId>\n" +
-	"</ict>";
+	"</mJeliot>";
 	private static String handin = "<?xml version=\"1.0\"?>\n" +
-	"<ict action=\"predictHandin\">\n" +
+	"<mJeliot action=\"predictHandin\">\n" +
 	"<lectureId>123456</lectureId>\n" +
 	"<userId>123456</userId>\n" +
 	"<methodId>654321</methodId>\n" +
 	"<parameterCount>2</parameterCount>\n" +
 	"<parameter name=\"a\">1</parameter>\n" +
 	"<parameter name=\"b\">2</parameter>\n" +
-	"</ict>";
+	"</mJeliot>";
 	private static String sendout = "<?xml version=\"1.0\"?>\n" +
-	"<ict action=\"predictSendout\">\n" +
+	"<mJeliot action=\"predictSendout\">\n" +
 	"<lectureId>123456</lectureId>\n" +
 	"<className>Foo</className>\n" +
 	"<methodName>bar</methodName>\n" +
@@ -54,37 +54,37 @@ public class ProtocolParserTester implements ProtocolParserListener, ParserCalle
 	"<parameterCount>2</parameterCount>\n" +
 	"<parameter name=\"a\" />\n" +
 	"<parameter name=\"b\" />\n" +
-	"</ict>";
+	"</mJeliot>";
 	private static String result = "<?xml version=\"1.0\"?>\n" +
-	"<ict action=\"predictResult\">\n" +
+	"<mJeliot action=\"predictResult\">\n" +
 	"<lectureId>123456</lectureId>\n" +
 	"<methodId>654321</methodId>\n" +
 	"<parameterCount>2</parameterCount>\n" +
 	"<parameter name=\"a\">1</parameter>\n" +
 	"<parameter name=\"b\">2</parameter>\n" +
-	"</ict>";
+	"</mJeliot>";
 	private static String lecture = "<?xml version=\"1.0\"?>\n" +
-	"<ict action=\"lecture\">\n" +
+	"<mJeliot action=\"lecture\">\n" +
 	"<lectureId>123456</lectureId>\n" +
 	"<lectureName>654321</lectureName>\n" +
-	"</ict>";
+	"</mJeliot>";
 	private static String lectureList = "<?xml version=\"1.0\"?>\n" +
-	"<ict action=\"lectureList\">\n" +
+	"<mJeliot action=\"lectureList\">\n" +
 	"<lectureList length=\"2\">" + 
 	"<lecture id=\"123456\" name=\"name1\" />\n" +
 	"<lecture id=\"123458\" name=\"name2\" />\n" +
 	"</lectureList>" +
-	"</ict>";
+	"</mJeliot>";
 	private static String userList = "<?xml version=\"1.0\"?>\n" +
-	"<ict action=\"userList\">\n" +
+	"<mJeliot action=\"userList\">\n" +
 	"<userList length=\"2\">" + 
 	"<user id=\"123456\" name=\"name1\" />\n" +
 	"<user id=\"123458\" name=\"name2\" />\n" +
 	"</userList>" +
-	"</ict>";
+	"</mJeliot>";
 	private static String lectureQuery = "<?xml version=\"1.0\"?>\n" +
-	"<ict action=\"lectureQuery\">\n" +
-	"</ict>";
+	"<mJeliot action=\"lectureQuery\">\n" +
+	"</mJeliot>";
 	public ProtocolParserTester() {
 		this.parser = new ProtocolParser();
 		this.parser.addProtocolParserListener(this);

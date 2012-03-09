@@ -47,7 +47,7 @@ public class InteractMenu extends JPopupMenu implements MJeliotControllerListene
 	public InteractMenu(final Jeliot jeliot) {
 		super();
 		this.controller = jeliot.getMJeliotController();
-		this.controller.addICTControllerListener(this);
+		this.controller.addMJeliotControllerListener(this);
 		this.lectureMenu = new LectureMenu("Available Lectures", controller);
 		this.add(lectureMenu);
 		
@@ -116,66 +116,66 @@ public class InteractMenu extends JPopupMenu implements MJeliotControllerListene
 	}
 
 	@Override
-	public void onUserCountChanged(MJeliotController ictController) {
+	public void onUserCountChanged(MJeliotController mJeliotController) {
 	}
 
 	@Override
-	public void onAnswerCountChanged(MJeliotController ictController) {
+	public void onAnswerCountChanged(MJeliotController mJeliotController) {
 	}
 
 	@Override
-	public void onNewMethod(MJeliotController ictController, Method method) {
+	public void onNewMethod(MJeliotController mJeliotController, Method method) {
 	}
 
 	@Override
-	public void onResultPosted(MJeliotController ictController, Method method) {
+	public void onResultPosted(MJeliotController mJeliotController, Method method) {
 	}
 
 	@Override
-	public void onMethodCalled(MJeliotController ictController, Method method) {
+	public void onMethodCalled(MJeliotController mJeliotController, Method method) {
 		this.addMethod(method);
 	}
 
 	@Override
-	public void onMethodReturned(MJeliotController ictController, Method method) {
+	public void onMethodReturned(MJeliotController mJeliotController, Method method) {
 		this.removeMethod(method);
 	}
 
 	@Override
-	public void onClientConnected(MJeliotController ictController, boolean isReconnected) {
+	public void onClientConnected(MJeliotController mJeliotController, boolean isReconnected) {
 	}
 
 	@Override
-	public void onClientDisconnected(MJeliotController ictController) {
+	public void onClientDisconnected(MJeliotController mJeliotController) {
 	}
 
 	@Override
-	public void onNewLecture(MJeliotController ictController, Lecture lecture) {
+	public void onNewLecture(MJeliotController mJeliotController, Lecture lecture) {
 		this.lectureMenu.addLecture(lecture);
 	}
 
 	@Override
-	public void onLogin(MJeliotController ictController, Lecture lecture) {
+	public void onLogin(MJeliotController mJeliotController, Lecture lecture) {
 	}
 
 	@Override
-	public void onLoggedIn(MJeliotController ictController, Lecture currentLecture) {
+	public void onLoggedIn(MJeliotController mJeliotController, Lecture currentLecture) {
 		this.lectureMenu.onLoggedIn();
 	}
 
 	@Override
-	public void onLogout(MJeliotController ictController, Lecture lecture) {
+	public void onLogout(MJeliotController mJeliotController, Lecture lecture) {
 	}
 
 	@Override
-	public void onLectureUpdated(MJeliotController ictController, Lecture lecture) {
+	public void onLectureUpdated(MJeliotController mJeliotController, Lecture lecture) {
 		this.lectureMenu.updateLecture(lecture);
 	}
 
 	@Override
-	public void onLoggedOut(MJeliotController ictController, Lecture lecture) {
+	public void onLoggedOut(MJeliotController mJeliotController, Lecture lecture) {
 		this.remove(0);
-		this.lectureMenu = new LectureMenu("Available lectures", ictController);
+		this.lectureMenu = new LectureMenu("Available lectures", mJeliotController);
 		this.add(lectureMenu, 0);
 	}
 }

@@ -53,7 +53,7 @@ public class MJeliotController implements ClientListener, ProtocolParserListener
 	 * not added again.
 	 * @param listener the listener to add
 	 */
-	public void addICTControllerListener(MJeliotControllerListener listener) {
+	public void addMJeliotControllerListener(MJeliotControllerListener listener) {
 		if (!this.listeners.contains(listener)) {
 			this.listeners.add(listener);
 		}
@@ -63,7 +63,7 @@ public class MJeliotController implements ClientListener, ProtocolParserListener
 	 * Unregisters a listener from the MJeliotController.
 	 * @param listener The listener to remove
 	 */
-	public void removeICTControllerListener(MJeliotControllerListener listener) {
+	public void removeMJeliotControllerListener(MJeliotControllerListener listener) {
 		this.listeners.remove(listener);
 	}
 
@@ -81,8 +81,9 @@ public class MJeliotController implements ClientListener, ProtocolParserListener
 	/**
 	 * Connects the controller's client.
 	 */
-	public void connectClient(String url) {
-		this.client = new Client(this, url);
+	public void connectClient(String uri) {
+		this.client = new Client(this);
+		this.client.setUri(uri);
 		this.client.connect(false);
 	}
 	

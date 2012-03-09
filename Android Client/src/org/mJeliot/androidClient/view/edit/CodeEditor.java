@@ -171,7 +171,7 @@ public class CodeEditor extends AbstractMJeliotActivity {
 		 * (org.mJeliot.androidClient.controller.Controller)
 		 */
 		@Override
-		public void onDisconnected(Controller controller) {
+		public void onDisconnected(Controller controller, boolean isForced) {
 			this.finish();
 		}
 

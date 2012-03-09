@@ -6,8 +6,8 @@ import org.mJeliot.model.predict.Method;
 
 
 /**
- * A Lecture object represents all the important data of a lecture in the
- * ICT-system. It is used to store identifying information and the state of the
+ * A Lecture object represents all the important data of a lecture in mJeliot.
+ * It is used to store identifying information and the state of the
  * lecture.
  * 
  * @author Moritz Rogalli

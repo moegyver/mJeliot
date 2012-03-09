@@ -65,35 +65,14 @@ public class Predict extends AbstractMJeliotActivity {
 			Activity activity) {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.mJeliot.androidClient.controller.ControllerListener#onConnect(ict
-	 * .predict.androidClient.controller.Controller)
-	 */
 	@Override
 	public void onConnect(Controller controller) {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.mJeliot.androidClient.controller.ControllerListener#onConnected(ict
-	 * .predict.androidClient.controller.Controller)
-	 */
 	@Override
 	public void onConnected(Controller controller) {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.mJeliot.androidClient.controller.ControllerListener#onScanStart(ict
-	 * .predict.androidClient.controller.Controller)
-	 */
 	@Override
 	public void onScanStart(Controller controller) {
 	}
@@ -120,35 +99,14 @@ public class Predict extends AbstractMJeliotActivity {
 	public void onNewLecture(Controller controller, Lecture lecture) {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.mJeliot.androidClient.controller.ControllerListener#onLoggingIn(ict
-	 * .predict.androidClient.controller.Controller)
-	 */
 	@Override
 	public void onLoggingIn(Controller controller) {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.mJeliot.androidClient.controller.ControllerListener#onLoggedIn(ict
-	 * .predict.androidClient.controller.Controller)
-	 */
 	@Override
 	public void onLoggedIn(Controller controller) {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.mJeliot.androidClient.controller.ControllerListener#onNewMethod(ict
-	 * .predict.androidClient.controller.Controller)
-	 */
 	@Override
 	public void onNewMethod(Controller controller) {
 		if (this.controller.getCurrentActivity() == this) {
@@ -160,13 +118,6 @@ public class Predict extends AbstractMJeliotActivity {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.mJeliot.androidClient.controller.ControllerListener#onResult(ict.
-	 * predict.androidClient.controller.Controller)
-	 */
 	@Override
 	public void onResult(Controller controller) {
 		if (this.controller.getCurrentActivity() == this) {
@@ -191,13 +142,6 @@ public class Predict extends AbstractMJeliotActivity {
 		this.finish();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.mJeliot.androidClient.controller.ControllerListener#onLoggedOut(ict
-	 * .predict.androidClient.controller.Controller)
-	 */
 	@Override
 	public void onLoggedOut(Controller controller) {
 		System.out.println("logged");
@@ -212,8 +156,7 @@ public class Predict extends AbstractMJeliotActivity {
 	 * (org.mJeliot.androidClient.controller.Controller)
 	 */
 	@Override
-	public void onDisconnected(Controller controller) {
-		System.out.println("disc");
+	public void onDisconnected(Controller controller, boolean isForced) {
 		this.finish();
 	}
 

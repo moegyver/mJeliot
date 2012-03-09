@@ -54,7 +54,7 @@ public interface ControllerListener {
 	 * Executed when a controller gets disconnected from a server.
 	 * @param controller the controller that got disconnected
 	 */
-	public void onDisconnected(Controller controller);
+	public void onDisconnected(Controller controller, boolean isForced);
 	/**
 	 * Executed when a controller receives a new assignment.
 	 * @param controller the controller that received the assignment.

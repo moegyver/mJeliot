@@ -197,8 +197,7 @@ public class Wait extends AbstractMJeliotActivity {
 	 * (org.mJeliot.androidClient.controller.Controller)
 	 */
 	@Override
-	public void onDisconnected(Controller controller) {
-		System.out.println("wait");
+	public void onDisconnected(Controller controller, boolean isForced) {
 		this.finish();
 	}
 }

@@ -5,7 +5,9 @@ import org.mJeliot.androidClient.controller.Controller;
 import org.mJeliot.model.Lecture;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,7 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 /**
- * The Start Activity shows a picture and a button to connect to the ICT server.
+ * The Start Activity shows a picture and a button to connect to the mJeliot server.
  * 
  * @author Moritz Rogalli
  * 
@@ -25,6 +27,7 @@ public class Start extends AbstractMJeliotActivity {
 	private Button loginButton = null;
 	private String url = "";
 	private EditText urlEditText;
+	ProgressDialog connectingWaitDialog = null;
 
 	/*
 	 * (non-Javadoc)
@@ -39,7 +42,9 @@ public class Start extends AbstractMJeliotActivity {
 		this.loginButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				System.out.println("View: Start, Action: clicked on connect");
 				if (!controller.isConnected()) {
+					showWaitingDialog();
 					controller.connect(url);
 				} else {
 					controller.disconnect();
@@ -65,6 +70,12 @@ public class Start extends AbstractMJeliotActivity {
 		});
 	}
 
+	protected void showWaitingDialog() {
+		Resources res = getResources();
+		connectingWaitDialog = ProgressDialog.show(this, "", 
+                res.getString(R.string.connecting));		
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -87,12 +98,6 @@ public class Start extends AbstractMJeliotActivity {
 	 */
 	@Override
 	public void onConnect(final Controller controller) {
-		this.runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				loginButton.setText(R.string.cancel);
-			}
-		});
 	}
 
 	/*
@@ -104,6 +109,10 @@ public class Start extends AbstractMJeliotActivity {
 	 */
 	@Override
 	public void onConnected(Controller controller) {
+		if (this.connectingWaitDialog != null) { 
+			this.connectingWaitDialog.dismiss();
+			this.connectingWaitDialog = null;
+		}
 		this.showToast(R.string.connected);
 		this.runOnUiThread(new Runnable() {
 			@Override
@@ -225,8 +234,12 @@ public class Start extends AbstractMJeliotActivity {
 	 * (org.mJeliot.androidClient.view.controller.Controller)
 	 */
 	@Override
-	public void onDisconnected(Controller controller) {
-		this.showToast(R.string.disconnected);
+	public void onDisconnected(Controller controller, boolean isForced) {
+		if (isForced) {
+			this.showToast(R.string.disconnectedforced);	
+		} else {
+			this.showToast(R.string.disconnected);
+		}
 		this.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {

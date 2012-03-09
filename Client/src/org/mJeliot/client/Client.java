@@ -46,17 +46,14 @@ public class Client {
 	 */
 	private String uri = null;
 	private int reconnectCounter = 0;
-	protected static int RECONNECT_BACKOFF = 500;
+	private boolean isNetworkReady;
+	protected static int RECONNECT_BACKOFF = 1000;
 
 	/**
 	 * @param uri The uri to use to connect the socket.
 	 */
-	public Client(ClientListener listener, String uri) {
-		this.uri = uri;
+	public Client(ClientListener listener) {
 		this.clientListener = listener;
-		System.out.println("new client created");
-	    //Timer timer = new Timer();
-	    //timer.schedule(new PingGenerator(this), 5 * 1000);
 	}
 	/**
 	 * Passes a message on to the server. This function does not check any kind of state
@@ -96,28 +93,33 @@ public class Client {
 	 * Connects the socket, handles Exceptions that might occur on establishing the 
 	 * connection and initialises the inputThread. 
 	 */
-	public void connect(boolean isReconnected) {
-		try {
-			System.out.println("trying to connect the client: " + this);
-			this.socket = new Socket(this.uri, Defaults.PORT);
-			this.out = new PrintWriter(socket.getOutputStream(), false);
-		    this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		    reconnectCounter = 0;
-		} catch (UnknownHostException e) {
-			System.out.println("error connecting client: " + e.getMessage());
-			this.disconnect(false, false);
-			return;
-		} catch (IOException e) {
-			System.out.println("error connecting client: " + e.getMessage());
-			this.disconnect(false, false);
-			return;
-		}
-		System.out.println("new input thread starting");
-		this.inputThread = new InputThread(this, in);
-		Thread thread = new Thread(this.inputThread);
-		thread.start();
-		System.out.println("client connected");
-		this.fireOnClientConnected(isReconnected);
+	public void connect(final boolean isReconnected) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					System.out.println("trying to connect the client: " + this);
+					socket = new Socket(uri, Defaults.PORT);
+					out = new PrintWriter(socket.getOutputStream(), false);
+				    in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				    reconnectCounter = 0;
+				} catch (UnknownHostException e) {
+					System.out.println("error connecting client: " + e.getMessage());
+					disconnect(false, !isReconnected);
+					return;
+				} catch (IOException e) {
+					System.out.println("error connecting client: " + e.getMessage());
+					disconnect(false, !isReconnected);
+					return;
+				}
+				System.out.println("new input thread starting");
+				inputThread = new InputThread(Client.this, in);
+				Thread thread = new Thread(inputThread);
+				thread.start();
+				System.out.println("client connected");
+				fireOnClientConnected(isReconnected);
+			}
+		}).start();
 	}
 	public void reconnect() {
 		reconnectCounter++;
@@ -129,6 +131,11 @@ public class Client {
 				public void run() {
 					try {
 						Thread.sleep(reconnectCounter * RECONNECT_BACKOFF );
+						int i = 0;
+						while (!isNetworkReady && i < 4) {
+							i++;
+							Thread.sleep(reconnectCounter * RECONNECT_BACKOFF);
+						}
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -158,9 +165,9 @@ public class Client {
 			this.in.close();
 			this.socket.close();
 		} catch (Exception e) {
-			System.out.println("error disconnecting");
-			e.printStackTrace();
+			System.err.println("error disconnecting: " + e.getMessage());
 		}
+		this.socket = null;
 		if (!isIntentional) {
 			reconnect();
 		}
@@ -189,5 +196,14 @@ public class Client {
 	}
 	public Lecture getLecture() {
 		return this.clientListener.getLecture();
+	}
+	public void setUri(String url) {
+		this.uri = url;
+	}
+	public boolean hasUri() {
+		return this.uri != null;
+	}
+	public void setNetworkReady(boolean isNetworkReady) {
+		this.isNetworkReady = isNetworkReady;
 	}
 }

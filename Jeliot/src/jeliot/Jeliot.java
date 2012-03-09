@@ -47,7 +47,7 @@ import jeliot.mJeliot.MJeliotController;
 import jeliot.mcode.AVInteractionMCodeInterpreter;
 import jeliot.mcode.CallTreeMCodeInterpreter;
 import jeliot.mcode.Highlight;
-import jeliot.mcode.ICTMCodeInterpreter;
+import jeliot.mcode.MJeliotMCodeInterpreter;
 import jeliot.mcode.InterpreterError;
 import jeliot.mcode.MCodeInterpreter;
 import jeliot.mcode.MCodeUtilities;
@@ -137,17 +137,17 @@ public class Jeliot {
     /**
      * MCodeInterpreter that creates the data structures necessary for the controller
      */
-    private ICTMCodeInterpreter mCodeInterpreterForICT = null;
+    private MJeliotMCodeInterpreter mCodeInterpreterForMJeliot = null;
     
     /**
      * The controller that is in charge for the connection to the server and events that
      * originate from it.
      */
-    private MJeliotController ictController = new MJeliotController();
+    private MJeliotController mJeliotController = new MJeliotController();
     /**
-     * A thread for running the ICTMCodeInterpreter in
+     * A thread for running the MJeliotMCodeInterpreter in
      */
-    private Thread ictPredictThread;
+    private Thread mJeliotPredictThread;
     // /MOE
     /**
      *
@@ -457,7 +457,7 @@ public class Jeliot {
             MCodeUtilities
                     .addRegisteredSecondaryMCodeConnections(new PrintWriter(pw,
                             true));
-            this.mCodeInterpreterForICT = new ICTMCodeInterpreter(
+            this.mCodeInterpreterForMJeliot = new MJeliotMCodeInterpreter(
                     new BufferedReader(pr), gui.getProgram(), this.getMJeliotController());
         } catch (Exception e) {
             if (DebugUtil.DEBUGGING) {
@@ -508,11 +508,11 @@ public class Jeliot {
         callTreeThread.start();
         
         // MOE
-        ictPredictThread = new Thread(new Runnable() {
+        mJeliotPredictThread = new Thread(new Runnable() {
 
             public void run() {
                 try {
-                	mCodeInterpreterForICT.execute();
+                	mCodeInterpreterForMJeliot.execute();
                 } catch (Exception e) {
                     if (DebugUtil.DEBUGGING) {
                         e.printStackTrace();
@@ -520,7 +520,7 @@ public class Jeliot {
                 }
             }
         });
-        ictPredictThread.start();
+        mJeliotPredictThread.start();
         
         // /MOE
 
@@ -729,8 +729,8 @@ public class Jeliot {
             mCodeInterpreterForCallTree.setRunning(false);
         }
         // MOE
-        if (this.mCodeInterpreterForICT != null) {
-        	this.mCodeInterpreterForICT.setRunning(false);
+        if (this.mCodeInterpreterForMJeliot != null) {
+        	this.mCodeInterpreterForMJeliot.setRunning(false);
         }
         // /MOE
         if (mCodeInterpreterForAVInteraction != null) {
@@ -798,7 +798,7 @@ public class Jeliot {
         controller = null;
         callTreeThread = null;
         // MOE
-        ictPredictThread = null;
+        mJeliotPredictThread = null;
         // /MOE
         avInteractionThread = null;
         MCodeUtilities.clearRegisteredSecondaryMCodeConnections();
@@ -1047,7 +1047,7 @@ public class Jeliot {
 
     // MOE
 	public MJeliotController getMJeliotController() {
-		return this.ictController;
+		return this.mJeliotController;
 	}
 	// /MOE
 }

@@ -28,8 +28,8 @@ public class ProtocolParser {
 
 	// the building-blocks for the protocol
 	private static final String xmlHeader = "<?xml version=\"1.0\" ?>";
-	private static final String startActionBegin = "<ict version=\"1.0\" action=\"";
-	public static final String endActionTag = "</ict>";
+	private static final String startActionBegin = "<mJeliot version=\"1.0\" action=\"";
+	public static final String endActionTag = "</mJeliot>";
 	public static final String endAction = endActionTag + "\n";
 	private static final String startUserName = "<userName>";
 	private static final String endUserName = "</userName>";
@@ -127,8 +127,8 @@ public class ProtocolParser {
 			return;
 		}
 		try {
-			if (document.getElementsByTagName("ict") != null) {
-				Node node = document.getElementsByTagName("ict").item(0);
+			if (document.getElementsByTagName("mJeliot") != null) {
+				Node node = document.getElementsByTagName("mJeliot").item(0);
 				if (node != null) {
 					action = node.getAttributes().getNamedItem("action")
 							.getNodeValue();

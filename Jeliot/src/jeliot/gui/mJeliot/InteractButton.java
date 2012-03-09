@@ -26,7 +26,7 @@ import jeliot.util.UserProperties;
  * @author Moritz Rogalli
  * The InteractButton is a standard JButton that looks like the buttons built by the 
  * JeliotWindow class. However, it does implement a ClientListener to react on connect
- * and disconnect events from the Client that connects Jeliot to the ICT system.
+ * and disconnect events from the Client that connects Jeliot to mJeliot..
  */
 public class InteractButton extends JButton implements MJeliotControllerListener {
 	private static final long serialVersionUID = -542245276585071664L;
@@ -78,7 +78,7 @@ public class InteractButton extends JButton implements MJeliotControllerListener
         this.setHorizontalTextPosition(AbstractButton.CENTER);
         this.setMargin(new Insets(0, 0, 0, 0));
         this.setFunctionToConnect();
-        this.controller.addICTControllerListener(this);
+        this.controller.addMJeliotControllerListener(this);
 	}
 	
 	/**
@@ -147,49 +147,49 @@ public class InteractButton extends JButton implements MJeliotControllerListener
 	 * @see jeliot.mJeliot.MJeliotControllerListener#onUserCountChanged(jeliot.mJeliot.MJeliotController)
 	 */
 	@Override
-	public void onUserCountChanged(MJeliotController ictController) {
+	public void onUserCountChanged(MJeliotController mJeliotController) {
 	}
 
 	/* (non-Javadoc)
 	 * @see jeliot.mJeliot.MJeliotControllerListener#onAnswerCountChanged(jeliot.mJeliot.MJeliotController)
 	 */
 	@Override
-	public void onAnswerCountChanged(MJeliotController ictController) {
+	public void onAnswerCountChanged(MJeliotController mJeliotController) {
 	}
 
 	/* (non-Javadoc)
 	 * @see jeliot.mJeliot.MJeliotControllerListener#onNewMethod(jeliot.mJeliot.MJeliotController, org.mJeliot.model.predict.Method)
 	 */
 	@Override
-	public void onNewMethod(MJeliotController ictController, Method method) {
+	public void onNewMethod(MJeliotController mJeliotController, Method method) {
 	}
 
 	/* (non-Javadoc)
 	 * @see jeliot.mJeliot.MJeliotControllerListener#onResultPosted(jeliot.mJeliot.MJeliotController, org.mJeliot.model.predict.Method)
 	 */
 	@Override
-	public void onResultPosted(MJeliotController ictController, Method method) {
+	public void onResultPosted(MJeliotController mJeliotController, Method method) {
 	}
 
 	/* (non-Javadoc)
 	 * @see jeliot.mJeliot.MJeliotControllerListener#onMethodCalled(jeliot.mJeliot.MJeliotController, org.mJeliot.model.predict.Method)
 	 */
 	@Override
-	public void onMethodCalled(MJeliotController ictController, Method method) {
+	public void onMethodCalled(MJeliotController mJeliotController, Method method) {
 	}
 
 	/* (non-Javadoc)
 	 * @see jeliot.mJeliot.MJeliotControllerListener#onMethodReturned(jeliot.mJeliot.MJeliotController, org.mJeliot.model.predict.Method)
 	 */
 	@Override
-	public void onMethodReturned(MJeliotController ictController, Method method) {
+	public void onMethodReturned(MJeliotController mJeliotController, Method method) {
 	}
 
 	/* (non-Javadoc)
 	 * @see jeliot.mJeliot.MJeliotControllerListener#onClientDisconnected(jeliot.mJeliot.MJeliotController)
 	 */
 	@Override
-	public void onClientDisconnected(MJeliotController ictController) {
+	public void onClientDisconnected(MJeliotController mJeliotController) {
 		this.setText(this.messageBundle.getString("button.connect"));
 		this.setIcon(this.connectIcon);
 		this.setFunctionToConnect();
@@ -199,7 +199,7 @@ public class InteractButton extends JButton implements MJeliotControllerListener
 	 * @see jeliot.mJeliot.MJeliotControllerListener#onClientConnected(jeliot.mJeliot.MJeliotController)
 	 */
 	@Override
-	public void onClientConnected(MJeliotController ictController, boolean isReconnected) {
+	public void onClientConnected(MJeliotController mJeliotController, boolean isReconnected) {
 		if (!isReconnected) {
 			this.setText(this.messageBundle.getString("button.interact"));
 			this.setIcon(this.interactIcon);
@@ -213,7 +213,6 @@ public class InteractButton extends JButton implements MJeliotControllerListener
 	 */
 	public void reset() {
 		this.menu.setVisible(false);
-		// this.controller.removeICTControllerListener(this.menu);
 		this.buildMenu();
 	}
 	
@@ -234,35 +233,35 @@ public class InteractButton extends JButton implements MJeliotControllerListener
 	}
 
 	@Override
-	public void onNewLecture(MJeliotController ictController, Lecture lecture) {
+	public void onNewLecture(MJeliotController mJeliotController, Lecture lecture) {
 	}
 
 	@Override
-	public void onLogin(MJeliotController ictController, Lecture lecture) {
+	public void onLogin(MJeliotController mJeliotController, Lecture lecture) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onLoggedIn(MJeliotController ictController, Lecture currentLecture) {
+	public void onLoggedIn(MJeliotController mJeliotController, Lecture currentLecture) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onLogout(MJeliotController ictController, Lecture lecture) {
+	public void onLogout(MJeliotController mJeliotController, Lecture lecture) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onLectureUpdated(MJeliotController ictController, Lecture lecture) {
+	public void onLectureUpdated(MJeliotController mJeliotController, Lecture lecture) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onLoggedOut(MJeliotController ictController, Lecture lecture) {
+	public void onLoggedOut(MJeliotController mJeliotController, Lecture lecture) {
 		// TODO Auto-generated method stub
 		
 	}

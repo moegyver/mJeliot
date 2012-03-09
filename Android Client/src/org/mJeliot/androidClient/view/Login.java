@@ -7,7 +7,9 @@ import org.mJeliot.androidClient.controller.Controller;
 import org.mJeliot.model.Lecture;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -43,10 +45,13 @@ public class Login extends AbstractMJeliotActivity {
 	 * Button to log in/log out.
 	 */
 	private Button loginButton = null;
+	
+	private ProgressDialog scanWaitProgressDialog = null;
 	/**
 	 * The available Lectures
 	 */
 	private Vector<Lecture> lectures = null;
+	private ProgressDialog loggingInWaitProgressDialog;
 
 	/*
 	 * (non-Javadoc)
@@ -69,9 +74,16 @@ public class Login extends AbstractMJeliotActivity {
 			}
 		});
 		this.loginButton.setEnabled(false);
+		Resources res = getResources();
+		this.scanWaitProgressDialog = new ProgressDialog(this);
+		this.scanWaitProgressDialog.setMessage(res.getString(R.string.scanning));
+		this.scanWaitProgressDialog.show();
+		this.loggingInWaitProgressDialog = new ProgressDialog(this);
+		this.loggingInWaitProgressDialog.setMessage(res.getString(R.string.login));
 		this.rescanButton = (Button) findViewById(R.id.buttonloginrescan);
 		this.rescanButton.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
+				scanWaitProgressDialog.show();
 				controller.scanForNetworks();
 			}
 		});
@@ -132,94 +144,39 @@ public class Login extends AbstractMJeliotActivity {
 			Activity activity) {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.mJeliot.androidClient.controller.ControllerListener#onConnect(ict
-	 * .predict.androidClient.controller.Controller)
-	 */
 	@Override
 	public void onConnect(Controller controller) {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.mJeliot.androidClient.controller.ControllerListener#onConnected(ict
-	 * .predict.androidClient.controller.Controller)
-	 */
 	@Override
 	public void onConnected(Controller controller) {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.mJeliot.androidClient.controller.ControllerListener#onScanStart(ict
-	 * .predict.androidClient.controller.Controller)
-	 */
 	@Override
 	public void onScanStart(Controller controller) {
-		this.showToast(R.string.scanning);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.mJeliot.androidClient.controller.ControllerListener#onScanFinished
-	 * (org.mJeliot.androidClient.controller.Controller)
-	 */
 	@Override
 	public void onScanFinished(Controller controller) {
-		this.showToast(R.string.scanfinished);
+		this.scanWaitProgressDialog.dismiss();
 		this.fillLectures();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.mJeliot.androidClient.controller.ControllerListener#onNewLecture(
-	 * org.mJeliot.androidClient.controller.Controller, org.mJeliot.model.Lecture)
-	 */
 	@Override
 	public void onNewLecture(Controller controller, Lecture lecture) {
 		this.fillLectures();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.mJeliot.androidClient.controller.ControllerListener#onLoggingIn(ict
-	 * .predict.androidClient.controller.Controller)
-	 */
 	@Override
 	public void onLoggingIn(Controller controller) {
-		this.runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				disableControls();
-				loginButton.setText(R.string.cancel);
-			}
-		});
+		this.loggingInWaitProgressDialog.show();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.mJeliot.androidClient.controller.ControllerListener#onLoggedIn(ict
-	 * .predict.androidClient.controller.Controller)
-	 */
 	@Override
 	public void onLoggedIn(Controller controller) {
 		this.runOnUiThread(new Runnable() {
 			public void run() {
+				loggingInWaitProgressDialog.dismiss();
 				loginButton.setText(R.string.logout);
 			}
 		});
@@ -233,13 +190,6 @@ public class Login extends AbstractMJeliotActivity {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.mJeliot.androidClient.controller.ControllerListener#onNewMethod(ict
-	 * .predict.androidClient.controller.Controller)
-	 */
 	@Override
 	public void onNewMethod(Controller controller) {
 		if (this.controller.getCurrentActivity() == this) {
@@ -250,13 +200,6 @@ public class Login extends AbstractMJeliotActivity {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.mJeliot.androidClient.controller.ControllerListener#onResult(ict.
-	 * predict.androidClient.controller.Controller)
-	 */
 	@Override
 	public void onResult(Controller controller) {
 		if (this.controller.hasCurrentMethod()
@@ -278,20 +221,12 @@ public class Login extends AbstractMJeliotActivity {
 		this.runOnUiThread(new Runnable() {
 			public void run() {
 				loginButton.setText(R.string.login);
-				enableControls();
 			}
 		});
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.mJeliot.androidClient.controller.ControllerListener#onDisconnected
-	 * (org.mJeliot.androidClient.controller.Controller)
-	 */
 	@Override
-	public void onDisconnected(Controller controller) {
+	public void onDisconnected(Controller controller, boolean isForced) {
 		this.finish();
 	}
 

@@ -152,13 +152,11 @@ public class JeliotWindow implements PauseListener, MouseListener {
             jeliotUserProperties.setBooleanProperty("CG", true);
 
         }
-        // MOE
-        /* Saves the state of the ICT View. */
-        if (!jeliotUserProperties.containsKey("show_ict_view")) {
-            jeliotUserProperties.setBooleanProperty("show_ict_view", false);
+        /* Saves the state of the mJeliot View. */
+        if (!jeliotUserProperties.containsKey("show_mjeliot_view")) {
+            jeliotUserProperties.setBooleanProperty("show_mjeliot_view", false);
 
         }
-        // /MOE
     }
 
     /* If a method call should be asked from the user */
@@ -443,18 +441,18 @@ public class JeliotWindow implements PauseListener, MouseListener {
     
     
     /**
-     * Shows and hides the ICTView Panel and sets the value in the properties. 
+     * Shows and hides the mJeliotView Panel and sets the value in the properties. 
      */
-    private Action showICTViewAction = new AbstractAction(
-            messageBundle.getString("menu.options.show_ict_view")) {
+    private Action showMJeliotViewAction = new AbstractAction(
+            messageBundle.getString("menu.options.show_mjeliot_view")) {
 				private static final long serialVersionUID = 4045617838736035072L;
 
 		public void actionPerformed(ActionEvent e) {
-            jeliotUserProperties.setBooleanProperty("show_ict_view",
+            jeliotUserProperties.setBooleanProperty("show_mjeliot_view",
                     !jeliotUserProperties
-                            .getBooleanProperty("show_ict_view"));
+                            .getBooleanProperty("show_mjeliot_view"));
             statsPane.setVisible(jeliotUserProperties
-                            .getBooleanProperty("show_ict_view"));
+                            .getBooleanProperty("show_mjeliot_view"));
         }
 
     };
@@ -692,16 +690,16 @@ public class JeliotWindow implements PauseListener, MouseListener {
             bottomPane.add("Center", oc.container);
             // MOE
             this.statsPane = new JPanel();
-            this.statsPane.setVisible(jeliotUserProperties.getBooleanProperty("show_ict_view"));
+            this.statsPane.setVisible(jeliotUserProperties.getBooleanProperty("show_mjeliot_view"));
             this.statsPane.setLayout(new BoxLayout(this.statsPane, BoxLayout.Y_AXIS));
             PredictUsersStats userStats = new PredictUsersStats(this.jeliot);
-            this.jeliot.getMJeliotController().addICTControllerListener(userStats);
+            this.jeliot.getMJeliotController().addMJeliotControllerListener(userStats);
             this.statsPane.add(userStats);
             if (this.statsPane.isVisible()) {
             	userStats.repaint();
             }
             PredictResultStats resultStats = new PredictResultStats();
-            this.jeliot.getMJeliotController().addICTControllerListener(resultStats);
+            this.jeliot.getMJeliotController().addMJeliotControllerListener(resultStats);
             this.statsPane.add(resultStats);
             
             // /MOE
@@ -1128,13 +1126,11 @@ public class JeliotWindow implements PauseListener, MouseListener {
         });
         menu.add(enableHistoryViewMenuItem);
         
-        // MOE
-        final JCheckBoxMenuItem showICTView = new JCheckBoxMenuItem(
-                this.showICTViewAction);
-        showICTView.setState(jeliotUserProperties
-                .getBooleanProperty("show_ict_view"));
-        menu.add(showICTView);        
-        /// MOE
+        final JCheckBoxMenuItem showMJeliotView = new JCheckBoxMenuItem(
+                this.showMJeliotViewAction);
+        showMJeliotView.setState(jeliotUserProperties
+                .getBooleanProperty("show_mjeliot_view"));
+        menu.add(showMJeliotView);        
 
         //Pause on message
         final JCheckBoxMenuItem pauseOnMessageMenuItem = new JCheckBoxMenuItem(

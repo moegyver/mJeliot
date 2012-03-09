@@ -5,9 +5,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
+import org.mJeliot.helpers.Pair;
 import org.mJeliot.model.Lecture;
 import org.mJeliot.model.User;
-import org.mJeliot.model.helpers.Pair;
 import org.mJeliot.model.predict.Method;
 import org.mJeliot.protocol.ParserCaller;
 import org.mJeliot.protocol.ProtocolParser;
