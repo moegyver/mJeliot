@@ -38,13 +38,16 @@ public class Start extends AbstractMJeliotActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.start);
+		Resources res = getResources();
+		this.connectingWaitDialog = new ProgressDialog(this);
+		this.connectingWaitDialog.setMessage(res.getString(R.string.connecting));
 		this.loginButton = (Button) findViewById(R.id.buttonconnect);
 		this.loginButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				System.out.println("View: Start, Action: clicked on connect");
 				if (!controller.isConnected()) {
-					showWaitingDialog();
+					connectingWaitDialog.show();
 					controller.connect(url);
 				} else {
 					controller.disconnect();
@@ -68,12 +71,6 @@ public class Start extends AbstractMJeliotActivity {
 					int count) {
 			}
 		});
-	}
-
-	protected void showWaitingDialog() {
-		Resources res = getResources();
-		connectingWaitDialog = ProgressDialog.show(this, "", 
-                res.getString(R.string.connecting));		
 	}
 
 	/*
@@ -109,10 +106,7 @@ public class Start extends AbstractMJeliotActivity {
 	 */
 	@Override
 	public void onConnected(Controller controller) {
-		if (this.connectingWaitDialog != null) { 
-			this.connectingWaitDialog.dismiss();
-			this.connectingWaitDialog = null;
-		}
+		this.connectingWaitDialog.dismiss();
 		this.showToast(R.string.connected);
 		this.runOnUiThread(new Runnable() {
 			@Override

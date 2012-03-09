@@ -61,76 +61,81 @@ public class Login extends AbstractMJeliotActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.login);
-		this.loginButton = (Button) findViewById(R.id.buttonlogingo);
-		this.loginButton.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				if (!controller.isLoggedIn()) {
-					controller.login(aliasInput.getText().toString(), lectures
-							.get(networksInput.getSelectedItemPosition()));
-				} else {
-					controller.logout();
-				}
-			}
-		});
-		this.loginButton.setEnabled(false);
-		Resources res = getResources();
-		this.scanWaitProgressDialog = new ProgressDialog(this);
-		this.scanWaitProgressDialog.setMessage(res.getString(R.string.scanning));
-		this.scanWaitProgressDialog.show();
-		this.controller.scanForLectures();
-		this.loggingInWaitProgressDialog = new ProgressDialog(this);
-		this.loggingInWaitProgressDialog.setMessage(res.getString(R.string.login));
-		this.rescanButton = (Button) findViewById(R.id.buttonloginrescan);
-		this.rescanButton.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				scanWaitProgressDialog.show();
-				controller.scanForLectures();
-			}
-		});
-
-		this.aliasInput = (EditText) findViewById(R.id.editloginalias);
-		this.aliasInput.addTextChangedListener(new TextWatcher() {
-			@Override
-			public void afterTextChanged(Editable s) {
-				if (aliasInput.getText().toString().length() != 0
-						&& networksInput.getSelectedItem() != null) {
-					loginButton.setEnabled(true);
-				} else {
-					loginButton.setEnabled(false);
-				}
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-			}
-
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-			}
-
-		});
-		this.networksInput = (Spinner) findViewById(R.id.spinnerloginnetworks);
-		this.networksInput
-				.setOnItemSelectedListener(new OnItemSelectedListener() {
-
-					@Override
-					public void onItemSelected(AdapterView<?> arg0, View arg1,
-							int arg2, long arg3) {
-						if (aliasInput.getText().toString().length() > 0)
-							loginButton.setEnabled(true);
+		if (controller.isConnected()) {
+			setContentView(R.layout.login);
+			this.loginButton = (Button) findViewById(R.id.buttonlogingo);
+			this.loginButton.setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					if (!controller.isLoggedIn()) {
+						controller.login(aliasInput.getText().toString(), lectures
+								.get(networksInput.getSelectedItemPosition()));
+					} else {
+						controller.logout();
 					}
-
-					@Override
-					public void onNothingSelected(AdapterView<?> arg0) {
+				}
+			});
+			this.loginButton.setEnabled(false);
+			Resources res = getResources();
+			this.scanWaitProgressDialog = new ProgressDialog(this);
+			this.scanWaitProgressDialog.setMessage(res.getString(R.string.scanning));
+			this.scanWaitProgressDialog.show();
+			this.controller.scanForLectures();
+			this.loggingInWaitProgressDialog = new ProgressDialog(this);
+			this.loggingInWaitProgressDialog.setMessage(res.getString(R.string.login));
+			this.rescanButton = (Button) findViewById(R.id.buttonloginrescan);
+			this.rescanButton.setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					scanWaitProgressDialog.show();
+					controller.scanForLectures();
+				}
+			});
+	
+			this.aliasInput = (EditText) findViewById(R.id.editloginalias);
+			this.aliasInput.addTextChangedListener(new TextWatcher() {
+				@Override
+				public void afterTextChanged(Editable s) {
+					if (aliasInput.getText().toString().length() != 0
+							&& networksInput.getSelectedItem() != null) {
+						loginButton.setEnabled(true);
+					} else {
 						loginButton.setEnabled(false);
-
 					}
-
-				});
-		this.fillLectures();
+				}
+	
+				@Override
+				public void beforeTextChanged(CharSequence s, int start, int count,
+						int after) {
+				}
+	
+				@Override
+				public void onTextChanged(CharSequence s, int start, int before,
+						int count) {
+				}
+	
+			});
+			this.networksInput = (Spinner) findViewById(R.id.spinnerloginnetworks);
+			this.networksInput
+					.setOnItemSelectedListener(new OnItemSelectedListener() {
+	
+						@Override
+						public void onItemSelected(AdapterView<?> arg0, View arg1,
+								int arg2, long arg3) {
+							if (aliasInput.getText().toString().length() > 0)
+								loginButton.setEnabled(true);
+						}
+	
+						@Override
+						public void onNothingSelected(AdapterView<?> arg0) {
+							loginButton.setEnabled(false);
+	
+						}
+	
+					});
+			this.fillLectures();
+		} else {
+			System.err.println("Activity: Login, not connected");
+			this.finish();
+		}
 	}
 
 	/*

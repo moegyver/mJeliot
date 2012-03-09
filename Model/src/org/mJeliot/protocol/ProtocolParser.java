@@ -144,7 +144,7 @@ public class ProtocolParser {
 				}
 				node = document.getElementsByTagName("code").item(0);
 				if (node != null) {
-					code = node.getTextContent().replace("&gt;", ">").replace("&lt;","<");
+					code = node.getTextContent().replace("&gt;", ">").replace("&lt;","<").replace("&amp;", "&");
 					System.out.println("parser: code: " + code);
 				}
 				node = document.getElementsByTagName("cursorPosition").item(0);
@@ -741,7 +741,7 @@ public class ProtocolParser {
 	}
 
 	public String generateCodeUpdate(CharSequence s, int cursorPosition, User user, Lecture lecture) {
-		String code = s.toString().replace(">", "&gt;").replace("<", "&lt;");
+		String code = s.toString().replace("&", "&amp;").replace(">", "&gt;").replace("<", "&lt;");
 		String result = xmlHeader ;
 		result += startActionBegin + "codeUpdate\"" + end ;
 		result += startUserId + user.getId() + endUserId ;

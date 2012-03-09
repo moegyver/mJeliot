@@ -167,6 +167,7 @@ public class Client {
 		} catch (Exception e) {
 			System.err.println("error disconnecting: " + e.getMessage());
 		}
+		System.err.println("resetting client socket to null");
 		this.socket = null;
 		if (!isIntentional) {
 			reconnect();
@@ -186,6 +187,10 @@ public class Client {
 	 * @return true if the socket is connected, false otherwise
 	 */
 	public boolean isConnected() {
+		System.err.println("socket: " + this.socket);
+		if (socket != null) {
+			System.err.println("socket connected: " + socket.isConnected());
+		}
 		return this.socket != null && this.socket.isConnected();
 	}
 	/**
