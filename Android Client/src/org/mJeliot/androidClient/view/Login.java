@@ -248,11 +248,11 @@ public class Login extends AbstractMJeliotActivity {
 	 * Disables the controls of the login view. The login button has to be
 	 * handed separately to enable the user to logout.
 	 */
-	private void disableControls() {
+	/*private void disableControls() {
 		this.aliasInput.setEnabled(false);
 		this.networksInput.setEnabled(false);
 		this.rescanButton.setEnabled(false);
-	}
+	}*/
 
 	private void fillLectures() {
 		final ArrayAdapter<CharSequence> content = new ArrayAdapter<CharSequence>(

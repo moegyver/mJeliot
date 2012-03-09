@@ -27,6 +27,7 @@ public class ServerController implements ProtocolParserListener {
 	 */
 	private HashMap<Integer, Lecture> lectures = new HashMap<Integer, Lecture>();
 	private HashMap<Pair<Integer, Integer>, UserTimerTimeoutTask> userTimeoutTimers = new HashMap<Pair<Integer, Integer>, UserTimerTimeoutTask>();
+	private HashMap<Integer, ServerThread> currentUserThreads = new HashMap<Integer, ServerThread>();
 	/**
 	 * The corresponding server.
 	 */
@@ -185,6 +186,7 @@ public class ServerController implements ProtocolParserListener {
 		if (null == this.userTimeoutTimers.remove(new Pair<Integer, Integer>(lectureId, user.getId()))) {
 			System.err.println("could not remove userTimeoutTimer");
 		}
+		this.currentUserThreads.remove(user.getId());
 		Lecture lecture = this.lectures.get(lectureId);
 		if (lecture.containsUser(user)) {
 			System.out.println("removing user from lecture: " + lecture.removeUser(user));
@@ -467,12 +469,21 @@ public class ServerController implements ProtocolParserListener {
 		// The server does not care about UserLists
 	}
 
-	public void resetUserTimer(int lectureId, int userId) {
+	public void resetUserTimer(ServerThread serverThread, int lectureId, int userId) {
 		UserTimerTimeoutTask userTimerTask = this.userTimeoutTimers
 				.get(new Pair<Integer, Integer>(lectureId, userId));
 		if (userTimerTask != null) {
 			userTimerTask.resetTimer();
+		} else {
+			Lecture lecture = this.lectures.get(lectureId);
+			if (lecture != null) {
+				User user = lecture.getUser(userId);
+				if (user != null) {
+					this.startUserTimeoutTask(user, lecture);
+				}
+			}
 		}
+		this.currentUserThreads.put(userId, serverThread);
 	}
 
 	@Override
@@ -480,5 +491,11 @@ public class ServerController implements ProtocolParserListener {
 			ParserCaller parserCaller, Integer lectureId, Integer userId,
 			String code, Integer cursorPosition) {
 		System.out.println("got the code: " + code);
+	}
+
+	public void removeServerThread(ServerThread serverThread) {
+		if (this.currentUserThreads.containsValue(serverThread)) {
+			this.currentUserThreads.values().remove(serverThread);
+		}
 	}
 }

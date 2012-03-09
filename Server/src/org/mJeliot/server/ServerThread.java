@@ -93,6 +93,7 @@ public class ServerThread implements Runnable, ParserCaller {
 			this.controller.disconnectUser(this.user, this.user.getLecture().getId());
 		}
 		this.server.removeServerThread(this);
+		this.controller.removeServerThread(this);
 		try {
 			this.out.close();
 			this.in.close();
@@ -132,6 +133,6 @@ public class ServerThread implements Runnable, ParserCaller {
 	}
 
 	public void resetUserTimer(int lectureId, int userId) {
-		this.controller.resetUserTimer(lectureId, userId);
+		this.controller.resetUserTimer(this, lectureId, userId);
 	}
 }
