@@ -486,16 +486,25 @@ public class ServerController implements ProtocolParserListener {
 		this.currentUserThreads.put(userId, serverThread);
 	}
 
-	@Override
-	public void onCodeUpdate(ProtocolParser protocolParser,
-			ParserCaller parserCaller, Integer lectureId, Integer userId,
-			String code, Integer cursorPosition) {
-		System.out.println("got the code: " + code);
-	}
-
 	public void removeServerThread(ServerThread serverThread) {
 		if (this.currentUserThreads.containsValue(serverThread)) {
 			this.currentUserThreads.values().remove(serverThread);
 		}
+	}
+
+	@Override
+	public void onCodeUpdate(ProtocolParser protocolParser,
+			ParserCaller parserCaller, int lectureId, int userId, String code,
+			int cursorPosition, boolean done, boolean requestedAttention,
+			int destUserId) {
+		System.out.println("got the code: " + code);
+	}
+
+	@Override
+	public void onCodingTask(ProtocolParser protocolParser,
+			ParserCaller parserCaller, int lectureId, int from,
+			String unescapedCode) {
+		// TODO Auto-generated method stub
+		
 	}
 }

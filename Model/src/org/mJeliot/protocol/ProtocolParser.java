@@ -1,6 +1,5 @@
 package org.mJeliot.protocol;
 
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Collection;
@@ -10,6 +9,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.mJeliot.helpers.StringFunctions;
 import org.mJeliot.model.Lecture;
 import org.mJeliot.model.User;
 import org.mJeliot.model.predict.Method;
@@ -57,6 +57,14 @@ public class ProtocolParser {
 	private static final String endCode = "</code>";
 	private static final String startCursorPosition = "<cursorPosition>";
 	private static final String endCursorPosition = "</cursorPosition>";
+	private static final String startDestination = "<to>";
+	private static final String endDestination = "</to>";
+	private static final String startDone = "<done>";
+	private static final String endDone = "</done>";
+	private static final String startAttention = "<requestedAttention>";
+	private static final String endAttention = "</requestedAttention>";
+	private static final String startSource = "<from>";
+	private static final String endSource = "</from>";
 
 	/**
 	 * A list of listeners to inform on understood messages.
@@ -115,6 +123,10 @@ public class ProtocolParser {
 		int[] userIds = null;
 		String[] userNames = null;
 		String code = null;
+		Integer from = null;
+		Integer to = null;
+		Boolean done = null;
+		Boolean requestedAttention = null;
 		Integer cursorPosition = null;
 		try {
 			document = this.documentBuilder.parse(new InputSource(
@@ -144,13 +156,31 @@ public class ProtocolParser {
 				}
 				node = document.getElementsByTagName("code").item(0);
 				if (node != null) {
-					code = node.getTextContent().replace("&gt;", ">").replace("&lt;","<").replace("&amp;", "&");
-					System.out.println("parser: code: " + code);
+					code = node.getTextContent();
 				}
 				node = document.getElementsByTagName("cursorPosition").item(0);
 				if (node != null) {
 					cursorPosition = Integer.parseInt(node.getTextContent());
-					System.out.println("parser: cursorPosition:" + cursorPosition);
+					System.out.println("parser: cursorPosition:"
+							+ cursorPosition);
+				}
+				node = document.getElementsByTagName("to").item(0);
+				if (node != null) {
+					to = Integer.parseInt(node.getTextContent());
+				}
+				node = document.getElementsByTagName("from").item(0);
+				if (node != null) {
+					from = Integer.parseInt(node.getTextContent());
+				}
+				node = document.getElementsByTagName("done").item(0);
+				if (node != null) {
+					done = Boolean.parseBoolean(node.getTextContent());
+				}
+				node = document.getElementsByTagName("requestedAttention")
+						.item(0);
+				if (node != null) {
+					requestedAttention = Boolean.parseBoolean(node
+							.getTextContent());
 				}
 				node = document.getElementsByTagName("methodId").item(0);
 				if (node != null) {
@@ -288,9 +318,15 @@ public class ProtocolParser {
 					this.fireOnUserList(parserCaller, lectureId, userCount,
 							userIds, userNames);
 				} else if (action.equalsIgnoreCase("codeUpdate")
-						&& userId != null && lectureId != null && code != null && cursorPosition != null) {
+						&& userId != null && lectureId != null && done != null
+						&& requestedAttention != null && to != null
+						&& code != null && cursorPosition != null) {
 					this.fireOnCodeUpdate(parserCaller, lectureId, userId,
-							code, cursorPosition);
+							code, cursorPosition, done, requestedAttention, to);
+				} else if (action.equalsIgnoreCase("codingTask")
+						&& lectureId != null && code != null && from != null) {
+					this.fireOnCodingTask(parserCaller, lectureId, from,
+							code);
 				} else {
 					System.err
 							.println("Something missing in the parser or error in the message.");
@@ -304,10 +340,22 @@ public class ProtocolParser {
 		}
 	}
 
-	private void fireOnCodeUpdate(ParserCaller parserCaller, Integer lectureId,
-			Integer userId, String code, Integer cursorPosition) {
+	private void fireOnCodingTask(ParserCaller parserCaller, int lectureId,
+			int from, String code) {
+		String unescapedCode = StringFunctions.unescape(code);
 		for (ProtocolParserListener listener : this.listeners) {
-			listener.onCodeUpdate(this, parserCaller, lectureId, userId, code, cursorPosition);
+			listener.onCodingTask(this, parserCaller, lectureId, from,
+					unescapedCode);
+		}
+	}
+
+	private void fireOnCodeUpdate(ParserCaller parserCaller, Integer lectureId,
+			Integer userId, String code, Integer cursorPosition, boolean done,
+			boolean requestedAttention, Integer to) {
+		String unescapedCode = StringFunctions.unescape(code);
+		for (ProtocolParserListener listener : this.listeners) {
+			listener.onCodeUpdate(this, parserCaller, lectureId, userId,
+					unescapedCode, cursorPosition, done, requestedAttention, to);
 		}
 	}
 
@@ -561,10 +609,10 @@ public class ProtocolParser {
 	 * @return the formatted xml-String
 	 */
 	public String generateUserLogin(User user, int lectureId) {
-		return xmlHeader + startActionBegin + "userLogin\"" + end 
-				+ startLectureId + lectureId + endLectureId 
-				+ startUserName + user.getName() + endUserName 
-				+ startUserId + user.getId() + endUserId + endAction;
+		return xmlHeader + startActionBegin + "userLogin\"" + end
+				+ startLectureId + lectureId + endLectureId + startUserName
+				+ user.getName() + endUserName + startUserId + user.getId()
+				+ endUserId + endAction;
 	}
 
 	/**
@@ -577,9 +625,9 @@ public class ProtocolParser {
 	 */
 	public String generateUserLoggedIn(User user, Lecture lecture) {
 		return xmlHeader + startActionBegin + "userLoggedIn\"" + end
-				+ startLectureId + lecture.getId() + endLectureId 
-				+ startUserName + user.getName() + endUserName 
-				+ startUserId + user.getId() + endUserId + endAction;
+				+ startLectureId + lecture.getId() + endLectureId
+				+ startUserName + user.getName() + endUserName + startUserId
+				+ user.getId() + endUserId + endAction;
 	}
 
 	/**
@@ -592,8 +640,8 @@ public class ProtocolParser {
 	 */
 	public String generateUserLogout(User user, Lecture lecture) {
 		return xmlHeader + startActionBegin + "userLogout\"" + end
-				+ startLectureId + lecture.getId() + endLectureId 
-				+ startUserId + user.getId() + endUserId + endAction;
+				+ startLectureId + lecture.getId() + endLectureId + startUserId
+				+ user.getId() + endUserId + endAction;
 	}
 
 	/**
@@ -605,10 +653,9 @@ public class ProtocolParser {
 	 * @return the formatted xml-String
 	 */
 	public String generateUserLoggedOut(User user, Lecture lecture) {
-		String result = xmlHeader + startActionBegin + "userLoggedOut\""
-				+ end ;
+		String result = xmlHeader + startActionBegin + "userLoggedOut\"" + end;
 		if (lecture != null) {
-			result += startLectureId + lecture.getId() + endLectureId ;
+			result += startLectureId + lecture.getId() + endLectureId;
 		}
 		result += startUserId + user.getId() + endUserId + endAction;
 		return result;
@@ -626,17 +673,16 @@ public class ProtocolParser {
 	 */
 	public String generatePredictHandIn(User user, Lecture lecture) {
 		Method method = lecture.getMethod();
-		String result = xmlHeader ;
-		result += startActionBegin + "predictHandin\"" + end ;
-		result += startLectureId + lecture.getId() + endLectureId ;
-		result += startUserId + user.getId() + endUserId ;
-		result += startMethodId + method.getId() + endMethodId ;
+		String result = xmlHeader;
+		result += startActionBegin + "predictHandin\"" + end;
+		result += startLectureId + lecture.getId() + endLectureId;
+		result += startUserId + user.getId() + endUserId;
+		result += startMethodId + method.getId() + endMethodId;
 		result += startParameterCount + method.getParameters().size()
-				+ endParameterCount ;
+				+ endParameterCount;
 		for (Parameter parameter : method.getParameters()) {
 			result += startParameterStart + parameter.getName() + "\"" + end
-					+ parameter.getPredictedValueForUser(user) + endParameter
-					;
+					+ parameter.getPredictedValueForUser(user) + endParameter;
 		}
 		result += endAction;
 		return result;
@@ -651,18 +697,17 @@ public class ProtocolParser {
 	 */
 	public String generateNewMethodPredict(Lecture lecture) {
 		Method method = lecture.getMethod();
-		String result = xmlHeader ;
-		result += startActionBegin + "predictSendout\"" + end ;
-		result += startLectureId + lecture.getId() + endLectureId ;
-		result += startClassName + method.getClassName() + endClassName ;
-		result += startMethodName + method.getMethodName() + endMethodName
-				;
-		result += startMethodId + method.getId() + endMethodId ;
+		String result = xmlHeader;
+		result += startActionBegin + "predictSendout\"" + end;
+		result += startLectureId + lecture.getId() + endLectureId;
+		result += startClassName + method.getClassName() + endClassName;
+		result += startMethodName + method.getMethodName() + endMethodName;
+		result += startMethodId + method.getId() + endMethodId;
 		result += startParameterCount + method.getParameters().size()
-				+ endParameterCount ;
+				+ endParameterCount;
 		for (Parameter parameter : method.getParameters()) {
 			result += startParameterStart + parameter.getName() + "\"" + end
-					+ endParameter ;
+					+ endParameter;
 		}
 		result += endAction;
 		return result;
@@ -678,25 +723,25 @@ public class ProtocolParser {
 	 */
 	public String generatePredictResult(Lecture lecture) {
 		Method method = lecture.getMethod();
-		String result = xmlHeader ;
-		result += startActionBegin + "predictResult\"" + end ;
-		result += startLectureId + lecture.getId() + endLectureId ;
-		result += startMethodId + method.getId() + endMethodId ;
+		String result = xmlHeader;
+		result += startActionBegin + "predictResult\"" + end;
+		result += startLectureId + lecture.getId() + endLectureId;
+		result += startMethodId + method.getId() + endMethodId;
 		result += startParameterCount + method.getParameters().size()
-				+ endParameterCount ;
+				+ endParameterCount;
 		for (Parameter parameter : method.getParameters()) {
 			result += startParameterStart + parameter.getName() + "\"" + end
-					+ parameter.getActualValue() + endParameter ;
+					+ parameter.getActualValue() + endParameter;
 		}
 		result += endAction;
 		return result;
 	}
 
 	public String generateLecture(Lecture lecture) {
-		String result = xmlHeader ;
-		result += startActionBegin + "lecture\"" + end ;
-		result += startLectureId + lecture.getId() + endLectureId ;
-		result += startLectureName + lecture.getName() + endLectureName ;
+		String result = xmlHeader;
+		result += startActionBegin + "lecture\"" + end;
+		result += startLectureId + lecture.getId() + endLectureId;
+		result += startLectureName + lecture.getName() + endLectureName;
 		result += endAction;
 		if (lecture.getMethod() != null) {
 			result += this.generateNewMethodPredict(lecture);
@@ -705,20 +750,20 @@ public class ProtocolParser {
 	}
 
 	public String generateLectureQuery() {
-		String result = xmlHeader ;
-		result += startActionBegin + "lectureQuery\"" + end ;
+		String result = xmlHeader;
+		result += startActionBegin + "lectureQuery\"" + end;
 		result += endAction;
 		return result;
 	}
 
 	public String generateLectureList(Collection<Lecture> lectures) {
-		String result = xmlHeader ;
-		result += startActionBegin + "lectureList\"" + end ;
+		String result = xmlHeader;
+		result += startActionBegin + "lectureList\"" + end;
 		result += "<lectureList length=\"" + lectures.size() + "\">";
 		for (Lecture lecture : lectures) {
 			result += ProtocolParser.lectureBegin + "id=\"" + lecture.getId()
 					+ "\" name=\"" + lecture.getName() + "\""
-					+ ProtocolParser.endShortTag ;
+					+ ProtocolParser.endShortTag;
 		}
 		result += "</lectureList>";
 		result += endAction;
@@ -726,27 +771,44 @@ public class ProtocolParser {
 	}
 
 	public String generateUserList(User[] users, int lectureId) {
-		String result = xmlHeader ;
-		result += startActionBegin + "userList\"" + end ;
-		result += startLectureId + lectureId + endLectureId ;
+		String result = xmlHeader;
+		result += startActionBegin + "userList\"" + end;
+		result += startLectureId + lectureId + endLectureId;
 		result += "<userList length=\"" + users.length + "\" lectureId=\""
 				+ lectureId + "\">";
 		for (User user : users) {
 			result += ProtocolParser.userBegin + "id=\"" + user.getId()
-					+ "\" name=\"" + user.getName() + "\"" + endShortTag ;
+					+ "\" name=\"" + user.getName() + "\"" + endShortTag;
 		}
 		result += "</userList>";
 		result += endAction;
 		return result;
 	}
 
-	public String generateCodeUpdate(CharSequence s, int cursorPosition, User user, Lecture lecture) {
-		String code = s.toString().replace("&", "&amp;").replace(">", "&gt;").replace("<", "&lt;");
-		String result = xmlHeader ;
-		result += startActionBegin + "codeUpdate\"" + end ;
-		result += startUserId + user.getId() + endUserId ;
-		result += startLectureId + lecture.getId() + endLectureId ;
-		result += startCode + code + endCode;
+	public String generateCodingTask(String code, int fromUserId,
+			Lecture lecture) {
+		String escapedCode = StringFunctions.escape(code);
+		String result = xmlHeader;
+		result += startActionBegin + "codingTask\"" + end;
+		result += startSource + fromUserId + endSource;
+		result += startLectureId + lecture.getId() + endLectureId;
+		result += startCode + escapedCode + endCode;
+		result += endAction;
+		return result;
+	}
+
+	public String generateCodeUpdate(String code, int cursorPosition,
+			boolean done, boolean attention, int toUserId, User user,
+			Lecture lecture) {
+		String escapedCode = StringFunctions.escape(code);
+		String result = xmlHeader;
+		result += startActionBegin + "codeUpdate\"" + end;
+		result += startDestination + toUserId + endDestination;
+		result += startUserId + user.getId() + endUserId;
+		result += startLectureId + lecture.getId() + endLectureId;
+		result += startDone + done + endDone;
+		result += startAttention + attention + endAttention;
+		result += startCode + escapedCode + endCode;
 		result += startCursorPosition + cursorPosition + endCursorPosition;
 		result += endAction;
 		return result;

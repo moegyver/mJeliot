@@ -37,6 +37,7 @@ public class Controller extends Application implements ClientListener,
 	// state-variables
 	private Lecture lecture = null;
 	private User user = null;
+	private Integer toUserId = 0; // TODO! change on task
 	private Client client = null;
 	private Activity currentActivity = null;
 	private Vector<ControllerListener> listeners = new Vector<ControllerListener>();
@@ -516,15 +517,17 @@ public class Controller extends Application implements ClientListener,
 		return this.lecture;
 	}
 
-	public void sendCode(CharSequence s, int cursorPosition) {
-		this.client.sendMessage(this.parser.generateCodeUpdate(s,
-				cursorPosition, user, lecture));
+	public void sendCodeUpdate(String code, int cursorPosition, boolean done,
+			boolean attention) {
+		this.client.sendMessage(this.parser.generateCodeUpdate(code,
+				cursorPosition, done, attention, this.toUserId, user, lecture));
 	}
 
 	@Override
 	public void onCodeUpdate(ProtocolParser protocolParser,
-			ParserCaller parserCaller, Integer lectureId, Integer userId,
-			String code, Integer cursorPosition) {
+			ParserCaller parserCaller, int lectureId, int userId, String code,
+			int cursorPosition, boolean done, boolean requestedAttention,
+			int destUserId) {
 	}
 
 	public boolean isEditorInLiveMode() {
@@ -534,8 +537,16 @@ public class Controller extends Application implements ClientListener,
 
 	@Override
 	public boolean isNetworkReady() {
-	    ConnectivityManager cm =
-	            (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-	        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		return cm.getActiveNetworkInfo() != null
+				&& cm.getActiveNetworkInfo().isConnected();
+	}
+
+	@Override
+	public void onCodingTask(ProtocolParser protocolParser,
+			ParserCaller parserCaller, int lectureId, int from,
+			String unescapedCode) {
+		// TODO Auto-generated method stub
+		
 	}
 }

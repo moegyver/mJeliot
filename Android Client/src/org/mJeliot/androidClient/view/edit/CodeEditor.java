@@ -23,6 +23,7 @@ public class CodeEditor extends AbstractMJeliotActivity {
 		private long lastUpdate = System.currentTimeMillis();
 		private EditText editor;
 		private String originalCode = "";
+		private int cursorPosition = 0;
 
 		/*
 		 * (non-Javadoc)
@@ -106,11 +107,12 @@ public class CodeEditor extends AbstractMJeliotActivity {
 		}
 
 		protected void done() {
-			//this.controller.done();
+			this.controller.sendCodeUpdate(this.getCode(), this.cursorPosition, true, false);
 			System.out.println("CodeEditor: user is done");
 		}
 
 		protected void requestAttention() {
+			this.controller.sendCodeUpdate(this.getCode(), this.cursorPosition, false, true);
 			System.out.println("CodeEditor: user requested attention");
 		}
 
@@ -264,9 +266,10 @@ public class CodeEditor extends AbstractMJeliotActivity {
 		}
 
 		public void onCodeUpdate(CharSequence s, int cursorPosition) {
+			this.cursorPosition = cursorPosition;
 			if (this.controller.isEditorInLiveMode() || this.isUpdateNeeded()) {
 				this.lastUpdate = System.currentTimeMillis();
-				this.controller.sendCode(s, cursorPosition);	
+				this.controller.sendCodeUpdate(s.toString(), this.cursorPosition, false, false);	
 			}
 		}
 

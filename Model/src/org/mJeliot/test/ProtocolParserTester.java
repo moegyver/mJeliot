@@ -180,7 +180,17 @@ public class ProtocolParserTester implements ProtocolParserListener, ParserCalle
 	}
 	@Override
 	public void onCodeUpdate(ProtocolParser protocolParser,
-			ParserCaller parserCaller, Integer lectureId, Integer userId,
-			String code, Integer cursorPosition) {
+			ParserCaller parserCaller, int lectureId, int userId, String code,
+			int cursorPosition, boolean done, boolean requestedAttention,
+			int destUserId) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void onCodingTask(ProtocolParser protocolParser,
+			ParserCaller parserCaller, int lectureId, int from,
+			String unescapedCode) {
+		// TODO Auto-generated method stub
+		
 	}
 }
