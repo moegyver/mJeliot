@@ -22,7 +22,6 @@ public class CodeEditor extends AbstractMJeliotActivity {
 		private static final long UPDATE_INTERVAL = 5000;
 		private long lastUpdate = System.currentTimeMillis();
 		private EditText editor;
-		private String originalCode = "";
 		private int cursorPosition = 0;
 
 		/*
@@ -37,6 +36,7 @@ public class CodeEditor extends AbstractMJeliotActivity {
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.codeeditor);
 			editor = (EditText)findViewById(R.id.codeEditor);
+			editor.setText(controller.getOriginalCode());
 			editor.addTextChangedListener(new TextWatcher() {
 					@Override
 					public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -60,7 +60,7 @@ public class CodeEditor extends AbstractMJeliotActivity {
 					       .setCancelable(false)
 					       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 					           public void onClick(DialogInterface dialog, int id) {
-					        	   editor.setText(originalCode);
+					        	   editor.setText(controller.getOriginalCode());
 					        	   dialog.dismiss();
 					           }
 					       })
@@ -282,7 +282,12 @@ public class CodeEditor extends AbstractMJeliotActivity {
 		}
 		
 		public void setCode(String code) {
-			this.originalCode  = code;
 			this.editor.setText(code);
+		}
+
+		@Override
+		public void onCodingTask(Controller controller, String code) {
+			// TODO Auto-generated method stub
+			
 		}
 }

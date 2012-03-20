@@ -577,7 +577,12 @@ public class MJeliotController implements ClientListener, ProtocolParserListener
 	public void onCodingTask(ProtocolParser protocolParser,
 			ParserCaller parserCaller, int lectureId, int from,
 			String unescapedCode) {
-		// TODO Auto-generated method stub
-		
+		if (lectureId == this.lecture.getId()) {
+			System.out.println("got code update from: " + from + " code: " + unescapedCode);
+		}
+	}
+
+	public void sendCode(String code) {
+		this.sendMessage(this.parser.generateCodingTask(code, this.user.getId(), this.lecture.getId()));
 	}
 }

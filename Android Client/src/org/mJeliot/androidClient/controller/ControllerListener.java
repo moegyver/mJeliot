@@ -79,4 +79,5 @@ public interface ControllerListener {
 	 * @param lecture the received lecture
 	 */
 	public void onNewLecture(Controller controller, Lecture lecture);
+	public void onCodingTask(Controller controller, String code);
 }

@@ -44,6 +44,7 @@ public class Controller extends Application implements ClientListener,
 	// parser
 	private ProtocolParser parser = new ProtocolParser();
 	private HashMap<Integer, Lecture> availableLectures = new HashMap<Integer, Lecture>();
+	private String originalCode;
 
 	public Controller() {
 		parser.addProtocolParserListener(this);
@@ -521,7 +522,7 @@ public class Controller extends Application implements ClientListener,
 	public void sendCodeUpdate(String code, int cursorPosition, boolean done,
 			boolean attention) {
 		this.client.sendMessage(this.parser.generateCodeUpdate(code,
-				cursorPosition, done, attention, this.toUserId, user, lecture));
+				cursorPosition, done, attention, this.toUserId, user.getId(), lecture.getId()));
 	}
 
 	@Override
@@ -547,7 +548,20 @@ public class Controller extends Application implements ClientListener,
 	public void onCodingTask(ProtocolParser protocolParser,
 			ParserCaller parserCaller, int lectureId, int from,
 			String unescapedCode) {
-		// TODO Auto-generated method stub
-		
+		if (this.lecture != null && this.lecture.getId() == lectureId) {
+			this.toUserId = from;
+			this.originalCode = unescapedCode;
+			this.fireOnCodingTask(unescapedCode);
+		}
+	}
+
+	private void fireOnCodingTask(String code) {
+		for (ControllerListener listener : this.listeners) {
+			listener.onCodingTask(this, code);
+		}
+	}
+
+	public String getOriginalCode() {
+		return this.originalCode;
 	}
 }

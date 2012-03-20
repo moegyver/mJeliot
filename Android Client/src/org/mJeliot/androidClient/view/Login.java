@@ -290,4 +290,9 @@ public class Login extends AbstractMJeliotActivity {
 		});
 		this.enableControls();
 	}
+	@Override
+	public void onCodingTask(Controller controller, String code) {
+		// TODO Auto-generated method stub
+		
+	}
 }

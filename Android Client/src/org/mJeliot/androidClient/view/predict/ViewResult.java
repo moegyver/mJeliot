@@ -173,4 +173,10 @@ public class ViewResult extends AbstractMJeliotActivity {
 	public void onDisconnected(Controller controller, boolean isForced) {
 		this.finish();
 	}
+
+	@Override
+	public void onCodingTask(Controller controller, String code) {
+		// TODO Auto-generated method stub
+		
+	}
 }

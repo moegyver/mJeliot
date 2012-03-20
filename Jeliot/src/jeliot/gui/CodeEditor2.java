@@ -45,6 +45,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.PlainDocument;
 
+import jeliot.Jeliot;
 import jeliot.mcode.Highlight;
 import jeliot.mcode.MCodeUtilities;
 import jeliot.tracker.Tracker;
@@ -291,6 +292,15 @@ public class CodeEditor2 extends JComponent {
             area.paste();
         }
     };
+    
+    private ActionListener code = new ActionListener() {
+
+        public void actionPerformed(ActionEvent e) {
+            Tracker.trackEvent(TrackerClock.currentTimeMillis(),
+                    Tracker.BUTTON, -1, -1, "CodeButton");
+            jeliot.getMJeliotController().sendCode(area.getText());
+        }
+    };
 
     /**
      * ActionListener that handels the selection of the whole code area.
@@ -314,7 +324,9 @@ public class CodeEditor2 extends JComponent {
     public void setMasterFrame(JFrame frame) {
         this.masterFrame = frame;
     }
-    private JPopupMenu moemenu = new JPopupMenu(); {
+    private JPopupMenu moemenu = new JPopupMenu();
+
+	private final Jeliot jeliot; {
         JMenuItem menuItem;
         menuItem = new JMenuItem(messageBundle.getString("popup_menu.clear"));
         moemenu.add(menuItem);
@@ -330,8 +342,9 @@ public class CodeEditor2 extends JComponent {
      * Sets the layout and adds the JScrollPane with JTextArea area and JToolbar
      * in it. Initializes the FileChooser.
      */
-    public CodeEditor2(String udir, String defaultIO) {
-        this.udir = udir;
+    public CodeEditor2(Jeliot jeliot, String udir, String defaultIO) {
+        this.jeliot = jeliot;
+		this.udir = udir;
         this.template = defaultIO + "\n\n" + template;
         initFileChooser();
 
@@ -461,6 +474,10 @@ public class CodeEditor2 extends JComponent {
                 .getString("button.paste"), propertiesBundle
                 .getStringProperty("image.paste_icon"), pasteur);
         pasteButton.setMnemonic(KeyEvent.VK_T);
+        
+        JButton codeButton = makeToolButton(messageBundle
+                .getString("button.code"), propertiesBundle
+                .getStringProperty("image.code_icon"), code);
 
         JToolBar p = new JToolBar();
         p.add(clearButton);
@@ -470,6 +487,8 @@ public class CodeEditor2 extends JComponent {
         p.add(cutButton);
         p.add(copyButton);
         p.add(pasteButton);
+        p.addSeparator();
+        p.add(codeButton);
         return p;
     }
 

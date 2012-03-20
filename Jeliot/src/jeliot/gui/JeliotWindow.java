@@ -602,7 +602,7 @@ public class JeliotWindow implements PauseListener, MouseListener {
         this.frame.addMouseListener(this);
         this.panelController = new PanelController(theatre, iLoad);
         //this.editor = new CodeEditor(this.udir);
-        this.editor = new CodeEditor2(this.udir, jeliot.getImportIOStatement());
+        this.editor = new CodeEditor2(this.jeliot, this.udir, jeliot.getImportIOStatement());
         editor.setMasterFrame(frame);
         /*        this.mCodeSaver = new MCodeSaver();*/
     }

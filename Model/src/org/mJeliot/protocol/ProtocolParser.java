@@ -786,28 +786,28 @@ public class ProtocolParser {
 	}
 
 	public String generateCodingTask(String code, int fromUserId,
-			Lecture lecture) {
+			int lectureId) {
 		String escapedCode = StringFunctions.escape(code);
 		String result = xmlHeader;
 		result += startActionBegin + "codingTask\"" + end;
 		result += startSource + fromUserId + endSource;
-		result += startLectureId + lecture.getId() + endLectureId;
+		result += startLectureId + lectureId + endLectureId;
 		result += startCode + escapedCode + endCode;
 		result += endAction;
 		return result;
 	}
 
 	public String generateCodeUpdate(String code, int cursorPosition,
-			boolean done, boolean attention, int toUserId, User user,
-			Lecture lecture) {
+			boolean isDone, boolean hasRequestedAttention, int toUserId, int userId,
+			int lectureId) {
 		String escapedCode = StringFunctions.escape(code);
 		String result = xmlHeader;
 		result += startActionBegin + "codeUpdate\"" + end;
 		result += startDestination + toUserId + endDestination;
-		result += startUserId + user.getId() + endUserId;
-		result += startLectureId + lecture.getId() + endLectureId;
-		result += startDone + done + endDone;
-		result += startAttention + attention + endAttention;
+		result += startUserId + userId + endUserId;
+		result += startLectureId + lectureId + endLectureId;
+		result += startDone + isDone + endDone;
+		result += startAttention + hasRequestedAttention + endAttention;
 		result += startCode + escapedCode + endCode;
 		result += startCursorPosition + cursorPosition + endCursorPosition;
 		result += endAction;

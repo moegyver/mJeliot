@@ -497,14 +497,23 @@ public class ServerController implements ProtocolParserListener {
 			ParserCaller parserCaller, int lectureId, int userId, String code,
 			int cursorPosition, boolean done, boolean requestedAttention,
 			int destUserId) {
-		System.out.println("got the code: " + code);
+		if (this.currentUserThreads.containsKey(userId)) {
+			System.out.println("sending code update back to Jeliot");
+			String message = parser.generateCodeUpdate(code, cursorPosition, done, requestedAttention, destUserId, userId, lectureId); 
+			ServerThread serverThread = this.currentUserThreads.get(userId);
+			serverThread.sendMessage(message);
+		} else {
+			System.out.println("could not find destination");
+		}
 	}
 
 	@Override
 	public void onCodingTask(ProtocolParser protocolParser,
 			ParserCaller parserCaller, int lectureId, int from,
 			String unescapedCode) {
-		// TODO Auto-generated method stub
-		
+		String message = this.parser.generateCodingTask(unescapedCode, from, lectureId);
+		for (ServerThread serverThread : this.server.getServerThreads()) {
+			serverThread.sendMessage(message);
+		}
 	}
 }

@@ -31,16 +31,6 @@ public class Wait extends AbstractMJeliotActivity {
 		System.out.println("Wait: new activity");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.wait);
-		Button fakeedit = (Button)findViewById(R.id.fakeedit);
-		fakeedit.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent editor = new Intent();
-				editor.setClassName("org.mJeliot.androidClient",
-						"org.mJeliot.androidClient.view.edit.CodeEditor");
-				startActivity(editor);
-			}
-		});
 	}
 	@Override
 	public void onRestart() {
@@ -214,5 +204,14 @@ public class Wait extends AbstractMJeliotActivity {
 	@Override
 	public void onDisconnected(Controller controller, boolean isForced) {
 		this.finish();
+	}
+	@Override
+	public void onCodingTask(Controller controller, String code) {
+		if (this.controller.getCurrentActivity() == this) {
+			Intent editor = new Intent();
+			editor.setClassName("org.mJeliot.androidClient",
+					"org.mJeliot.androidClient.view.edit.CodeEditor");
+			startActivity(editor);
+		}
 	}
 }

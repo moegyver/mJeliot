@@ -205,4 +205,10 @@ public class Predict extends AbstractMJeliotActivity {
 		waitDialog.setContentView(waitDialogText);
 		return waitDialog;
 	}
+
+	@Override
+	public void onCodingTask(Controller controller, String code) {
+		// TODO Auto-generated method stub
+		
+	}
 }
