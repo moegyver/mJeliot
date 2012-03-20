@@ -354,7 +354,8 @@ public class Controller extends Application implements ClientListener,
 	@Override
 	public void onUserLoggedOut(ProtocolParser protocolParser,
 			ParserCaller parserCaller, int lectureId, int userId) {
-		if (this.user.getId() == userId && this.lecture.getId() == lectureId) {
+		System.out.println("onUserLoggedOut: user: " + this.user + " lecture: " + this.lecture);
+		if (this.user != null && this.user.getId() == userId && this.lecture.getId() == lectureId) {
 			this.fireOnLoggedOut();
 		}
 		this.user = null;

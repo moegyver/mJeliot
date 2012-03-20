@@ -9,6 +9,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import org.mJeliot.model.Lecture;
+import org.mJeliot.model.User;
 import org.mJeliot.model.predict.Method;
 import org.mJeliot.model.predict.Parameter;
 
@@ -177,5 +178,19 @@ public class InteractMenu extends JPopupMenu implements MJeliotControllerListene
 		this.remove(0);
 		this.lectureMenu = new LectureMenu("Available lectures", mJeliotController);
 		this.add(lectureMenu, 0);
+	}
+
+	@Override
+	public void onUserLoggedIn(MJeliotController mJeliotController, User user,
+			Lecture lecture) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onUserLoggedOut(MJeliotController mJeliotController, User user,
+			Lecture lecture) {
+		// TODO Auto-generated method stub
+		
 	}
 }

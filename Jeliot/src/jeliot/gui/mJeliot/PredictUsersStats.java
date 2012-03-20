@@ -9,6 +9,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 
 import org.mJeliot.model.Lecture;
+import org.mJeliot.model.User;
 import org.mJeliot.model.predict.Method;
 
 import jeliot.Jeliot;
@@ -243,5 +244,19 @@ public class PredictUsersStats extends Component implements MJeliotControllerLis
 
 	@Override
 	public void onLoggedOut(MJeliotController mJeliotController, Lecture lecture) {
+	}
+
+	@Override
+	public void onUserLoggedIn(MJeliotController mJeliotController, User user,
+			Lecture lecture) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onUserLoggedOut(MJeliotController mJeliotController, User user,
+			Lecture lecture) {
+		// TODO Auto-generated method stub
+		
 	}
 }

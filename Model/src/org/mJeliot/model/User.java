@@ -87,4 +87,9 @@ public class User {
 	public Lecture getLecture() {
 		return lecture;
 	}
+	@Override
+	public String toString() {
+		return "mJeliot User, id=" + this.id + ", username=" + this.name;
+		
+	}
 }

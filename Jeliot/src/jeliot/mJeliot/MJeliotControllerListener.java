@@ -1,6 +1,7 @@
 package jeliot.mJeliot;
 
 import org.mJeliot.model.Lecture;
+import org.mJeliot.model.User;
 import org.mJeliot.model.predict.Method;
 
 /**
@@ -60,4 +61,8 @@ public interface MJeliotControllerListener {
 	public void onLogout(MJeliotController mJeliotController, Lecture lecture);
 	public void onLectureUpdated(MJeliotController mJeliotController, Lecture lecture);
 	public void onLoggedOut(MJeliotController mJeliotController, Lecture lecture);
+	public void onUserLoggedIn(MJeliotController mJeliotController, User user,
+			Lecture lecture);
+	public void onUserLoggedOut(MJeliotController mJeliotController, User user,
+			Lecture lecture);
 }

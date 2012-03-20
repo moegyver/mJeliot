@@ -148,6 +148,12 @@ public class MJeliotController implements ClientListener, ProtocolParserListener
 		}
 	}
 
+	private void fireOnUserLoggedIn(User user, Lecture lecture) {
+		for (MJeliotControllerListener listener : this.listeners) {
+			listener.onUserLoggedIn(this, user, lecture);
+		}
+	}
+
 	private void fireOnLoggedIn() {
 		synchronized (this.listeners) {
 			for(MJeliotControllerListener listener : this.listeners) {
@@ -278,6 +284,7 @@ public class MJeliotController implements ClientListener, ProtocolParserListener
 				if (this.lecture.getUsers()[i].getId() == userId) {
 					user = this.lecture.getUsers()[i];
 					this.lecture.removeUser(user);
+					this.fireOnUserLoggedOut(user, this.lecture);
 				}
 			}
 			if (this.lecture.getMethod() != null) {
@@ -289,6 +296,12 @@ public class MJeliotController implements ClientListener, ProtocolParserListener
 		}
 		this.fireOnUserCountChanged();
 		this.fireOnAnswerCountChanged();
+	}
+
+	private void fireOnUserLoggedOut(User user, Lecture lecture) {
+		for (MJeliotControllerListener listener : this.listeners) {
+			listener.onUserLoggedOut(this, user, lecture);
+		}
 	}
 
 	/**
@@ -329,6 +342,7 @@ public class MJeliotController implements ClientListener, ProtocolParserListener
 			if (!lecture.containsUser(user)) {
 				this.lecture.addUser(user);
 				this.fireOnUserCountChanged();
+				this.fireOnUserLoggedIn(user, this.lecture);
 			}
 		}
 	}
@@ -449,7 +463,8 @@ public class MJeliotController implements ClientListener, ProtocolParserListener
 			String[] userNames) {
 		if (this.lecture != null && this.lecture.getId() == lectureId) {
 			for (int i = 0; i < userCount; i++) {
-				this.addUser(new User(userNames[i], userIds[i]), lectureId);
+				User user = new User(userNames[i], userIds[i]);
+				this.addUser(user, lectureId);
 			}
 		}
 		

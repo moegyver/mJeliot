@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
 import org.mJeliot.model.Lecture;
+import org.mJeliot.model.User;
 import org.mJeliot.model.predict.Method;
 
 import jeliot.Jeliot;
@@ -262,6 +263,20 @@ public class InteractButton extends JButton implements MJeliotControllerListener
 
 	@Override
 	public void onLoggedOut(MJeliotController mJeliotController, Lecture lecture) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onUserLoggedIn(MJeliotController mJeliotController, User user,
+			Lecture lecture) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onUserLoggedOut(MJeliotController mJeliotController, User user,
+			Lecture lecture) {
 		// TODO Auto-generated method stub
 		
 	}
