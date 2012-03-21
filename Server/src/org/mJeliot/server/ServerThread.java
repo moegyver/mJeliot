@@ -18,7 +18,7 @@ import org.mJeliot.protocol.ParserCaller;
  */
 public class ServerThread implements Runnable, ParserCaller {
 
-	protected static final long PING_INTERVAL = 3000;
+	protected static final long PING_INTERVAL = 30000;
 	/**
 	 * The corresponding Server.
 	 */

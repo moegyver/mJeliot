@@ -43,7 +43,6 @@ public class InputThread implements Runnable {
 			String line = "";
 			try {
 				 line = this.in.readLine();
-				 System.out.println("line: " + line);
 			} catch (IOException e) {
 				System.out.println("error receiving data: " + e.getMessage());
 				if (!stop) {
@@ -53,12 +52,10 @@ public class InputThread implements Runnable {
 			}
 			if (line != null ) {
 				message += line + "\n";
-				System.out.println("got line: " + line);
 				if (line.contains(ProtocolParser.endActionTag)) {
 					this.client.receive(message);
 					message = "";
 				} else if (line.contains("ping")) {
-					System.out.println("received ping, sending pong");
 					String userId = "";
 					if (this.client.getUser() != null) {
 						userId += this.client.getUser().getId();

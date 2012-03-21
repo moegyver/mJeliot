@@ -33,7 +33,7 @@ import android.net.ConnectivityManager;
  * 
  */
 public class Controller extends Application implements ClientListener,
-		ProtocolParserListener, ParserCaller {
+		ProtocolParserListener, ParserCaller { 
 	// state-variables
 	private Lecture lecture = null;
 	private User user = null;

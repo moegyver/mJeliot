@@ -16,7 +16,7 @@ public class UserTimerTimeoutTask extends TimerTask {
 
 	@Override
 	public void run() {
-		if (lastSeen + 9 * ServerThread.PING_INTERVAL
+		if (lastSeen + 4 * ServerThread.PING_INTERVAL
 				- System.currentTimeMillis() < 0) {
 			System.out.println("User timeout, User " + user.getId()
 					+ " disconnecting from lecture " + user.getLecture().getId());

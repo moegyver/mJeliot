@@ -65,4 +65,6 @@ public interface MJeliotControllerListener {
 			Lecture lecture);
 	public void onUserLoggedOut(MJeliotController mJeliotController, User user,
 			Lecture lecture);
+	public void onCodeUpdate(Lecture lecture, User user, String code,
+			int cursorPosition, boolean isDone, boolean requestedAttention);
 }

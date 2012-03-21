@@ -85,11 +85,13 @@ public class ServerController implements ProtocolParserListener {
 		System.out.println("User " + userName + " with ID " + userId
 				+ " logged in to lecture " + lectureId);
 		Lecture lecture = this.lectures.get(lectureId);
-		User user = new User(userName, userId, lecture);
-		lecture.addUser(user);
-		this.startUserTimeoutTask(user, lecture);
-		this.sendLoginConfirmForUser(user, lectureId);
-		this.sendCurrentState(returnSender, lectureId);
+		if (lecture != null) {
+			User user = new User(userName, userId, lecture);
+			lecture.addUser(user);
+			this.startUserTimeoutTask(user, lecture);
+			this.sendLoginConfirmForUser(user, lectureId);
+			this.sendCurrentState(returnSender, lectureId);
+		}
 	}
 
 	private void startUserTimeoutTask(User user, Lecture lecture) {
@@ -141,6 +143,7 @@ public class ServerController implements ProtocolParserListener {
 	public void onLoggedIn(ProtocolParser protocolParser,
 			ParserCaller returnSender, int lectureId, String userName,
 			int userId) {
+		this.currentUserThreads.put(userId, (ServerThread) returnSender);
 		// the Server should not receive that message, we work with a
 		// TCP-connection so
 		// the arrival of the message is guaranteed and no 3-way-handshake
@@ -497,10 +500,10 @@ public class ServerController implements ProtocolParserListener {
 			ParserCaller parserCaller, int lectureId, int userId, String code,
 			int cursorPosition, boolean done, boolean requestedAttention,
 			int destUserId) {
-		if (this.currentUserThreads.containsKey(userId)) {
-			System.out.println("sending code update back to Jeliot");
+		System.out.println("sending code update back to Jeliot" + destUserId);
+		if (this.currentUserThreads.containsKey(destUserId)) {
 			String message = parser.generateCodeUpdate(code, cursorPosition, done, requestedAttention, destUserId, userId, lectureId); 
-			ServerThread serverThread = this.currentUserThreads.get(userId);
+			ServerThread serverThread = this.currentUserThreads.get(destUserId);
 			serverThread.sendMessage(message);
 		} else {
 			System.out.println("could not find destination");

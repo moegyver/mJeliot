@@ -50,6 +50,7 @@ public class CollaborativeCodingUserSelection extends JPanel implements MJeliotC
 
 	@Override
 	public void onClientDisconnected(MJeliotController mJeliotController) {
+		this.reset();
 		this.disableUserSelection();
 	}
 
@@ -105,7 +106,14 @@ public class CollaborativeCodingUserSelection extends JPanel implements MJeliotC
 
 	@Override
 	public void onLoggedOut(MJeliotController mJeliotController, Lecture lecture) {
+		this.reset();
 		this.disableUserSelection();
+	}
+
+	private void reset() {
+		this.removeAll();
+		this.buttons = new HashMap<Integer, UserButton>();
+		this.repaint();
 	}
 
 	private void disableUserSelection() {
@@ -144,6 +152,16 @@ public class CollaborativeCodingUserSelection extends JPanel implements MJeliotC
 	public void onUserLoggedOut(MJeliotController mJeliotController, User user,
 			Lecture lecture) {
 		this.removeUser(user);
+	}
+
+	@Override
+	public void onCodeUpdate(Lecture lecture, User user, String code,
+			int cursorPosition, boolean isDone, boolean requestedAttention) {
+		if (this.buttons.get(user.getId()) != null) {
+			UserButton button = this.buttons.get(user.getId());
+			boolean hasCoded = !code.equals(this.mJeliotController.getOriginalCode());
+			button.updateButton(hasCoded, isDone, requestedAttention);
+		}
 	}
 	
 }

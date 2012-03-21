@@ -193,4 +193,11 @@ public class InteractMenu extends JPopupMenu implements MJeliotControllerListene
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void onCodeUpdate(Lecture lecture, User user, String code,
+			int cursorPosition, boolean isDone, boolean requestedAttention) {
+		// TODO Auto-generated method stub
+		
+	}
 }

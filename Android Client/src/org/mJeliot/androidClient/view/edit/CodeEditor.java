@@ -287,7 +287,5 @@ public class CodeEditor extends AbstractMJeliotActivity {
 
 		@Override
 		public void onCodingTask(Controller controller, String code) {
-			// TODO Auto-generated method stub
-			
 		}
 }

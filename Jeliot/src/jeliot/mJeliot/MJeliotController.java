@@ -32,6 +32,8 @@ public class MJeliotController implements ClientListener, ProtocolParserListener
 	 * This user identifies the controller, default name is Jeliot.
 	 */
 	private User user = new User("Jeliot");
+	
+	private String originalCode = "";
 	/**
 	 * The parser generates and parses messages.
 	 */
@@ -567,22 +569,36 @@ public class MJeliotController implements ClientListener, ProtocolParserListener
 	@Override
 	public void onCodeUpdate(ProtocolParser protocolParser,
 			ParserCaller parserCaller, int lectureId, int userId, String code,
-			int cursorPosition, boolean done, boolean requestedAttention,
+			int cursorPosition, boolean isDone, boolean requestedAttention,
 			int destUserId) {
-		// TODO Auto-generated method stub
-		
+		if (lectureId == this.lecture.getId()) {
+			System.out.println("got code update from: " + userId + " code: " + code);
+			this.fireOnCodeUpdate(this.lecture, this.lecture.getUser(userId), code, cursorPosition, isDone, requestedAttention);
+		}
+	}
+
+	private void fireOnCodeUpdate(Lecture lecture, User user, String code,
+			int cursorPosition, boolean isDone, boolean requestedAttention) {
+		for (MJeliotControllerListener listener : this.listeners) {
+			listener.onCodeUpdate(lecture, user, code, cursorPosition, isDone, requestedAttention);
+		}
 	}
 
 	@Override
 	public void onCodingTask(ProtocolParser protocolParser,
 			ParserCaller parserCaller, int lectureId, int from,
 			String unescapedCode) {
-		if (lectureId == this.lecture.getId()) {
-			System.out.println("got code update from: " + from + " code: " + unescapedCode);
-		}
+//		if (lectureId == this.lecture.getId()) {
+//			System.out.println("got code update from: " + from + " code: " + unescapedCode);
+//		}
 	}
 
 	public void sendCode(String code) {
+		this.originalCode = code;
 		this.sendMessage(this.parser.generateCodingTask(code, this.user.getId(), this.lecture.getId()));
+	}
+
+	public String getOriginalCode() {
+		return this.originalCode;
 	}
 }

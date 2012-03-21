@@ -58,7 +58,7 @@ public class ServerInputThread implements Runnable {
 					message = "";
 				} else if (input.contains("pong")) {
 					serverThread.resetTimeout();
-					System.out.println("resetting timer");
+					//System.out.println("resetting timer");
 					String idStrings = input.replace("pong ", "").replace("\n", "");
 					String[] ids = idStrings.split(" ");
 					try{
