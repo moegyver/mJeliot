@@ -204,8 +204,7 @@ public class Controller extends Application implements ClientListener,
 	 * @return
 	 */
 	public boolean isLoggedIn() {
-		return this.user != null && this.lecture != null
-				&& this.client.isConnected();
+		return this.user != null && this.lecture != null;
 	}
 
 	/**
@@ -220,8 +219,8 @@ public class Controller extends Application implements ClientListener,
 	}
 
 	public void disconnect() {
-		this.logout();
 		System.out.println("mJeliot Controller: disconnect");
+		this.logout();
 		this.client.disconnect(true, false);
 	}
 
@@ -358,9 +357,9 @@ public class Controller extends Application implements ClientListener,
 		System.out.println("onUserLoggedOut: user: " + this.user + " lecture: " + this.lecture);
 		if (this.user != null && this.user.getId() == userId && this.lecture.getId() == lectureId) {
 			this.fireOnLoggedOut();
+			this.user = null;
+			this.lecture = null;
 		}
-		this.user = null;
-		this.lecture = null;
 	}
 
 	@Override
@@ -454,6 +453,7 @@ public class Controller extends Application implements ClientListener,
 	}
 
 	private void fireOnLoggedIn() {
+		System.out.println("login done");
 		synchronized (this.listeners) {
 			for (ControllerListener listener : this.listeners) {
 				listener.onLoggedIn(this);
@@ -521,8 +521,12 @@ public class Controller extends Application implements ClientListener,
 
 	public void sendCodeUpdate(String code, int cursorPosition, boolean done,
 			boolean attention) {
-		this.client.sendMessage(this.parser.generateCodeUpdate(code,
-				cursorPosition, done, attention, this.toUserId, user.getId(), lecture.getId()));
+		if (this.user != null && this.lecture != null) {
+			this.client.sendMessage(this.parser.generateCodeUpdate(code,
+					cursorPosition, done, attention, this.toUserId, user.getId(), lecture.getId()));
+		} else {
+			System.err.println("Tried to send code update but not logged in");
+		}
 	}
 
 	@Override
@@ -563,5 +567,15 @@ public class Controller extends Application implements ClientListener,
 
 	public String getOriginalCode() {
 		return this.originalCode;
+	}
+
+	@Override
+	public void onLiveModeChanged(ProtocolParser protocolParser,
+			ParserCaller parserCaller, int lectureId, int from, int to, boolean liveMode) {
+		if (lectureId == this.lecture.getId()) {
+			for (ControllerListener listener : this.listeners) {
+				listener.onLiveModeChanged(this, liveMode);
+			}
+		}
 	}
 }

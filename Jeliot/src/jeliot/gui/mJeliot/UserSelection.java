@@ -1,46 +1,36 @@
 package jeliot.gui.mJeliot;
 
-import java.util.HashMap;
-
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import org.mJeliot.model.Lecture;
 import org.mJeliot.model.User;
+import org.mJeliot.model.coding.CodingTask;
+import org.mJeliot.model.coding.CodingTaskListener;
+import org.mJeliot.model.coding.CodingTaskUserCode;
 import org.mJeliot.model.predict.Method;
 
 import jeliot.mJeliot.MJeliotController;
 import jeliot.mJeliot.MJeliotControllerListener;
 
-public class CollaborativeCodingUserSelection extends JPanel implements MJeliotControllerListener {
+public class UserSelection extends JPanel implements MJeliotControllerListener, CodingTaskListener {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6911785838601141857L;
-	private final MJeliotController mJeliotController;
 	private JPanel panel;
-	private HashMap<Integer, UserButton> buttons = new HashMap<Integer, UserButton>();
+	private final MJeliotController mJeliotController;
 
-	public CollaborativeCodingUserSelection(MJeliotController mJeliotController) {
+	public UserSelection(MJeliotController mJeliotController) {
 		super();
+		this.mJeliotController = mJeliotController;
 		panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		panel.setAlignmentY(LEFT_ALIGNMENT);
-		this.mJeliotController = mJeliotController;
 		mJeliotController.addMJeliotControllerListener(this);
-		this.build();
+		// TODO listen to CodingTask as well
 		this.add(panel);
-	}
-
-	private void build() {
-		if (mJeliotController.getLecture() != null) {
-			for (User user : mJeliotController.getLecture().getUsers()) {
-				if (!user.equals(mJeliotController.getUser())) {
-					this.addUser(user);
-				}
-			}
-		}
 	}
 	
 	@Override
@@ -50,7 +40,6 @@ public class CollaborativeCodingUserSelection extends JPanel implements MJeliotC
 
 	@Override
 	public void onClientDisconnected(MJeliotController mJeliotController) {
-		this.reset();
 		this.disableUserSelection();
 	}
 
@@ -106,14 +95,7 @@ public class CollaborativeCodingUserSelection extends JPanel implements MJeliotC
 
 	@Override
 	public void onLoggedOut(MJeliotController mJeliotController, Lecture lecture) {
-		this.reset();
 		this.disableUserSelection();
-	}
-
-	private void reset() {
-		this.removeAll();
-		this.buttons = new HashMap<Integer, UserButton>();
-		this.repaint();
 	}
 
 	private void disableUserSelection() {
@@ -124,44 +106,68 @@ public class CollaborativeCodingUserSelection extends JPanel implements MJeliotC
 	@Override
 	public void onUserLoggedIn(MJeliotController mJeliotController, User user,
 			Lecture lecture) {
-		this.addUser(user);
 	}
-
-	private void addUser(User user) {
-		if (!user.equals(mJeliotController.getUser()) && !this.buttons.containsKey(user.getId())) {
-			System.out.println("mJeliotUserList: added user + " + user);
-			UserButton userbutton = new UserButton(user);
-			this.add(userbutton);
-			this.buttons.put(user.getId(), userbutton);
-			this.validate();
+	private void addUser(CodingTaskUserCode codingTaskUserCode) {
+		if (!codingTaskUserCode.getUser().equals( this.mJeliotController.getUser())) {
+			new UserButton(this, codingTaskUserCode);
 			this.repaint();
 		}
 	}
 	
-	private void removeUser(User user) {
-		UserButton userbutton = this.buttons.remove(user.getId());
-		if (userbutton != null) {
-			System.out.println("mJeliotUserList: removed user + " + user);
-			this.remove(userbutton);
-			this.validate();
-			this.repaint();
-		}
-	}
-
 	@Override
 	public void onUserLoggedOut(MJeliotController mJeliotController, User user,
 			Lecture lecture) {
-		this.removeUser(user);
 	}
 
 	@Override
 	public void onCodeUpdate(Lecture lecture, User user, String code,
 			int cursorPosition, boolean isDone, boolean requestedAttention) {
-		if (this.buttons.get(user.getId()) != null) {
-			UserButton button = this.buttons.get(user.getId());
-			boolean hasCoded = !code.equals(this.mJeliotController.getOriginalCode());
-			button.updateButton(hasCoded, isDone, requestedAttention);
+	}
+
+	@Override
+	public void onCodingTaskUserCodeAdded(CodingTask codingTask,
+			CodingTaskUserCode userCode) {
+		System.out.println("adding button for user " + userCode.getUser());
+		this.addUser(userCode);
+	}
+
+	@Override
+	public void onCodingTask(MJeliotController mJeliotController,
+			CodingTask codingTask) {
+		this.panel.removeAll();
+		codingTask.addCodingTaskListener(this);
+		// TODO enable
+		for (User user : codingTask.getLecture().getUsers()) {
+			CodingTaskUserCode userCode = codingTask.getUserCodeTask(user);
+			this.addUser(userCode);
 		}
 	}
+
+	@Override
+	public void onCodingTaskEnded(CodingTask codingTask) {
+		// TODO disable
+		//this.panel.removeAll();
+	}
 	
+	public void addToPanel(UserButton userButton) {
+		this.panel.add(userButton);
+		panel.repaint();
+	}
+
+	public void removeFromPanel(UserButton userButton) {
+		this.panel.remove(userButton);
+		this.repaint();
+	}
+	@Override
+	public void repaint() {
+		if (panel != null) {
+			panel.repaint();
+		}
+		super.repaint();
+	}
+
+	@Override
+	public void onUserCodeChanged(CodingTask codingTask,
+			CodingTaskUserCode usercode) {
+	}
 }

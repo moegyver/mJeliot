@@ -2,6 +2,8 @@ package org.mJeliot.model;
 
 import java.util.HashMap;
 import java.util.Random;
+import java.util.Vector;
+
 import org.mJeliot.model.predict.Method;
 
 
@@ -39,6 +41,7 @@ public class Lecture {
 	 * the users that are connected.
 	 */
 	private HashMap<Integer, User> users = new HashMap<Integer, User>();
+	private Vector<LectureListener> listeners = new Vector<LectureListener>();
 
 	/**
 	 * Creates a lecture with a randomly selected id.
@@ -184,6 +187,13 @@ public class Lecture {
 	public void addUser(User user) {
 		if (!this.users.containsKey(user.getId())) {
 			this.users.put(user.getId(), user);
+			this.fireOnUserAdded(user);
+		}
+	}
+
+	private void fireOnUserAdded(User user) {
+		for (LectureListener listener : this.listeners) {
+			listener.onUserAdded(this, user);
 		}
 	}
 
@@ -193,11 +203,29 @@ public class Lecture {
 	 * @param user
 	 *            the user to remove
 	 */
-	public boolean removeUser(User user) {
-		return null != this.users.remove(user.getId());
+	public void removeUser(User user) {
+		user = this.users.remove(user.getId());
+		if (user != null) {
+			this.fireOnUserRemoved(user);
+		}
+	}
+
+	private void fireOnUserRemoved(User user) {
+		for (LectureListener listener : this.listeners ) {
+			listener.onUserRemoved(this, user);
+		}
 	}
 
 	public boolean containsUser(User user) {
 		return this.users.containsKey(user.getId());
+	}
+
+	public void addLectureListener(LectureListener lectureListener) {
+		if (!this.listeners.contains(lectureListener)) {
+			this.listeners.add(lectureListener);	
+		}
+	}
+	public void removeLectureListener(LectureListener lectureListener) {
+		this.listeners.remove(lectureListener);
 	}
 }

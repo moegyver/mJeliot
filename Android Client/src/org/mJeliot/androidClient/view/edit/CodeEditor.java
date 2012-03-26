@@ -19,10 +19,12 @@ import org.mJeliot.model.Lecture;
 public class CodeEditor extends AbstractMJeliotActivity {
 	
 
-		private static final long UPDATE_INTERVAL = 5000;
+		private static final long NOT_LIVE_UPDATE_INTERVAL = 5000;
+		private static final long LIVE_UPDATE_INTERVAL = 1000;
 		private long lastUpdate = System.currentTimeMillis();
 		private EditText editor;
 		private int cursorPosition = 0;
+		private boolean liveMode = false;
 
 		/*
 		 * (non-Javadoc)
@@ -236,6 +238,7 @@ public class CodeEditor extends AbstractMJeliotActivity {
 		 */
 		@Override
 		public void onLoggingOut(Controller controller) {
+			System.out.println("CodeEditor: closing activity, user logged out.");
 			this.finish();
 		}
 
@@ -274,7 +277,11 @@ public class CodeEditor extends AbstractMJeliotActivity {
 		}
 
 		private boolean isUpdateNeeded() {
-			return lastUpdate  + UPDATE_INTERVAL < System.currentTimeMillis();
+			long updateInterval = CodeEditor.NOT_LIVE_UPDATE_INTERVAL;
+			//if (liveMode) {
+				//updateInterval = CodeEditor.LIVE_UPDATE_INTERVAL;
+			//}
+			return liveMode || lastUpdate  + updateInterval < System.currentTimeMillis();
 		}
 		
 		public String getCode() {
@@ -287,5 +294,10 @@ public class CodeEditor extends AbstractMJeliotActivity {
 
 		@Override
 		public void onCodingTask(Controller controller, String code) {
+		}
+
+		@Override
+		public void onLiveModeChanged(Controller controller, boolean liveMode) {
+			this.liveMode  = liveMode;
 		}
 }

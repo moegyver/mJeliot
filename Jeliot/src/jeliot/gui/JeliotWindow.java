@@ -61,7 +61,7 @@ import javax.swing.event.ChangeListener;
 
 import jeliot.Jeliot;
 import jeliot.calltree.TreeDraw;
-import jeliot.gui.mJeliot.CollaborativeCodingUserSelection;
+import jeliot.gui.mJeliot.UserSelection;
 import jeliot.gui.mJeliot.PredictResultStats;
 import jeliot.gui.mJeliot.PredictUsersStats;
 import jeliot.gui.mJeliot.InteractButton;
@@ -661,7 +661,7 @@ public class JeliotWindow implements PauseListener, MouseListener {
                                 .getString("tab.title.history")), false);
             }
             // TODO: add support for disabling the tab.
-            this.tabbedPane.addTab(messageBundle.getString("tab.title.userselection"), new JScrollPane(new CollaborativeCodingUserSelection(jeliot.getMJeliotController())));
+            this.tabbedPane.addTab(messageBundle.getString("tab.title.userselection"), new JScrollPane(new UserSelection(jeliot.getMJeliotController())));
 
             this.frame.setIconImage(iLoad.getImage(propertiesBundle
                     .getStringProperty("image.jeliot_icon")));

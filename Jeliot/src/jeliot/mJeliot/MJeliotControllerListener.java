@@ -2,6 +2,7 @@ package jeliot.mJeliot;
 
 import org.mJeliot.model.Lecture;
 import org.mJeliot.model.User;
+import org.mJeliot.model.coding.CodingTask;
 import org.mJeliot.model.predict.Method;
 
 /**
@@ -67,4 +68,6 @@ public interface MJeliotControllerListener {
 			Lecture lecture);
 	public void onCodeUpdate(Lecture lecture, User user, String code,
 			int cursorPosition, boolean isDone, boolean requestedAttention);
+	public void onCodingTask(MJeliotController mJeliotController,
+			CodingTask codingTask);
 }

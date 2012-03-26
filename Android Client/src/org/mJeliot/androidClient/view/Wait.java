@@ -211,4 +211,9 @@ public class Wait extends AbstractMJeliotActivity {
 			startActivity(editor);
 		}
 	}
+	@Override
+	public void onLiveModeChanged(Controller controller, boolean liveMode) {
+		// TODO Auto-generated method stub
+		
+	}
 }

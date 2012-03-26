@@ -65,6 +65,8 @@ public class ProtocolParser {
 	private static final String endAttention = "</requestedAttention>";
 	private static final String startSource = "<from>";
 	private static final String endSource = "</from>";
+	private static final String startLive = "<liveMode>";
+	private static final String endLive = "</liveMode>";
 
 	/**
 	 * A list of listeners to inform on understood messages.
@@ -127,6 +129,7 @@ public class ProtocolParser {
 		Integer to = null;
 		Boolean done = null;
 		Boolean requestedAttention = null;
+		Boolean liveMode = null;
 		Integer cursorPosition = null;
 		try {
 			document = this.documentBuilder.parse(new InputSource(
@@ -161,8 +164,10 @@ public class ProtocolParser {
 				node = document.getElementsByTagName("cursorPosition").item(0);
 				if (node != null) {
 					cursorPosition = Integer.parseInt(node.getTextContent());
-					System.out.println("parser: cursorPosition:"
-							+ cursorPosition);
+				}
+				node = document.getElementsByTagName("liveMode").item(0);
+				if (node != null) {
+					liveMode = Boolean.parseBoolean(node.getTextContent());
 				}
 				node = document.getElementsByTagName("to").item(0);
 				if (node != null) {
@@ -327,6 +332,10 @@ public class ProtocolParser {
 						&& lectureId != null && code != null && from != null) {
 					this.fireOnCodingTask(parserCaller, lectureId, from,
 							code);
+				} else if (action.equalsIgnoreCase("setLiveMode")
+						&& lectureId != null && to != null && from != null && liveMode != null) {
+					this.fireOnLiveModeChanged(parserCaller, lectureId, from, to,
+							liveMode);
 				} else {
 					System.err
 							.println("Something missing in the parser or error in the message.");
@@ -337,6 +346,14 @@ public class ProtocolParser {
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.err.println("Message not understood.");
+		}
+	}
+
+	private void fireOnLiveModeChanged(ParserCaller parserCaller,
+			int lectureId, int from, int to, boolean liveMode) {
+		for (ProtocolParserListener listener : this.listeners) {
+			listener.onLiveModeChanged(this, parserCaller, lectureId, from, to,
+					liveMode);
 		}
 	}
 
@@ -810,6 +827,17 @@ public class ProtocolParser {
 		result += startAttention + hasRequestedAttention + endAttention;
 		result += startCode + escapedCode + endCode;
 		result += startCursorPosition + cursorPosition + endCursorPosition;
+		result += endAction;
+		return result;
+	}
+
+	public static String generateLiveMode(boolean liveMode, int lectureId, int src, int dest) {
+		String result = xmlHeader;
+		result += startActionBegin + "setLiveMode\"" + end;
+		result += startDestination + dest + endDestination;
+		result += startUserId + src + endUserId;
+		result += startLectureId + lectureId + endLectureId;
+		result += startLive + liveMode + endLive;
 		result += endAction;
 		return result;
 	}

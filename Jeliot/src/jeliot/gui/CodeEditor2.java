@@ -296,7 +296,7 @@ public class CodeEditor2 extends JComponent {
         public void actionPerformed(ActionEvent e) {
             Tracker.trackEvent(TrackerClock.currentTimeMillis(),
                     Tracker.BUTTON, -1, -1, "CodeButton");
-            jeliot.getMJeliotController().sendCode(area.getText());
+            jeliot.getMJeliotController().sendCode(area.getText(), CodeEditor2.this);
         }
     };
 
@@ -1073,4 +1073,12 @@ public class CodeEditor2 extends JComponent {
         //requestFocusInWindow();
         return this.area.requestFocusInWindow();
     }
+
+	public void setCursorPosition(int cursorPosition) {
+		this.area.setCaretPosition(cursorPosition);
+	}
+
+	public int getCursorPosition() {
+		return this.area.getCaretPosition();
+	}
 }

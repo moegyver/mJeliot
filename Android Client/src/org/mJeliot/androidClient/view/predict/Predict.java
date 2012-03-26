@@ -211,4 +211,10 @@ public class Predict extends AbstractMJeliotActivity {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void onLiveModeChanged(Controller controller, boolean liveMode) {
+		// TODO Auto-generated method stub
+		
+	}
 }

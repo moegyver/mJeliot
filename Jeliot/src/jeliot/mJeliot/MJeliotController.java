@@ -3,10 +3,14 @@ package jeliot.mJeliot;
 import java.util.HashMap;
 import java.util.Vector;
 
+import jeliot.gui.CodeEditor2;
+
 import org.mJeliot.client.Client;
 import org.mJeliot.client.ClientListener;
 import org.mJeliot.model.Lecture;
 import org.mJeliot.model.User;
+import org.mJeliot.model.coding.CodingTask;
+import org.mJeliot.model.coding.CodingTaskUserCode;
 import org.mJeliot.model.predict.Method;
 import org.mJeliot.model.predict.Parameter;
 import org.mJeliot.model.predict.ParameterPrediction;
@@ -23,6 +27,7 @@ import org.mJeliot.protocol.ProtocolParserListener;
 public class MJeliotController implements ClientListener, ProtocolParserListener,
 		ParserCaller {
 	private Lecture lecture = null;
+	private CodingTask codingTask = null;
 	private HashMap<Integer, Lecture> availableLectures = new HashMap<Integer, Lecture>();
 	/**
 	 * The client keeps the connection to the Server
@@ -71,6 +76,10 @@ public class MJeliotController implements ClientListener, ProtocolParserListener
 
 	private void reset() {
 		this.lecture = null;
+		if (codingTask != null) {
+			this.codingTask.endCodingTask();
+		}
+		this.codingTask = null;
 	}
 	
 	/**
@@ -571,16 +580,14 @@ public class MJeliotController implements ClientListener, ProtocolParserListener
 			ParserCaller parserCaller, int lectureId, int userId, String code,
 			int cursorPosition, boolean isDone, boolean requestedAttention,
 			int destUserId) {
-		if (lectureId == this.lecture.getId()) {
 			System.out.println("got code update from: " + userId + " code: " + code);
 			this.fireOnCodeUpdate(this.lecture, this.lecture.getUser(userId), code, cursorPosition, isDone, requestedAttention);
-		}
 	}
 
 	private void fireOnCodeUpdate(Lecture lecture, User user, String code,
 			int cursorPosition, boolean isDone, boolean requestedAttention) {
-		for (MJeliotControllerListener listener : this.listeners) {
-			listener.onCodeUpdate(lecture, user, code, cursorPosition, isDone, requestedAttention);
+		if (this.codingTask != null) {
+			this.codingTask.updateUserCode(lecture, user, code, cursorPosition, isDone, requestedAttention);
 		}
 	}
 
@@ -588,17 +595,39 @@ public class MJeliotController implements ClientListener, ProtocolParserListener
 	public void onCodingTask(ProtocolParser protocolParser,
 			ParserCaller parserCaller, int lectureId, int from,
 			String unescapedCode) {
+		if (this.codingTask.getLecture().getId() == lectureId && from == this.user.getId()) {
+			this.fireOnCodingTask();
+		}
 //		if (lectureId == this.lecture.getId()) {
 //			System.out.println("got code update from: " + from + " code: " + unescapedCode);
 //		}
 	}
 
-	public void sendCode(String code) {
-		this.originalCode = code;
+	private void fireOnCodingTask() {
+		for (MJeliotControllerListener listener : this.listeners) {
+			listener.onCodingTask(this, this.codingTask);
+		}
+	}
+
+	public void sendCode(String code, CodeEditor2 codeEditor) {
+		if (this.codingTask != null) {
+			this.codingTask.endCodingTask();
+		}
+		this.codingTask = new CodingTask(this.lecture, code);
+		new CodeSelector(this, codeEditor, this.codingTask, code, codeEditor.getCursorPosition());
 		this.sendMessage(this.parser.generateCodingTask(code, this.user.getId(), this.lecture.getId()));
 	}
 
 	public String getOriginalCode() {
 		return this.originalCode;
+	}
+
+	public void setLiveMode(boolean liveMode, CodingTaskUserCode currentUserCode) {
+		this.sendMessage(ProtocolParser.generateLiveMode(liveMode, this.lecture.getId(), this.user.getId(), currentUserCode.getUser().getId()));
+	}
+
+	@Override
+	public void onLiveModeChanged(ProtocolParser protocolParser,
+			ParserCaller parserCaller, int lectureId, int from, int to, boolean liveMode) {
 	}
 }

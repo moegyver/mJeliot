@@ -147,6 +147,9 @@ public class Client {
 	 * Informs the listeners when the connection is established.
 	 */
 	private void fireOnClientConnected(boolean isReconnected) {
+		if (isReconnected) {
+			this.sendPong();
+		}
 		clientListener.onClientConnected(this, isReconnected);
 	}
 	/**
@@ -205,5 +208,19 @@ public class Client {
 	}
 	public boolean hasUri() {
 		return this.uri != null;
+	}
+	public void sendPong() {
+		String userId = "";
+		if (this.getUser() != null) {
+			userId += this.getUser().getId();
+		}
+		String lectureId = "";
+		if (this.getLecture() != null) {
+			lectureId += this.getLecture().getId();
+		}
+		this.sendMessage("pong " + lectureId + " " + userId + " \n");
+	}
+	public void forceReconnect() {
+		this.disconnect(false, false);
 	}
 }

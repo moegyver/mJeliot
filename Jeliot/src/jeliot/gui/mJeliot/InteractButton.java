@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 
 import org.mJeliot.model.Lecture;
 import org.mJeliot.model.User;
+import org.mJeliot.model.coding.CodingTask;
 import org.mJeliot.model.predict.Method;
 
 import jeliot.Jeliot;
@@ -284,6 +285,13 @@ public class InteractButton extends JButton implements MJeliotControllerListener
 	@Override
 	public void onCodeUpdate(Lecture lecture, User user, String code,
 			int cursorPosition, boolean isDone, boolean requestedAttention) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onCodingTask(MJeliotController mJeliotController,
+			CodingTask codingTask) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -192,7 +192,8 @@ public class ServerController implements ProtocolParserListener {
 		this.currentUserThreads.remove(user.getId());
 		Lecture lecture = this.lectures.get(lectureId);
 		if (lecture.containsUser(user)) {
-			System.out.println("removing user from lecture: " + lecture.removeUser(user));
+			System.out.println("removing user from lecture: " + user.getId());
+			lecture.removeUser(user);
 			String message = this.parser.generateUserLoggedOut(user, lecture);
 			for (ServerThread serverThread : this.server.getServerThreads()) {
 				serverThread.sendMessage(message);
@@ -212,7 +213,7 @@ public class ServerController implements ProtocolParserListener {
 	@Override
 	public void onUserLoggedOut(ProtocolParser protocolParser,
 			ParserCaller returnSender, int lectureId, int userId) {
-		// again, no 3-way-stuff needed
+		System.out.println("got a logged out from user " + userId + " in lecture " + lectureId);
 	}
 
 	/*
@@ -516,6 +517,16 @@ public class ServerController implements ProtocolParserListener {
 			String unescapedCode) {
 		String message = this.parser.generateCodingTask(unescapedCode, from, lectureId);
 		for (ServerThread serverThread : this.server.getServerThreads()) {
+			serverThread.sendMessage(message);
+		}
+	}
+
+	@Override
+	public void onLiveModeChanged(ProtocolParser protocolParser,
+			ParserCaller parserCaller, int lectureId, int from, int to, boolean liveMode) {
+		if (this.currentUserThreads.containsKey(to)) {
+			String message = ProtocolParser.generateLiveMode(liveMode, lectureId, from, to); 
+			ServerThread serverThread = this.currentUserThreads.get(to);
 			serverThread.sendMessage(message);
 		}
 	}

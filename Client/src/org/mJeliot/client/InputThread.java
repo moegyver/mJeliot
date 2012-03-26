@@ -56,16 +56,8 @@ public class InputThread implements Runnable {
 					this.client.receive(message);
 					message = "";
 				} else if (line.contains("ping")) {
-					String userId = "";
-					if (this.client.getUser() != null) {
-						userId += this.client.getUser().getId();
-					}
-					String lectureId = "";
-					if (this.client.getLecture() != null) {
-						lectureId += this.client.getLecture().getId();
-					}
 					message = "";
-					this.client.sendMessage("pong " + lectureId + " " + userId + " \n");
+					client.sendPong();
 				} else {
 				}
 			} else {

@@ -90,6 +90,9 @@ public class User {
 	@Override
 	public String toString() {
 		return "mJeliot User, id=" + this.id + ", username=" + this.name;
-		
+	}
+	@Override
+	public int hashCode() {
+		return this.id;
 	}
 }
