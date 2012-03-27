@@ -1,7 +1,10 @@
 package jeliot.gui.mJeliot;
 
-import javax.swing.BoxLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import org.mJeliot.model.Lecture;
 import org.mJeliot.model.User;
@@ -10,10 +13,11 @@ import org.mJeliot.model.coding.CodingTaskListener;
 import org.mJeliot.model.coding.CodingTaskUserCode;
 import org.mJeliot.model.predict.Method;
 
+import jeliot.gui.JeliotWindow;
 import jeliot.mJeliot.MJeliotController;
 import jeliot.mJeliot.MJeliotControllerListener;
 
-public class UserSelection extends JPanel implements MJeliotControllerListener, CodingTaskListener {
+public class UserSelection extends JScrollPane implements MJeliotControllerListener, CodingTaskListener {
 
 	/**
 	 * 
@@ -21,16 +25,23 @@ public class UserSelection extends JPanel implements MJeliotControllerListener, 
 	private static final long serialVersionUID = 6911785838601141857L;
 	private JPanel panel;
 	private final MJeliotController mJeliotController;
+	private final JeliotWindow gui;
 
-	public UserSelection(MJeliotController mJeliotController) {
+	public UserSelection(MJeliotController mJeliotController, JeliotWindow gui) {
 		super();
 		this.mJeliotController = mJeliotController;
+		this.gui = gui;
+		this.setAlignmentY(LEFT_ALIGNMENT);
+		this.setAlignmentX(TOP_ALIGNMENT);
+		//this.setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER);
 		panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-		panel.setAlignmentY(LEFT_ALIGNMENT);
+		panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		//this.panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+		this.panel.setAlignmentY(LEFT_ALIGNMENT);
+		this.panel.setAlignmentX(TOP_ALIGNMENT);
+		this.panel.setPreferredSize(getSize());
 		mJeliotController.addMJeliotControllerListener(this);
-		// TODO listen to CodingTask as well
-		this.add(panel);
+		this.setViewportView(panel);
 	}
 	
 	@Override
@@ -141,26 +152,33 @@ public class UserSelection extends JPanel implements MJeliotControllerListener, 
 			CodingTaskUserCode userCode = codingTask.getUserCodeTask(user);
 			this.addUser(userCode);
 		}
+		gui.setUserSelectionEnabled(true);
+		gui.bringUserSelectionToForeground();
 	}
 
 	@Override
 	public void onCodingTaskEnded(CodingTask codingTask) {
+		gui.setUserSelectionEnabled(false);
+		gui.bringTheaterToForeground();
 		// TODO disable
 		//this.panel.removeAll();
 	}
 	
 	public void addToPanel(UserButton userButton) {
+		System.out.println("Added button to panel");
 		this.panel.add(userButton);
-		panel.repaint();
+		repaint();
 	}
 
 	public void removeFromPanel(UserButton userButton) {
 		this.panel.remove(userButton);
-		this.repaint();
+		repaint();
 	}
 	@Override
 	public void repaint() {
+		this.validate();
 		if (panel != null) {
+			panel.validate();
 			panel.repaint();
 		}
 		super.repaint();
@@ -169,5 +187,10 @@ public class UserSelection extends JPanel implements MJeliotControllerListener, 
 	@Override
 	public void onUserCodeChanged(CodingTask codingTask,
 			CodingTaskUserCode usercode) {
+	}
+	@Override
+	public void setPreferredSize(Dimension d) {
+		super.setPreferredSize(d);
+		panel.setPreferredSize(d);
 	}
 }

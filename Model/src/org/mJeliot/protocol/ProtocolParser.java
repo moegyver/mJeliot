@@ -33,8 +33,6 @@ public class ProtocolParser {
 	public static final String endAction = endActionTag + "\n";
 	private static final String startUserName = "<userName>";
 	private static final String endUserName = "</userName>";
-	private static final String startUserId = "<userId>";
-	private static final String endUserId = "</userId>";
 	private static final String startClassName = "<className>";
 	private static final String startMethodName = "<methodName>";
 	private static final String endClassName = "</className>";
@@ -112,7 +110,6 @@ public class ProtocolParser {
 		String methodName = null;
 		Integer methodId = null;
 		String userName = null;
-		Integer userId = null;
 		String lectureName = null;
 		Integer lectureId = null;
 		Integer parameterCount = null;
@@ -195,9 +192,9 @@ public class ProtocolParser {
 				if (node != null) {
 					userName = node.getTextContent();
 				}
-				node = document.getElementsByTagName("userId").item(0);
+				node = document.getElementsByTagName("from").item(0);
 				if (node != null) {
-					userId = Integer.parseInt(node.getTextContent());
+					from = Integer.parseInt(node.getTextContent());
 				}
 				node = document.getElementsByTagName("lectureName").item(0);
 				if (node != null) {
@@ -278,26 +275,26 @@ public class ProtocolParser {
 					this.fireOnNewLecture(parserCaller, lectureId, lectureName);
 				} else if (action.equalsIgnoreCase("userLogin")
 						&& lectureId != null && userName != null
-						&& userId != null) {
+						&& from != null) {
 					this.fireOnUserLogin(parserCaller, lectureId, userName,
-							userId);
+							from);
 				} else if (action.equalsIgnoreCase("userLoggedIn")
 						&& lectureId != null && userName != null
-						&& userId != null) {
+						&& from != null) {
 					this.fireOnUserLoggedIn(parserCaller, lectureId, userName,
-							userId);
+							from);
 				} else if (action.equalsIgnoreCase("userLogout")
-						&& lectureId != null && userId != null) {
-					this.fireOnUserLogout(parserCaller, lectureId, userId);
+						&& lectureId != null && from != null) {
+					this.fireOnUserLogout(parserCaller, lectureId, from);
 				} else if (action.equalsIgnoreCase("userLoggedOut")
-						&& userId != null) {
-					this.fireOnUserLoggedOut(parserCaller, lectureId, userId);
+						&& from != null) {
+					this.fireOnUserLoggedOut(parserCaller, lectureId, from);
 				} else if (action.equalsIgnoreCase("predictHandin")
-						&& lectureId != null && userId != null
+						&& lectureId != null && from != null
 						&& methodId != null && parameterCount != null
 						&& parameterNames != null && parameterValues != null) {
 					this.fireOnUserHandedInMethodPredict(parserCaller,
-							lectureId, userId, methodId, parameterCount,
+							lectureId, from, methodId, parameterCount,
 							parameterNames, parameterValues);
 				} else if (action.equalsIgnoreCase("predictSendout")
 						&& lectureId != null && className != null
@@ -323,14 +320,14 @@ public class ProtocolParser {
 					this.fireOnUserList(parserCaller, lectureId, userCount,
 							userIds, userNames);
 				} else if (action.equalsIgnoreCase("codeUpdate")
-						&& userId != null && lectureId != null && done != null
+						&& from != null && lectureId != null && done != null
 						&& requestedAttention != null && to != null
 						&& code != null && cursorPosition != null) {
-					this.fireOnCodeUpdate(parserCaller, lectureId, userId,
+					this.fireOnCodeUpdate(parserCaller, lectureId, from,
 							code, cursorPosition, done, requestedAttention, to);
 				} else if (action.equalsIgnoreCase("codingTask")
 						&& lectureId != null && code != null && from != null) {
-					this.fireOnCodingTask(parserCaller, lectureId, from,
+					this.fireOnCodingTask(parserCaller, lectureId, from, to,
 							code);
 				} else if (action.equalsIgnoreCase("setLiveMode")
 						&& lectureId != null && to != null && from != null && liveMode != null) {
@@ -358,10 +355,10 @@ public class ProtocolParser {
 	}
 
 	private void fireOnCodingTask(ParserCaller parserCaller, int lectureId,
-			int from, String code) {
+			int from, Integer to, String code) {
 		String unescapedCode = StringFunctions.unescape(code);
 		for (ProtocolParserListener listener : this.listeners) {
-			listener.onCodingTask(this, parserCaller, lectureId, from,
+			listener.onCodingTask(this, parserCaller, lectureId, from, to,
 					unescapedCode);
 		}
 	}
@@ -628,8 +625,8 @@ public class ProtocolParser {
 	public String generateUserLogin(User user, int lectureId) {
 		return xmlHeader + startActionBegin + "userLogin\"" + end
 				+ startLectureId + lectureId + endLectureId + startUserName
-				+ user.getName() + endUserName + startUserId + user.getId()
-				+ endUserId + endAction;
+				+ user.getName() + endUserName + startSource + user.getId()
+				+ endSource + endAction;
 	}
 
 	/**
@@ -643,8 +640,8 @@ public class ProtocolParser {
 	public String generateUserLoggedIn(User user, Lecture lecture) {
 		return xmlHeader + startActionBegin + "userLoggedIn\"" + end
 				+ startLectureId + lecture.getId() + endLectureId
-				+ startUserName + user.getName() + endUserName + startUserId
-				+ user.getId() + endUserId + endAction;
+				+ startUserName + user.getName() + endUserName + startSource
+				+ user.getId() + endSource + endAction;
 	}
 
 	/**
@@ -657,8 +654,8 @@ public class ProtocolParser {
 	 */
 	public String generateUserLogout(User user, Lecture lecture) {
 		return xmlHeader + startActionBegin + "userLogout\"" + end
-				+ startLectureId + lecture.getId() + endLectureId + startUserId
-				+ user.getId() + endUserId + endAction;
+				+ startLectureId + lecture.getId() + endLectureId + startSource
+				+ user.getId() + endSource + endAction;
 	}
 
 	/**
@@ -674,7 +671,7 @@ public class ProtocolParser {
 		if (lecture != null) {
 			result += startLectureId + lecture.getId() + endLectureId;
 		}
-		result += startUserId + user.getId() + endUserId + endAction;
+		result += startSource + user.getId() + endSource + endAction;
 		return result;
 	}
 
@@ -693,7 +690,7 @@ public class ProtocolParser {
 		String result = xmlHeader;
 		result += startActionBegin + "predictHandin\"" + end;
 		result += startLectureId + lecture.getId() + endLectureId;
-		result += startUserId + user.getId() + endUserId;
+		result += startSource + user.getId() + endSource;
 		result += startMethodId + method.getId() + endMethodId;
 		result += startParameterCount + method.getParameters().size()
 				+ endParameterCount;
@@ -802,12 +799,15 @@ public class ProtocolParser {
 		return result;
 	}
 
-	public String generateCodingTask(String code, int fromUserId,
-			int lectureId) {
+	public static String generateCodingTask(String code, int fromUserId,
+			Integer to, int lectureId) {
 		String escapedCode = StringFunctions.escape(code);
 		String result = xmlHeader;
 		result += startActionBegin + "codingTask\"" + end;
 		result += startSource + fromUserId + endSource;
+		if (to != null) {
+			result += startDestination + to + endDestination;
+		}
 		result += startLectureId + lectureId + endLectureId;
 		result += startCode + escapedCode + endCode;
 		result += endAction;
@@ -821,7 +821,7 @@ public class ProtocolParser {
 		String result = xmlHeader;
 		result += startActionBegin + "codeUpdate\"" + end;
 		result += startDestination + toUserId + endDestination;
-		result += startUserId + userId + endUserId;
+		result += startSource + userId + endSource;
 		result += startLectureId + lectureId + endLectureId;
 		result += startDone + isDone + endDone;
 		result += startAttention + hasRequestedAttention + endAttention;
@@ -835,7 +835,7 @@ public class ProtocolParser {
 		String result = xmlHeader;
 		result += startActionBegin + "setLiveMode\"" + end;
 		result += startDestination + dest + endDestination;
-		result += startUserId + src + endUserId;
+		result += startSource + src + endSource;
 		result += startLectureId + lectureId + endLectureId;
 		result += startLive + liveMode + endLive;
 		result += endAction;

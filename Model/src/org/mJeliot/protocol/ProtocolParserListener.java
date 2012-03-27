@@ -183,7 +183,7 @@ public interface ProtocolParserListener {
 			boolean requestedAttention, int destUserId);
 
 	public void onCodingTask(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, int from,
+			ParserCaller parserCaller, int lectureId, int from, Integer to,
 			String unescapedCode);
 
 	public void onLiveModeChanged(ProtocolParser protocolParser,

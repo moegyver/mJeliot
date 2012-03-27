@@ -91,6 +91,8 @@ public class ServerController implements ProtocolParserListener {
 			this.startUserTimeoutTask(user, lecture);
 			this.sendLoginConfirmForUser(user, lectureId);
 			this.sendCurrentState(returnSender, lectureId);
+			this.currentUserThreads.put(userId, (ServerThread)returnSender);
+			System.out.println("Added " + returnSender + "as user thread for user: " + userId);
 		}
 	}
 
@@ -143,7 +145,6 @@ public class ServerController implements ProtocolParserListener {
 	public void onLoggedIn(ProtocolParser protocolParser,
 			ParserCaller returnSender, int lectureId, String userName,
 			int userId) {
-		this.currentUserThreads.put(userId, (ServerThread) returnSender);
 		// the Server should not receive that message, we work with a
 		// TCP-connection so
 		// the arrival of the message is guaranteed and no 3-way-handshake
@@ -163,9 +164,11 @@ public class ServerController implements ProtocolParserListener {
 		System.out.println("User with ID " + userId + " logged out of lecture "
 				+ lectureId);
 		User removeUser = null;
-		for (User user : this.lectures.get(lectureId).getUsers()) {
-			if (user.getId() == userId) {
-				removeUser = user;
+		if (this.lectures.get(lectureId) != null) {
+			for (User user : this.lectures.get(lectureId).getUsers()) {
+				if (user.getId() == userId) {
+					removeUser = user;
+				}
 			}
 		}
 		if (removeUser != null && this.lectures.get(lectureId) != null) {
@@ -513,11 +516,24 @@ public class ServerController implements ProtocolParserListener {
 
 	@Override
 	public void onCodingTask(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, int from,
+			ParserCaller parserCaller, int lectureId, int from, Integer to,
 			String unescapedCode) {
-		String message = this.parser.generateCodingTask(unescapedCode, from, lectureId);
-		for (ServerThread serverThread : this.server.getServerThreads()) {
-			serverThread.sendMessage(message);
+		String message = ProtocolParser.generateCodingTask(unescapedCode, from, to, lectureId);
+		// send broadcast if there is no destination set
+		if (to == null) {
+			System.out.println("broadcast coding task");
+			for (ServerThread serverThread : this.server.getServerThreads()) {
+				serverThread.sendMessage(message);
+			}
+		// send to destination otherwise
+		} else {
+			System.out.println("unicast coding task for user: " + to);
+			ServerThread serverThread = this.currentUserThreads.get(to);
+			if (serverThread != null) {
+				serverThread.sendMessage(message);
+			} else {
+				System.err.println("No server thread found for user " + to);
+			}
 		}
 	}
 

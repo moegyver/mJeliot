@@ -66,6 +66,7 @@ import jeliot.gui.mJeliot.PredictResultStats;
 import jeliot.gui.mJeliot.PredictUsersStats;
 import jeliot.gui.mJeliot.InteractButton;
 import jeliot.historyview.HistoryView;
+import jeliot.mJeliot.CodeButtonController;
 import jeliot.mcode.InterpreterError;
 import jeliot.printing.PrintingUtil;
 import jeliot.theater.Animation;
@@ -568,6 +569,8 @@ public class JeliotWindow implements PauseListener, MouseListener {
 
 	private JPanel statsPane;
 
+	private JScrollPane userSelectionPane;
+
     /**
      * Assigns the values of the parameters in the object values. Constructs the
      * panelController with theater and iload.
@@ -603,6 +606,7 @@ public class JeliotWindow implements PauseListener, MouseListener {
         this.panelController = new PanelController(theatre, iLoad);
         //this.editor = new CodeEditor(this.udir);
         this.editor = new CodeEditor2(this.jeliot, this.udir, jeliot.getImportIOStatement());
+        new CodeButtonController(this.jeliot.getMJeliotController(), editor);
         editor.setMasterFrame(frame);
         /*        this.mCodeSaver = new MCodeSaver();*/
     }
@@ -660,8 +664,9 @@ public class JeliotWindow implements PauseListener, MouseListener {
                         .indexOfTab(messageBundle
                                 .getString("tab.title.history")), false);
             }
-            // TODO: add support for disabling the tab.
-            this.tabbedPane.addTab(messageBundle.getString("tab.title.userselection"), new JScrollPane(new UserSelection(jeliot.getMJeliotController())));
+            userSelectionPane = new UserSelection(jeliot.getMJeliotController(), this);
+            this.tabbedPane.addTab(messageBundle.getString("tab.title.userselection"), userSelectionPane);
+            this.tabbedPane.setEnabledAt(tabbedPane.indexOfComponent(userSelectionPane), false);
 
             this.frame.setIconImage(iLoad.getImage(propertiesBundle
                     .getStringProperty("image.jeliot_icon")));
@@ -2562,4 +2567,15 @@ public class JeliotWindow implements PauseListener, MouseListener {
     public CodeEditor2 getCodeEditor() {
     	return this.editor;
     }
+
+    public void setUserSelectionEnabled(boolean b) {
+    	this.tabbedPane.setEnabledAt(this.tabbedPane.indexOfComponent(this.userSelectionPane), b);
+    }
+	public void bringUserSelectionToForeground() {
+		
+		this.tabbedPane.setSelectedComponent(this.userSelectionPane);
+	}
+	public void bringTheaterToForeground() {
+		this.tabbedPane.setSelectedComponent(this.theaterScrollPane);
+	}
 }

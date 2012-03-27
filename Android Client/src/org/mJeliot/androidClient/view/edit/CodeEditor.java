@@ -20,7 +20,6 @@ public class CodeEditor extends AbstractMJeliotActivity {
 	
 
 		private static final long NOT_LIVE_UPDATE_INTERVAL = 5000;
-		private static final long LIVE_UPDATE_INTERVAL = 1000;
 		private long lastUpdate = System.currentTimeMillis();
 		private EditText editor;
 		private int cursorPosition = 0;
@@ -270,7 +269,7 @@ public class CodeEditor extends AbstractMJeliotActivity {
 
 		public void onCodeUpdate(CharSequence s, int cursorPosition) {
 			this.cursorPosition = cursorPosition;
-			if (this.controller.isEditorInLiveMode() || this.isUpdateNeeded()) {
+			if (this.isUpdateNeeded()) {
 				this.lastUpdate = System.currentTimeMillis();
 				this.controller.sendCodeUpdate(s.toString(), this.cursorPosition, false, false);	
 			}

@@ -1,13 +1,18 @@
 package jeliot.mJeliot;
 
+import org.mJeliot.model.Lecture;
+import org.mJeliot.model.User;
 import org.mJeliot.model.coding.CodingTask;
 import org.mJeliot.model.coding.CodingTaskListener;
 import org.mJeliot.model.coding.CodingTaskUserCode;
 import org.mJeliot.model.coding.CodingTaskUserCodeListener;
+import org.mJeliot.model.predict.Method;
+import org.mJeliot.protocol.ProtocolParser;
 
 import jeliot.gui.CodeEditor2;
 
-public class CodeSelector implements CodingTaskListener, CodingTaskUserCodeListener {
+public class CodeSelector implements CodingTaskListener,
+		CodingTaskUserCodeListener {
 
 	private final CodeEditor2 codeEditor;
 	private final String originalCode;
@@ -15,7 +20,9 @@ public class CodeSelector implements CodingTaskListener, CodingTaskUserCodeListe
 	private final int originalCursorPosition;
 	private final MJeliotController controller;
 
-	public CodeSelector(MJeliotController controller, CodeEditor2 codeEditor, CodingTask codingTask, String originalCode, int originalCursorPosition) {
+	public CodeSelector(MJeliotController controller, CodeEditor2 codeEditor,
+			CodingTask codingTask, String originalCode,
+			int originalCursorPosition) {
 		this.controller = controller;
 		this.codeEditor = codeEditor;
 		this.originalCode = originalCode;
@@ -26,6 +33,9 @@ public class CodeSelector implements CodingTaskListener, CodingTaskUserCodeListe
 	@Override
 	public void onCodingTaskUserCodeAdded(CodingTask codingTask,
 			CodingTaskUserCode userCode) {
+		controller.sendMessage(ProtocolParser.generateCodingTask(originalCode,
+				controller.getUser().getId(), userCode.getUser().getId(),
+				codingTask.getLecture().getId()));
 	}
 
 	@Override

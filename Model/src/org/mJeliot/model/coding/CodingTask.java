@@ -34,12 +34,9 @@ public class CodingTask implements LectureListener {
 		return this.codingTaskUserCodes.get(user);
 	}
 	public void updateUserCode(Lecture lecture, User user, String code, int cursorPosition, boolean isDone, boolean requestedAttention) {
-		System.out.println("updating user code..." + user);
 		if (lecture.equals(this.lecture)) {
-			System.out.println("lecture correct");
 			CodingTaskUserCode codingTaskUserCode = this.codingTaskUserCodes.get(user);
 			if (codingTaskUserCode != null) {
-				System.out.println("found user code");
 				codingTaskUserCode.update(code, cursorPosition, isDone, requestedAttention);
 			}
 		}

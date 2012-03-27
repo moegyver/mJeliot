@@ -32,7 +32,6 @@ public final class R {
         public static final int editloginalias=0x7f050009;
         public static final int editorbuttonlayout=0x7f050001;
         public static final int editurl=0x7f050012;
-        public static final int fakeedit=0x7f050016;
         public static final int labelloginalias=0x7f050008;
         public static final int labelloginnetwork=0x7f05000a;
         public static final int labelwaitmessage=0x7f050015;

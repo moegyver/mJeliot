@@ -36,12 +36,10 @@ public class UserButton extends JButton implements CodingTaskUserCodeListener {
 		this.makeUserButton(this.getUser().getName(), propertiesBundle.getStringProperty("image.user_icon"));
 		this.userSelection.addToPanel(this);
 		this.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				codingTaskUserCode.select();
 			}
-			
 		});
 	}
 

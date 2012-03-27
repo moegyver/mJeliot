@@ -16,6 +16,7 @@ import org.mJeliot.protocol.ProtocolParserListener;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 
@@ -536,11 +537,6 @@ public class Controller extends Application implements ClientListener,
 			int destUserId) {
 	}
 
-	public boolean isEditorInLiveMode() {
-		// TODO
-		return false;
-	}
-
 	@Override
 	public boolean isNetworkReady() {
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -550,11 +546,16 @@ public class Controller extends Application implements ClientListener,
 
 	@Override
 	public void onCodingTask(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, int from,
+			ParserCaller parserCaller, int lectureId, int from, Integer to,
 			String unescapedCode) {
 		if (this.lecture != null && this.lecture.getId() == lectureId) {
 			this.toUserId = from;
 			this.originalCode = unescapedCode;
+			Intent editor = new Intent();
+			editor.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK);
+			editor.setClassName("org.mJeliot.androidClient",
+					"org.mJeliot.androidClient.view.edit.CodeEditor");
+			this.startActivity(editor);
 			this.fireOnCodingTask(unescapedCode);
 		}
 	}

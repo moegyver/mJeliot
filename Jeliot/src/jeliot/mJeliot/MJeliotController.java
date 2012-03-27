@@ -286,7 +286,7 @@ public class MJeliotController implements ClientListener, ProtocolParserListener
 	@Override
 	public void onUserLoggedOut(ProtocolParser protocolParser,
 			ParserCaller parserCaller, int lectureId, int userId) {
-		if (this.lecture.getId() == lectureId && this.user.getId() == userId) {
+		if (this.lecture != null && this.lecture.getId() == lectureId && this.user.getId() == userId) {
 			this.fireOnLoggedOut(this.availableLectures.get(lectureId));
 			this.reset();
 		} else if (this.lecture.getId() == lectureId){
@@ -593,9 +593,9 @@ public class MJeliotController implements ClientListener, ProtocolParserListener
 
 	@Override
 	public void onCodingTask(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, int from,
+			ParserCaller parserCaller, int lectureId, int from, Integer to,
 			String unescapedCode) {
-		if (this.codingTask.getLecture().getId() == lectureId && from == this.user.getId()) {
+		if (this.codingTask != null && this.codingTask.getLecture().getId() == lectureId && from == this.user.getId()) {
 			this.fireOnCodingTask();
 		}
 //		if (lectureId == this.lecture.getId()) {
@@ -613,9 +613,11 @@ public class MJeliotController implements ClientListener, ProtocolParserListener
 		if (this.codingTask != null) {
 			this.codingTask.endCodingTask();
 		}
-		this.codingTask = new CodingTask(this.lecture, code);
-		new CodeSelector(this, codeEditor, this.codingTask, code, codeEditor.getCursorPosition());
-		this.sendMessage(this.parser.generateCodingTask(code, this.user.getId(), this.lecture.getId()));
+		if (this.lecture != null) {
+			this.codingTask = new CodingTask(this.lecture, code);
+			new CodeSelector(this, codeEditor, this.codingTask, code, codeEditor.getCursorPosition());
+			this.sendMessage(ProtocolParser.generateCodingTask(code, this.user.getId(), null, this.lecture.getId()));
+		}
 	}
 
 	public String getOriginalCode() {
@@ -623,11 +625,17 @@ public class MJeliotController implements ClientListener, ProtocolParserListener
 	}
 
 	public void setLiveMode(boolean liveMode, CodingTaskUserCode currentUserCode) {
-		this.sendMessage(ProtocolParser.generateLiveMode(liveMode, this.lecture.getId(), this.user.getId(), currentUserCode.getUser().getId()));
+		String message = ProtocolParser.generateLiveMode(liveMode, this.lecture.getId(), this.user.getId(), currentUserCode.getUser().getId());
+		System.out.println(message);
+		this.sendMessage(message);
 	}
 
 	@Override
 	public void onLiveModeChanged(ProtocolParser protocolParser,
 			ParserCaller parserCaller, int lectureId, int from, int to, boolean liveMode) {
+	}
+
+	public boolean isLoggedIn() {
+		return this.lecture != null && this.client.isConnected();
 	}
 }

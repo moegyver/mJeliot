@@ -66,6 +66,11 @@ public class CodeEditor2 extends JComponent {
     //TODO: Add Tracker commands for Editor buttons!
 
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 642689037576916209L;
+
+	/**
      * The resource bundle for gui package
      */
     static private UserProperties propertiesBundle = ResourceBundles
@@ -473,10 +478,11 @@ public class CodeEditor2 extends JComponent {
                 .getStringProperty("image.paste_icon"), pasteur);
         pasteButton.setMnemonic(KeyEvent.VK_T);
         
-        JButton codeButton = makeToolButton(messageBundle
+        codeButton = makeToolButton(messageBundle
                 .getString("button.code"), propertiesBundle
                 .getStringProperty("image.code_icon"), code);
-
+        codeButton.setEnabled(false);
+        
         JToolBar p = new JToolBar();
         p.add(clearButton);
         p.add(loadButton);
@@ -927,6 +933,8 @@ public class CodeEditor2 extends JComponent {
     }
 
     private static String EOL = System.getProperty("line.separator");
+
+	private JButton codeButton;
     
     private String replaceEndOfLines(String text) {
         text = text.replaceAll("\\r?\\n", EOL);
@@ -1075,10 +1083,14 @@ public class CodeEditor2 extends JComponent {
     }
 
 	public void setCursorPosition(int cursorPosition) {
-		this.area.setCaretPosition(cursorPosition);
+		this.area.setCaretPosition(cursorPosition + 1);
 	}
 
 	public int getCursorPosition() {
 		return this.area.getCaretPosition();
+	}
+
+	public void setCodeButtonEnabled(boolean b) {
+		codeButton.setEnabled(b);
 	}
 }

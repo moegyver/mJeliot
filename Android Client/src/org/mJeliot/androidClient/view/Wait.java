@@ -204,12 +204,6 @@ public class Wait extends AbstractMJeliotActivity {
 	}
 	@Override
 	public void onCodingTask(Controller controller, String code) {
-		if (this.controller.getCurrentActivity() == this) {
-			Intent editor = new Intent();
-			editor.setClassName("org.mJeliot.androidClient",
-					"org.mJeliot.androidClient.view.edit.CodeEditor");
-			startActivity(editor);
-		}
 	}
 	@Override
 	public void onLiveModeChanged(Controller controller, boolean liveMode) {
