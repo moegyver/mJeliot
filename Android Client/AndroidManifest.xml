@@ -48,6 +48,12 @@
                 <action android:name="org.mJeliot.androidClient.edit.EDIT" />
             </intent-filter>
         </activity>
+              <activity android:name=".view.remote.Control"
+        android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="org.mJeliot.androidClient.remote.CONTROL" />
+            </intent-filter>
+        </activity>
     </application>
 
 

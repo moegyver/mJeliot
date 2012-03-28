@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:id="@+id/remotelayout" >
+
+    <TableRow
+        android:id="@+id/remoteButtonTableRow"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <ImageButton
+            android:id="@+id/remoteStepButton"
+            android:layout_width="fill_parent"
+            android:layout_weight="1" 
+            android:layout_height="wrap_content"
+            android:src="@drawable/playpause" />
+	
+	    <ImageButton
+	        android:id="@+id/remotePlayButton"
+	        android:layout_width="fill_parent"
+	        android:layout_weight="1" 
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/play" />
+	
+	    <ImageButton
+	        android:id="@+id/remotePauseButton"
+	        android:layout_width="fill_parent"
+	        android:layout_weight="1" 
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/pause" />
+	
+	    <ImageButton
+	        android:id="@+id/remoteRewindButton"
+	        android:layout_width="fill_parent"
+	        android:layout_weight="1" 
+	        android:layout_height="wrap_content"
+	        android:src="@drawable/rewind" />
+
+    </TableRow>
+        <TableRow
+        android:id="@+id/animationSpeedTableRow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+         <TextView
+             android:id="@+id/AnimationLabel"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="@string/animationspeed" />
+ 
+          <SeekBar
+		      android:id="@+id/animationSpeedBar"
+		      android:layout_width="match_parent"
+		      android:layout_height="wrap_content"
+		      android:layout_weight="1" />
+    </TableRow>
+
+</TableLayout>

@@ -299,4 +299,11 @@ public class CodeEditor extends AbstractMJeliotActivity {
 		public void onLiveModeChanged(Controller controller, boolean liveMode) {
 			this.liveMode  = liveMode;
 		}
+
+		@Override
+		public void onAnimationControlCommand(Controller controller,
+				String command) {
+			// TODO Auto-generated method stub
+			
+		}
 }

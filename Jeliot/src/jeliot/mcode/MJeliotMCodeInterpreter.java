@@ -75,6 +75,7 @@ public class MJeliotMCodeInterpreter extends MCodeInterpreter {
 		try {
 			return mcode.readLine();
 		} catch (Exception e) {
+			controller.mCodeError();
 			return "" + Code.ERROR + Code.DELIM + messageBundle.getString("unknown.exception")
 			+ Code.DELIM + "0" + Code.LOC_DELIM + "0" + Code.LOC_DELIM + "0" + Code.LOC_DELIM + "0";
 		}
@@ -241,6 +242,7 @@ public class MJeliotMCodeInterpreter extends MCodeInterpreter {
 	 */
 	@Override
 	public void showErrorMessage(InterpreterError error) {
+		controller.mCodeError();
 	}
 	/* (non-Javadoc)
 	 * @see jeliot.mcode.MCodeInterpreter#handleCodeINPUTTED(long, java.lang.String, java.lang.String, jeliot.mcode.Highlight)
@@ -356,6 +358,7 @@ public class MJeliotMCodeInterpreter extends MCodeInterpreter {
 	@Override
 	protected void handleCodeERROR(String message, Highlight h) {
 		running = false;
+		controller.mCodeError();
 	}
 	/* (non-Javadoc)
 	 * @see jeliot.mcode.MCodeInterpreter#handleCodeFIELD(java.lang.String, java.lang.String, int, java.lang.String, java.lang.String)

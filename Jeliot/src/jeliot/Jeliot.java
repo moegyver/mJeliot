@@ -143,7 +143,7 @@ public class Jeliot {
      * The controller that is in charge for the connection to the server and events that
      * originate from it.
      */
-    private MJeliotController mJeliotController = new MJeliotController();
+    private MJeliotController mJeliotController = new MJeliotController(this);
     /**
      * A thread for running the MJeliotMCodeInterpreter in
      */

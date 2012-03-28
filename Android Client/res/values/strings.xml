@@ -30,5 +30,6 @@
     <string name="discard">Discard changes</string>
     <string name="requestattention">Request the teacher\'s attention</string>
     <string name="reallydiscard">Do you really want to discard your changes?</string>
+    <string name="animationspeed">Animation Speed</string>
 
 </resources>

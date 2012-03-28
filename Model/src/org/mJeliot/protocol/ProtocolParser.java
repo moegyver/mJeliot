@@ -65,6 +65,8 @@ public class ProtocolParser {
 	private static final String endSource = "</from>";
 	private static final String startLive = "<liveMode>";
 	private static final String endLive = "</liveMode>";
+	private static final String startCommand = "<command>";
+	private static final String endCommand = "</command>";
 
 	/**
 	 * A list of listeners to inform on understood messages.
@@ -103,7 +105,7 @@ public class ProtocolParser {
 	 * @param message
 	 * @param parserCaller
 	 */
-	public void parseMessage(String message, ParserCaller parserCaller) {
+	public void parseMessage(String message, Route parserCaller) {
 		Document document = null;
 		String action = null;
 		String className = null;
@@ -128,6 +130,7 @@ public class ProtocolParser {
 		Boolean requestedAttention = null;
 		Boolean liveMode = null;
 		Integer cursorPosition = null;
+		String command = null;
 		try {
 			document = this.documentBuilder.parse(new InputSource(
 					new StringReader(message)));
@@ -145,6 +148,10 @@ public class ProtocolParser {
 					action = node.getAttributes().getNamedItem("action")
 							.getNodeValue();
 					System.out.println("parser action: " + action);
+				}
+				node = document.getElementsByTagName("command").item(0);
+				if (node != null) {
+					command = node.getTextContent();
 				}
 				node = document.getElementsByTagName("className").item(0);
 				if (node != null) {
@@ -333,6 +340,10 @@ public class ProtocolParser {
 						&& lectureId != null && to != null && from != null && liveMode != null) {
 					this.fireOnLiveModeChanged(parserCaller, lectureId, from, to,
 							liveMode);
+				} else if (action.equalsIgnoreCase("controlAnimation")
+						&& lectureId != null && to != null && from != null && command != null) {
+					this.fireOnControlAnimation(parserCaller, lectureId, from, to,
+							command);
 				} else {
 					System.err
 							.println("Something missing in the parser or error in the message.");
@@ -346,7 +357,15 @@ public class ProtocolParser {
 		}
 	}
 
-	private void fireOnLiveModeChanged(ParserCaller parserCaller,
+	private void fireOnControlAnimation(Route parserCaller,
+			int lectureId, int source, int destination, String command) {
+		for (ProtocolParserListener listener : this.listeners) {
+			listener.onControlAnimation(this, parserCaller, lectureId, source, destination,
+					command);
+		}
+	}
+
+	private void fireOnLiveModeChanged(Route parserCaller,
 			int lectureId, int from, int to, boolean liveMode) {
 		for (ProtocolParserListener listener : this.listeners) {
 			listener.onLiveModeChanged(this, parserCaller, lectureId, from, to,
@@ -354,7 +373,7 @@ public class ProtocolParser {
 		}
 	}
 
-	private void fireOnCodingTask(ParserCaller parserCaller, int lectureId,
+	private void fireOnCodingTask(Route parserCaller, int lectureId,
 			int from, Integer to, String code) {
 		String unescapedCode = StringFunctions.unescape(code);
 		for (ProtocolParserListener listener : this.listeners) {
@@ -363,7 +382,7 @@ public class ProtocolParser {
 		}
 	}
 
-	private void fireOnCodeUpdate(ParserCaller parserCaller, Integer lectureId,
+	private void fireOnCodeUpdate(Route parserCaller, Integer lectureId,
 			Integer userId, String code, Integer cursorPosition, boolean done,
 			boolean requestedAttention, Integer to) {
 		String unescapedCode = StringFunctions.unescape(code);
@@ -373,7 +392,7 @@ public class ProtocolParser {
 		}
 	}
 
-	private void fireOnUserList(ParserCaller parserCaller, int lectureId,
+	private void fireOnUserList(Route parserCaller, int lectureId,
 			Integer userCount, int[] userIds, String[] userNames) {
 		for (ProtocolParserListener listener : this.listeners) {
 			listener.onUserList(this, parserCaller, lectureId, userCount,
@@ -394,7 +413,7 @@ public class ProtocolParser {
 	 * @param lectureNames
 	 *            the lectures' names
 	 */
-	private void fireOnLectureList(ParserCaller parserCaller,
+	private void fireOnLectureList(Route parserCaller,
 			Integer lectureCount, int[] lectureIds, String[] lectureNames) {
 		for (ProtocolParserListener listener : this.listeners) {
 			listener.onLectureList(this, parserCaller, lectureCount,
@@ -432,7 +451,7 @@ public class ProtocolParser {
 	 * @param parserCaller
 	 *            the source of the query
 	 */
-	private void fireOnLectureQuery(ParserCaller parserCaller) {
+	private void fireOnLectureQuery(Route parserCaller) {
 		for (ProtocolParserListener listener : this.listeners) {
 			listener.onLectureQuery(this, parserCaller);
 		}
@@ -449,7 +468,7 @@ public class ProtocolParser {
 	 * @param lectureName
 	 *            the lecture's name
 	 */
-	private void fireOnNewLecture(ParserCaller parserCaller, int lectureId,
+	private void fireOnNewLecture(Route parserCaller, int lectureId,
 			String lectureName) {
 		for (ProtocolParserListener listener : listeners) {
 			listener.onNewLecture(this, parserCaller, lectureId, lectureName);
@@ -469,7 +488,7 @@ public class ProtocolParser {
 	 * @param userId
 	 *            the user's id from the parsed message
 	 */
-	private void fireOnUserLogin(ParserCaller parserCaller, int lectureId,
+	private void fireOnUserLogin(Route parserCaller, int lectureId,
 			String userName, int userId) {
 		for (ProtocolParserListener listener : listeners) {
 			listener.onLogin(this, parserCaller, lectureId, userName, userId);
@@ -489,7 +508,7 @@ public class ProtocolParser {
 	 * @param userId
 	 *            the user's id from the parsed message
 	 */
-	private void fireOnUserLoggedIn(ParserCaller parserCaller, int lectureId,
+	private void fireOnUserLoggedIn(Route parserCaller, int lectureId,
 			String userName, int userId) {
 		for (ProtocolParserListener listener : listeners) {
 			listener.onLoggedIn(this, parserCaller, lectureId, userName, userId);
@@ -507,7 +526,7 @@ public class ProtocolParser {
 	 * @param userId
 	 *            the user's id from the parsed message
 	 */
-	private void fireOnUserLogout(ParserCaller parserCaller, int lectureId,
+	private void fireOnUserLogout(Route parserCaller, int lectureId,
 			int userId) {
 		for (ProtocolParserListener listener : listeners) {
 			listener.onUserLogout(this, parserCaller, lectureId, userId);
@@ -525,7 +544,7 @@ public class ProtocolParser {
 	 * @param userId
 	 *            the user's id from the parsed message
 	 */
-	private void fireOnUserLoggedOut(ParserCaller parserCaller, int lectureId,
+	private void fireOnUserLoggedOut(Route parserCaller, int lectureId,
 			int userId) {
 		for (ProtocolParserListener listener : listeners) {
 			listener.onUserLoggedOut(this, parserCaller, lectureId, userId);
@@ -551,7 +570,7 @@ public class ProtocolParser {
 	 * @param predictedValues
 	 *            the predicted values made by the user
 	 */
-	private void fireOnUserHandedInMethodPredict(ParserCaller parserCaller,
+	private void fireOnUserHandedInMethodPredict(Route parserCaller,
 			int lectureId, int userId, int methodId, int parameterCount,
 			String[] parameterNames, String[] predictedValues) {
 		for (ProtocolParserListener listener : listeners) {
@@ -579,7 +598,7 @@ public class ProtocolParser {
 	 * @param parameterNames
 	 *            the names of the parameters
 	 */
-	private void fireOnNewMethodPredict(ParserCaller parserCaller,
+	private void fireOnNewMethodPredict(Route parserCaller,
 			int lectureId, String className, String methodName, int methodId,
 			int parameterCount, String[] parameterNames) {
 		for (ProtocolParserListener listener : listeners) {
@@ -605,7 +624,7 @@ public class ProtocolParser {
 	 * @param parameterValues
 	 *            the parameters' values
 	 */
-	private void fireOnPredictResult(ParserCaller parserCaller, int lectureId,
+	private void fireOnPredictResult(Route parserCaller, int lectureId,
 			int methodId, int parameterCount, String[] parameterNames,
 			String[] parameterValues) {
 		for (ProtocolParserListener listener : listeners) {
@@ -841,4 +860,15 @@ public class ProtocolParser {
 		result += endAction;
 		return result;
 	}
+
+	public static String generateRemoteCommand(int lectureId, int source, int destination, String command) {
+		String result = xmlHeader;
+		result += startActionBegin + "controlAnimation\"" + end;
+		result += startDestination + destination + endDestination;
+		result += startSource + source + endSource;
+		result += startLectureId + lectureId + endLectureId;
+		result += startCommand + command + endCommand;
+		result += endAction;
+		return result;
+		}
 }

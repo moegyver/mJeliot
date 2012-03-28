@@ -9,7 +9,7 @@ import org.mJeliot.helpers.Pair;
 import org.mJeliot.model.Lecture;
 import org.mJeliot.model.User;
 import org.mJeliot.model.predict.Method;
-import org.mJeliot.protocol.ParserCaller;
+import org.mJeliot.protocol.Route;
 import org.mJeliot.protocol.ProtocolParser;
 import org.mJeliot.protocol.ProtocolParserListener;
 
@@ -35,6 +35,7 @@ public class ServerController implements ProtocolParserListener {
 	private Vector<ServerControllerListener> listeners = new Vector<ServerControllerListener>();
 
 	private Timer userScheduler = new Timer();
+
 	/**
 	 * Initialises a ServerController object
 	 * 
@@ -75,12 +76,12 @@ public class ServerController implements ProtocolParserListener {
 	 * 
 	 * @see
 	 * org.mJeliot.protocol.ProtocolParserListener#onUserLogin(org.mJeliot.protocol
-	 * .ProtocolParser, org.mJeliot.protocol.ParserCaller, java.lang.String,
+	 * .ProtocolParser, org.mJeliot.protocol.Route, java.lang.String,
 	 * int)
 	 */
 	@Override
 	public void onLogin(ProtocolParser protocolParser,
-			ParserCaller returnSender, int lectureId, String userName,
+			Route returnSender, int lectureId, String userName,
 			int userId) {
 		System.out.println("User " + userName + " with ID " + userId
 				+ " logged in to lecture " + lectureId);
@@ -91,24 +92,28 @@ public class ServerController implements ProtocolParserListener {
 			this.startUserTimeoutTask(user, lecture);
 			this.sendLoginConfirmForUser(user, lectureId);
 			this.sendCurrentState(returnSender, lectureId);
-			this.currentUserThreads.put(userId, (ServerThread)returnSender);
-			System.out.println("Added " + returnSender + "as user thread for user: " + userId);
+			this.currentUserThreads.put(userId, (ServerThread) returnSender);
+			System.out.println("Added " + returnSender
+					+ "as user thread for user: " + userId);
 		}
 	}
 
 	private void startUserTimeoutTask(User user, Lecture lecture) {
-		UserTimerTimeoutTask userTimeoutTask = new UserTimerTimeoutTask(this, user);
-		this.userTimeoutTimers.put(new Pair<Integer, Integer>(lecture.getId(), user.getId()), userTimeoutTask);
-		this.userScheduler.schedule(userTimeoutTask, ServerThread.PING_INTERVAL, ServerThread.PING_INTERVAL);
+		UserTimerTimeoutTask userTimeoutTask = new UserTimerTimeoutTask(this,
+				user);
+		this.userTimeoutTimers.put(new Pair<Integer, Integer>(lecture.getId(),
+				user.getId()), userTimeoutTask);
+		this.userScheduler.schedule(userTimeoutTask,
+				ServerThread.PING_INTERVAL, ServerThread.PING_INTERVAL);
 	}
 
 	/**
-	 * Sends the current state to a ParserCaller
+	 * Sends the current state to a Route
 	 * 
 	 * @param parserCaller
 	 *            the caller that should receive the state
 	 */
-	private void sendCurrentState(ParserCaller parserCaller, int lectureId) {
+	private void sendCurrentState(Route parserCaller, int lectureId) {
 		Lecture lecture = this.lectures.get(lectureId);
 		String message = this.parser.generateUserList(
 				this.lectures.get(lectureId).getUsers(), lectureId);
@@ -138,12 +143,12 @@ public class ServerController implements ProtocolParserListener {
 	 * 
 	 * @see
 	 * org.mJeliot.protocol.ProtocolParserListener#onUserLoggedIn(org.mJeliot
-	 * .protocol.ProtocolParser, org.mJeliot.protocol.ParserCaller,
+	 * .protocol.ProtocolParser, org.mJeliot.protocol.Route,
 	 * java.lang.String, int)
 	 */
 	@Override
 	public void onLoggedIn(ProtocolParser protocolParser,
-			ParserCaller returnSender, int lectureId, String userName,
+			Route returnSender, int lectureId, String userName,
 			int userId) {
 		// the Server should not receive that message, we work with a
 		// TCP-connection so
@@ -156,11 +161,11 @@ public class ServerController implements ProtocolParserListener {
 	 * 
 	 * @see
 	 * org.mJeliot.protocol.ProtocolParserListener#onUserLogout(org.mJeliot.
-	 * protocol.ProtocolParser, org.mJeliot.protocol.ParserCaller, int)
+	 * protocol.ProtocolParser, org.mJeliot.protocol.Route, int)
 	 */
 	@Override
 	public void onUserLogout(ProtocolParser protocolParser,
-			ParserCaller returnSender, int lectureId, int userId) {
+			Route returnSender, int lectureId, int userId) {
 		System.out.println("User with ID " + userId + " logged out of lecture "
 				+ lectureId);
 		User removeUser = null;
@@ -183,13 +188,16 @@ public class ServerController implements ProtocolParserListener {
 	 *            the user to log out
 	 */
 	public void disconnectUser(User user, int lectureId) {
-		System.out.println("disconnecting user " + user.getId() + " from lecture " + lectureId); 
-		TimerTask userTimerTask = this.userTimeoutTimers.get(new Pair<Integer, Integer>(lectureId, user.getId()));
+		System.out.println("disconnecting user " + user.getId()
+				+ " from lecture " + lectureId);
+		TimerTask userTimerTask = this.userTimeoutTimers
+				.get(new Pair<Integer, Integer>(lectureId, user.getId()));
 		if (userTimerTask != null) {
 			userTimerTask.cancel();
 			System.out.println("stopping timer task");
 		}
-		if (null == this.userTimeoutTimers.remove(new Pair<Integer, Integer>(lectureId, user.getId()))) {
+		if (null == this.userTimeoutTimers.remove(new Pair<Integer, Integer>(
+				lectureId, user.getId()))) {
 			System.err.println("could not remove userTimeoutTimer");
 		}
 		this.currentUserThreads.remove(user.getId());
@@ -202,7 +210,8 @@ public class ServerController implements ProtocolParserListener {
 				serverThread.sendMessage(message);
 			}
 		} else {
-			System.err.println("could not find user " + user + " for disconnecting.");
+			System.err.println("could not find user " + user
+					+ " for disconnecting.");
 		}
 	}
 
@@ -211,12 +220,13 @@ public class ServerController implements ProtocolParserListener {
 	 * 
 	 * @see
 	 * org.mJeliot.protocol.ProtocolParserListener#onUserLoggedOut(org.mJeliot
-	 * .protocol.ProtocolParser, org.mJeliot.protocol.ParserCaller, int)
+	 * .protocol.ProtocolParser, org.mJeliot.protocol.Route, int)
 	 */
 	@Override
 	public void onUserLoggedOut(ProtocolParser protocolParser,
-			ParserCaller returnSender, int lectureId, int userId) {
-		System.out.println("got a logged out from user " + userId + " in lecture " + lectureId);
+			Route returnSender, int lectureId, int userId) {
+		System.out.println("got a logged out from user " + userId
+				+ " in lecture " + lectureId);
 	}
 
 	/*
@@ -224,12 +234,12 @@ public class ServerController implements ProtocolParserListener {
 	 * 
 	 * @see
 	 * org.mJeliot.protocol.ProtocolParserListener#onUserHandedInMethod(org.
-	 * mJeliot.protocol.ProtocolParser, org.mJeliot.protocol.ParserCaller, int,
+	 * mJeliot.protocol.ProtocolParser, org.mJeliot.protocol.Route, int,
 	 * int, int, java.lang.String[], java.lang.String[])
 	 */
 	@Override
 	public void onUserHandedInMethod(ProtocolParser protocolParser,
-			ParserCaller returnSender, int lectureId, int userId, int methodId,
+			Route returnSender, int lectureId, int userId, int methodId,
 			int parameterCount, String[] parameterNames,
 			String[] predictedValues) {
 		System.out.println("User with ID " + userId
@@ -270,12 +280,12 @@ public class ServerController implements ProtocolParserListener {
 	 * 
 	 * @see
 	 * org.mJeliot.protocol.ProtocolParserListener#onNewPredictMethod(org.mJeliot
-	 * .protocol.ProtocolParser, org.mJeliot.protocol.ParserCaller,
+	 * .protocol.ProtocolParser, org.mJeliot.protocol.Route,
 	 * java.lang.String, java.lang.String, int, int, java.lang.String[])
 	 */
 	@Override
 	public void onNewPredictMethod(ProtocolParser protocolParser,
-			ParserCaller returnSender, int lectureId, String className,
+			Route returnSender, int lectureId, String className,
 			String methodName, int methodId, int parameterCount,
 			String[] parameterNames) {
 		System.out.println("new assignment for method " + className + "."
@@ -298,12 +308,12 @@ public class ServerController implements ProtocolParserListener {
 	 * 
 	 * @see
 	 * org.mJeliot.protocol.ProtocolParserListener#onPredictResult(org.mJeliot
-	 * .protocol.ProtocolParser, org.mJeliot.protocol.ParserCaller, int, int,
+	 * .protocol.ProtocolParser, org.mJeliot.protocol.Route, int, int,
 	 * java.lang.String[], java.lang.String[])
 	 */
 	@Override
 	public void onPredictResult(ProtocolParser protocolParser,
-			ParserCaller returnSender, int lectureId, int methodId,
+			Route returnSender, int lectureId, int methodId,
 			int parameterCount, String[] parameterNames,
 			String[] parameterValues) {
 		System.out.println("New result for method " + methodId
@@ -331,12 +341,12 @@ public class ServerController implements ProtocolParserListener {
 	 * 
 	 * @see
 	 * org.mJeliot.protocol.ProtocolParserListener#onNewLecture(org.mJeliot.
-	 * protocol.ProtocolParser, org.mJeliot.protocol.ParserCaller, int,
+	 * protocol.ProtocolParser, org.mJeliot.protocol.Route, int,
 	 * java.lang.String)
 	 */
 	@Override
 	public void onNewLecture(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, String lectureName) {
+			Route parserCaller, int lectureId, String lectureName) {
 	}
 
 	/*
@@ -344,11 +354,11 @@ public class ServerController implements ProtocolParserListener {
 	 * 
 	 * @see
 	 * org.mJeliot.protocol.ProtocolParserListener#onLectureQuery(org.mJeliot
-	 * .protocol.ProtocolParser, org.mJeliot.protocol.ParserCaller)
+	 * .protocol.ProtocolParser, org.mJeliot.protocol.Route)
 	 */
 	@Override
 	public void onLectureQuery(ProtocolParser protocolParser,
-			ParserCaller parserCaller) {
+			Route parserCaller) {
 		System.out.println("lectureList got queried");
 		String message = this.parser
 				.generateLectureList(this.lectures.values());
@@ -360,12 +370,12 @@ public class ServerController implements ProtocolParserListener {
 	 * 
 	 * @see
 	 * org.mJeliot.protocol.ProtocolParserListener#onLectureList(org.mJeliot
-	 * .protocol.ProtocolParser, org.mJeliot.protocol.ParserCaller, int, int[],
+	 * .protocol.ProtocolParser, org.mJeliot.protocol.Route, int, int[],
 	 * java.lang.String[])
 	 */
 	@Override
 	public void onLectureList(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureCount, int[] lectureIds,
+			Route parserCaller, int lectureCount, int[] lectureIds,
 			String[] lectureNames) {
 		// we do not react on this.
 
@@ -471,12 +481,13 @@ public class ServerController implements ProtocolParserListener {
 
 	@Override
 	public void onUserList(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, int userCount,
+			Route parserCaller, int lectureId, int userCount,
 			int[] userIds, String[] userNames) {
 		// The server does not care about UserLists
 	}
 
-	public void resetUserTimer(ServerThread serverThread, int lectureId, int userId) {
+	public void resetUserTimer(ServerThread serverThread, int lectureId,
+			int userId) {
 		UserTimerTimeoutTask userTimerTask = this.userTimeoutTimers
 				.get(new Pair<Integer, Integer>(lectureId, userId));
 		if (userTimerTask != null) {
@@ -501,12 +512,13 @@ public class ServerController implements ProtocolParserListener {
 
 	@Override
 	public void onCodeUpdate(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, int userId, String code,
+			Route parserCaller, int lectureId, int userId, String code,
 			int cursorPosition, boolean done, boolean requestedAttention,
 			int destUserId) {
 		System.out.println("sending code update back to Jeliot" + destUserId);
 		if (this.currentUserThreads.containsKey(destUserId)) {
-			String message = parser.generateCodeUpdate(code, cursorPosition, done, requestedAttention, destUserId, userId, lectureId); 
+			String message = parser.generateCodeUpdate(code, cursorPosition,
+					done, requestedAttention, destUserId, userId, lectureId);
 			ServerThread serverThread = this.currentUserThreads.get(destUserId);
 			serverThread.sendMessage(message);
 		} else {
@@ -516,16 +528,17 @@ public class ServerController implements ProtocolParserListener {
 
 	@Override
 	public void onCodingTask(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, int from, Integer to,
+			Route parserCaller, int lectureId, int from, Integer to,
 			String unescapedCode) {
-		String message = ProtocolParser.generateCodingTask(unescapedCode, from, to, lectureId);
+		String message = ProtocolParser.generateCodingTask(unescapedCode, from,
+				to, lectureId);
 		// send broadcast if there is no destination set
 		if (to == null) {
 			System.out.println("broadcast coding task");
 			for (ServerThread serverThread : this.server.getServerThreads()) {
 				serverThread.sendMessage(message);
 			}
-		// send to destination otherwise
+			// send to destination otherwise
 		} else {
 			System.out.println("unicast coding task for user: " + to);
 			ServerThread serverThread = this.currentUserThreads.get(to);
@@ -539,10 +552,25 @@ public class ServerController implements ProtocolParserListener {
 
 	@Override
 	public void onLiveModeChanged(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, int from, int to, boolean liveMode) {
+			Route parserCaller, int lectureId, int from, int to,
+			boolean liveMode) {
 		if (this.currentUserThreads.containsKey(to)) {
-			String message = ProtocolParser.generateLiveMode(liveMode, lectureId, from, to); 
+			String message = ProtocolParser.generateLiveMode(liveMode,
+					lectureId, from, to);
 			ServerThread serverThread = this.currentUserThreads.get(to);
+			serverThread.sendMessage(message);
+		}
+	}
+
+	@Override
+	public void onControlAnimation(ProtocolParser protocolParser,
+			Route parserCaller, int lectureId, int source,
+			int destination, String command) {
+		if (this.currentUserThreads.containsKey(destination)) {
+			String message = ProtocolParser.generateRemoteCommand(lectureId,
+					source, destination, command);
+			ServerThread serverThread = this.currentUserThreads
+					.get(destination);
 			serverThread.sendMessage(message);
 		}
 	}

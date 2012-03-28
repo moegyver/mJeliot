@@ -7,9 +7,10 @@ import java.util.Vector;
 import org.mJeliot.client.Client;
 import org.mJeliot.client.ClientListener;
 import org.mJeliot.model.Lecture;
+import org.mJeliot.model.RemoteController;
 import org.mJeliot.model.User;
 import org.mJeliot.model.predict.Method;
-import org.mJeliot.protocol.ParserCaller;
+import org.mJeliot.protocol.Route;
 import org.mJeliot.protocol.ProtocolParser;
 import org.mJeliot.protocol.ProtocolParserListener;
 
@@ -34,11 +35,11 @@ import android.net.ConnectivityManager;
  * 
  */
 public class Controller extends Application implements ClientListener,
-		ProtocolParserListener, ParserCaller { 
+		ProtocolParserListener, Route { 
 	// state-variables
 	private Lecture lecture = null;
 	private User user = null;
-	private Integer toUserId = 0; // TODO! change on task
+	private Integer destination = 0;
 	private Client client = null;
 	private Activity currentActivity = null;
 	private Vector<ControllerListener> listeners = new Vector<ControllerListener>();
@@ -46,6 +47,7 @@ public class Controller extends Application implements ClientListener,
 	private ProtocolParser parser = new ProtocolParser();
 	private HashMap<Integer, Lecture> availableLectures = new HashMap<Integer, Lecture>();
 	private String originalCode;
+	private RemoteController remoteController = new RemoteController(this);
 
 	public Controller() {
 		parser.addProtocolParserListener(this);
@@ -264,12 +266,12 @@ public class Controller extends Application implements ClientListener,
 
 	@Override
 	public void onLectureQuery(ProtocolParser protocolParser,
-			ParserCaller parserCaller) {
+			Route parserCaller) {
 	}
 
 	@Override
 	public void onNewLecture(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, String lectureName) {
+			Route parserCaller, int lectureId, String lectureName) {
 		Lecture lecture = new Lecture(lectureId, lectureName);
 		this.availableLectures.put(lectureId, lecture);
 		this.fireOnNewLecture(lecture);
@@ -277,7 +279,7 @@ public class Controller extends Application implements ClientListener,
 
 	@Override
 	public void onLectureList(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureCount, int[] lectureIds,
+			Route parserCaller, int lectureCount, int[] lectureIds,
 			String[] lectureNames) {
 		for (int i = 0; i < lectureCount; i++) {
 			this.availableLectures.put(lectureIds[i], new Lecture(
@@ -288,13 +290,13 @@ public class Controller extends Application implements ClientListener,
 
 	@Override
 	public void onLogin(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, String userName,
+			Route parserCaller, int lectureId, String userName,
 			int userId) {
 	}
 
 	@Override
 	public void onLoggedIn(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, String userName,
+			Route parserCaller, int lectureId, String userName,
 			int userId) {
 		if (this.user != null && this.user.getId() == userId
 				&& this.lecture.getId() == lectureId) {
@@ -304,13 +306,13 @@ public class Controller extends Application implements ClientListener,
 
 	@Override
 	public void onUserList(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, int userCount,
+			Route parserCaller, int lectureId, int userCount,
 			int[] userIds, String[] userNames) {
 	}
 
 	@Override
 	public void onNewPredictMethod(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, String className,
+			Route parserCaller, int lectureId, String className,
 			String methodName, int methodId, int parameterCount,
 			String[] parameterNames) {
 		if (this.lecture.getId() == lectureId) {
@@ -320,7 +322,7 @@ public class Controller extends Application implements ClientListener,
 
 	@Override
 	public void onUserHandedInMethod(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, int userId, int methodId,
+			Route parserCaller, int lectureId, int userId, int methodId,
 			int parameterCount, String[] parameterNames,
 			String[] predictedValues) {
 		// won't happen
@@ -328,7 +330,7 @@ public class Controller extends Application implements ClientListener,
 
 	@Override
 	public void onPredictResult(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, int methodId,
+			Route parserCaller, int lectureId, int methodId,
 			int parameterCount, String[] parameterNames,
 			String[] parameterValues) {
 		if (this.lecture.getId() == lectureId) {
@@ -347,14 +349,14 @@ public class Controller extends Application implements ClientListener,
 
 	@Override
 	public void onUserLogout(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, int userId) {
+			Route parserCaller, int lectureId, int userId) {
 		// we already know that we want to log out and we don't care about
 		// others
 	}
 
 	@Override
 	public void onUserLoggedOut(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, int userId) {
+			Route parserCaller, int lectureId, int userId) {
 		System.out.println("onUserLoggedOut: user: " + this.user + " lecture: " + this.lecture);
 		if (this.user != null && this.user.getId() == userId && this.lecture.getId() == lectureId) {
 			this.fireOnLoggedOut();
@@ -524,7 +526,7 @@ public class Controller extends Application implements ClientListener,
 			boolean attention) {
 		if (this.user != null && this.lecture != null) {
 			this.client.sendMessage(this.parser.generateCodeUpdate(code,
-					cursorPosition, done, attention, this.toUserId, user.getId(), lecture.getId()));
+					cursorPosition, done, attention, this.destination, user.getId(), lecture.getId()));
 		} else {
 			System.err.println("Tried to send code update but not logged in");
 		}
@@ -532,7 +534,7 @@ public class Controller extends Application implements ClientListener,
 
 	@Override
 	public void onCodeUpdate(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, int userId, String code,
+			Route parserCaller, int lectureId, int userId, String code,
 			int cursorPosition, boolean done, boolean requestedAttention,
 			int destUserId) {
 	}
@@ -546,10 +548,10 @@ public class Controller extends Application implements ClientListener,
 
 	@Override
 	public void onCodingTask(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, int from, Integer to,
+			Route parserCaller, int lectureId, int from, Integer to,
 			String unescapedCode) {
 		if (this.lecture != null && this.lecture.getId() == lectureId) {
-			this.toUserId = from;
+			this.destination = from;
 			this.originalCode = unescapedCode;
 			Intent editor = new Intent();
 			editor.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -572,11 +574,40 @@ public class Controller extends Application implements ClientListener,
 
 	@Override
 	public void onLiveModeChanged(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, int from, int to, boolean liveMode) {
+			Route parserCaller, int lectureId, int from, int to, boolean liveMode) {
 		if (lectureId == this.lecture.getId()) {
 			for (ControllerListener listener : this.listeners) {
 				listener.onLiveModeChanged(this, liveMode);
 			}
+		}
+	}
+
+	public RemoteController getRemoteController() {
+		return this.remoteController;
+	}
+
+	public int getDestination() {
+		return this.destination;
+	}
+
+	@Override
+	public void onControlAnimation(ProtocolParser protocolParser,
+			Route parserCaller, int lectureId, int source,
+			int destination, String command) {
+		if (command.equals("control") && this.lecture.getId() == lectureId && destination == this.user.getId()) {
+			this.destination = source;
+			Intent remoteControl = new Intent();
+			remoteControl.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK);
+			remoteControl.setClassName("org.mJeliot.androidClient",
+					"org.mJeliot.androidClient.view.remote.Control");
+			this.startActivity(remoteControl);
+			this.fireOnAnimationControlCommand(command);
+		}
+	}
+
+	private void fireOnAnimationControlCommand(String command) {
+		for (ControllerListener listener : this.listeners) {
+			listener.onAnimationControlCommand(this, command);
 		}
 	}
 }

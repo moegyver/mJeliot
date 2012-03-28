@@ -1802,7 +1802,7 @@ public class JeliotWindow implements PauseListener, MouseListener {
     /**
      *
      */
-    void tryToEnterAnimate() {
+    public void tryToEnterAnimate() {
 
         tryToEnterAnimate(null);
     }
@@ -2058,7 +2058,7 @@ public class JeliotWindow implements PauseListener, MouseListener {
      * 
      * @see jeliot.Jeliot#step()
      */
-    void stepAnimation() {
+    public void stepAnimation() {
 
         rewindButton.setEnabled(false);
         editButton.setEnabled(false);
@@ -2087,7 +2087,7 @@ public class JeliotWindow implements PauseListener, MouseListener {
      * 
      * @see jeliot.Jeliot#play()
      */
-    void playAnimation() {
+    public void playAnimation() {
 
         stepButton.setEnabled(false);
         playButton.setEnabled(false);
@@ -2180,7 +2180,7 @@ public class JeliotWindow implements PauseListener, MouseListener {
      * @see jeliot.Jeliot#rewind()
      * @see jeliot.theatre.Theatre#repaint()
      */
-    void rewindAnimation() {
+    public void rewindAnimation() {
 
         tabbedPane.setSelectedIndex(0);
         changeTheatrePane(tabbedPane);

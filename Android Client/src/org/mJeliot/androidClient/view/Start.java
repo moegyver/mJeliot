@@ -255,4 +255,10 @@ public class Start extends AbstractMJeliotActivity {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void onAnimationControlCommand(Controller controller, String command) {
+		// TODO Auto-generated method stub
+		
+	}
 }

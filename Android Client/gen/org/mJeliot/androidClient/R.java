@@ -16,13 +16,20 @@ public final class R {
         public static final int check=0x7f020002;
         public static final int discard=0x7f020003;
         public static final int icon=0x7f020004;
-        public static final int start=0x7f020005;
-        public static final int x=0x7f020006;
+        public static final int pause=0x7f020005;
+        public static final int play=0x7f020006;
+        public static final int playpause=0x7f020007;
+        public static final int rewind=0x7f020008;
+        public static final int start=0x7f020009;
+        public static final int x=0x7f02000a;
     }
     public static final class id {
-        public static final int ImageView01=0x7f050010;
+        public static final int AnimationLabel=0x7f050016;
+        public static final int ImageView01=0x7f050019;
+        public static final int animationSpeedBar=0x7f050017;
+        public static final int animationSpeedTableRow=0x7f050015;
         public static final int attentionbutton=0x7f050003;
-        public static final int buttonconnect=0x7f050013;
+        public static final int buttonconnect=0x7f05001c;
         public static final int buttonlogingo=0x7f05000e;
         public static final int buttonloginrescan=0x7f05000c;
         public static final int codeEditor=0x7f050005;
@@ -31,17 +38,23 @@ public final class R {
         public static final int donebutton=0x7f050004;
         public static final int editloginalias=0x7f050009;
         public static final int editorbuttonlayout=0x7f050001;
-        public static final int editurl=0x7f050012;
+        public static final int editurl=0x7f05001b;
         public static final int labelloginalias=0x7f050008;
         public static final int labelloginnetwork=0x7f05000a;
-        public static final int labelwaitmessage=0x7f050015;
+        public static final int labelwaitmessage=0x7f05001e;
         public static final int lineareditorlayout=0x7f050000;
-        public static final int linearwaitlayout=0x7f050014;
+        public static final int linearwaitlayout=0x7f05001d;
         public static final int logonwaittext=0x7f050006;
         public static final int networklist=0x7f05000b;
-        public static final int scanwait=0x7f05000f;
+        public static final int remoteButtonTableRow=0x7f050010;
+        public static final int remotePauseButton=0x7f050013;
+        public static final int remotePlayButton=0x7f050012;
+        public static final int remoteRewindButton=0x7f050014;
+        public static final int remoteStepButton=0x7f050011;
+        public static final int remotelayout=0x7f05000f;
+        public static final int scanwait=0x7f050018;
         public static final int spinnerloginnetworks=0x7f05000d;
-        public static final int textviewurl=0x7f050011;
+        public static final int textviewurl=0x7f05001a;
     }
     public static final class layout {
         public static final int codeeditor=0x7f030000;
@@ -49,13 +62,15 @@ public final class R {
         public static final int disconnectingdialog=0x7f030002;
         public static final int login=0x7f030003;
         public static final int predict=0x7f030004;
-        public static final int scanningdialog=0x7f030005;
-        public static final int start=0x7f030006;
-        public static final int wait=0x7f030007;
+        public static final int remotecontrol=0x7f030005;
+        public static final int scanningdialog=0x7f030006;
+        public static final int start=0x7f030007;
+        public static final int wait=0x7f030008;
     }
     public static final class string {
         public static final int address=0x7f040000;
         public static final int alias=0x7f040001;
+        public static final int animationspeed=0x7f04001d;
         public static final int app_name=0x7f040002;
         public static final int availablenetworks=0x7f040003;
         public static final int cancel=0x7f040004;

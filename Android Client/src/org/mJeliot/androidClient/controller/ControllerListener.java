@@ -81,4 +81,5 @@ public interface ControllerListener {
 	public void onNewLecture(Controller controller, Lecture lecture);
 	public void onCodingTask(Controller controller, String code);
 	public void onLiveModeChanged(Controller controller, boolean liveMode);
+	public void onAnimationControlCommand(Controller controller, String command);
 }

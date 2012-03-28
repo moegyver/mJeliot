@@ -8,15 +8,16 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Timer;
 
+import org.mJeliot.model.Lecture;
 import org.mJeliot.model.User;
-import org.mJeliot.protocol.ParserCaller;
+import org.mJeliot.protocol.Route;
 
 /**
  * @author Moritz Rogalli
  * A ServerThread keeps the connection to one of the connected clients. It is also
  * responsible for sending messages to that client.
  */
-public class ServerThread implements Runnable, ParserCaller {
+public class ServerThread implements Runnable, Route {
 
 	protected static final long PING_INTERVAL = 30000;
 	/**
@@ -106,7 +107,7 @@ public class ServerThread implements Runnable, ParserCaller {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.mJeliot.protocol.ParserCaller#sendMessage(java.lang.String)
+	 * @see org.mJeliot.protocol.Route#sendMessage(java.lang.String)
 	 */
 	public void sendMessage(String message) {
 		this.out.write(message);
@@ -134,5 +135,20 @@ public class ServerThread implements Runnable, ParserCaller {
 
 	public void resetUserTimer(int lectureId, int userId) {
 		this.controller.resetUserTimer(this, lectureId, userId);
+	}
+
+	@Override
+	public Lecture getLecture() {
+		return this.getLecture();
+	}
+
+	@Override
+	public User getUser() {
+		return this.user;
+	}
+
+	@Override
+	public int getDestination() {
+		return this.getUser().getId();
 	}
 }

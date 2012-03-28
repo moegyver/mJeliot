@@ -78,4 +78,10 @@ public class CodingTaskController implements ControllerListener {
 	@Override
 	public void onLiveModeChanged(Controller controller, boolean liveMode) {
 	}
+
+	@Override
+	public void onAnimationControlCommand(Controller controller, String command) {
+		// TODO Auto-generated method stub
+		
+	}
 }

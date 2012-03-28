@@ -93,4 +93,8 @@ public class CodingTask implements LectureListener {
 	public Lecture getLecture() {
 		return this.lecture;
 	}
+
+	public CodingTaskUserCode getCurrentUserCode() {
+		return this.currentUserCode;
+	}
 }

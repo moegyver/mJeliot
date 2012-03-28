@@ -15,10 +15,10 @@ public interface ProtocolParserListener {
 	 *            the source of the parser call
 	 */
 	public void onLectureQuery(ProtocolParser protocolParser,
-			ParserCaller parserCaller);
+			Route parserCaller);
 
 	public void onLectureList(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureCount, int[] lectureIds,
+			Route parserCaller, int lectureCount, int[] lectureIds,
 			String[] lectureNames);
 
 	/**
@@ -34,7 +34,7 @@ public interface ProtocolParserListener {
 	 *            the lecture's name
 	 */
 	public void onNewLecture(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, String lectureName);
+			Route parserCaller, int lectureId, String lectureName);
 
 	/**
 	 * Gets called when a parser receives a login message.
@@ -51,7 +51,7 @@ public interface ProtocolParserListener {
 	 *            the user's id
 	 */
 	public void onLogin(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, String userName,
+			Route parserCaller, int lectureId, String userName,
 			int userId);
 
 	/**
@@ -69,7 +69,7 @@ public interface ProtocolParserListener {
 	 *            the user's id
 	 */
 	public void onLoggedIn(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, String userName,
+			Route parserCaller, int lectureId, String userName,
 			int userId);
 
 	/**
@@ -85,7 +85,7 @@ public interface ProtocolParserListener {
 	 *            the user's id
 	 */
 	public void onUserLogout(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, int userId);
+			Route parserCaller, int lectureId, int userId);
 
 	/**
 	 * Gets called when a parser receives a logged out message.
@@ -98,7 +98,7 @@ public interface ProtocolParserListener {
 	 *            the user's id
 	 */
 	public void onUserLoggedOut(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, int userId);
+			Route parserCaller, int lectureId, int userId);
 
 	/**
 	 * Gets called when a parser receives a hand-in for an assignment
@@ -121,7 +121,7 @@ public interface ProtocolParserListener {
 	 *            the user's predictions for the parameters
 	 */
 	public void onUserHandedInMethod(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, int userId, int methodId,
+			Route parserCaller, int lectureId, int userId, int methodId,
 			int parameterCount, String[] parameterNames,
 			String[] predictedValues);
 
@@ -146,7 +146,7 @@ public interface ProtocolParserListener {
 	 *            the parameters' names
 	 */
 	public void onNewPredictMethod(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, String className,
+			Route parserCaller, int lectureId, String className,
 			String methodName, int methodId, int parameterCount,
 			String[] parameterNames);
 
@@ -169,23 +169,27 @@ public interface ProtocolParserListener {
 	 *            the parameters' values
 	 */
 	public void onPredictResult(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, int methodId,
+			Route parserCaller, int lectureId, int methodId,
 			int parameterCount, String[] parameterNames,
 			String[] parameterValues);
 
 	public void onUserList(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, int userCount,
+			Route parserCaller, int lectureId, int userCount,
 			int[] userIds, String[] userNames);
 
 	public void onCodeUpdate(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, int userId,
+			Route parserCaller, int lectureId, int userId,
 			String code, int cursorPosition, boolean done,
 			boolean requestedAttention, int destUserId);
 
 	public void onCodingTask(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, int from, Integer to,
+			Route parserCaller, int lectureId, int from, Integer to,
 			String unescapedCode);
 
 	public void onLiveModeChanged(ProtocolParser protocolParser,
-			ParserCaller parserCaller, int lectureId, int from, int to, boolean liveMode);
+			Route parserCaller, int lectureId, int from, int to, boolean liveMode);
+
+	public void onControlAnimation(ProtocolParser protocolParser,
+			Route parserCaller, int lectureId, int source,
+			int destination, String command);
 }

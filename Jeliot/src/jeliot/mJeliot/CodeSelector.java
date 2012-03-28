@@ -1,12 +1,9 @@
 package jeliot.mJeliot;
 
-import org.mJeliot.model.Lecture;
-import org.mJeliot.model.User;
 import org.mJeliot.model.coding.CodingTask;
 import org.mJeliot.model.coding.CodingTaskListener;
 import org.mJeliot.model.coding.CodingTaskUserCode;
 import org.mJeliot.model.coding.CodingTaskUserCodeListener;
-import org.mJeliot.model.predict.Method;
 import org.mJeliot.protocol.ProtocolParser;
 
 import jeliot.gui.CodeEditor2;
@@ -55,7 +52,11 @@ public class CodeSelector implements CodingTaskListener,
 			codeEditor.setProgram(usercode.getCode());
 			codeEditor.setCursorPosition(usercode.getCursorPosition());
 			if (currentUserCode.isDone()) {
-				// TODO go to compile
+				controller.getGUI().tryToEnterAnimate();
+				controller.sendMessage(ProtocolParser.generateRemoteCommand(
+						codingTask.getLecture().getId(), controller.getUser()
+								.getId(), currentUserCode.getUser().getId(),
+						"control"));
 			} else {
 				this.controller.setLiveMode(true, currentUserCode);
 			}
@@ -68,7 +69,13 @@ public class CodeSelector implements CodingTaskListener,
 	@Override
 	public void onIsDoneChanged(CodingTaskUserCode codingTaskUserCode,
 			boolean isDone) {
-		// TODO Go to compile when done
+		if (codingTaskUserCode == this.currentUserCode) {
+			controller.getGUI().tryToEnterAnimate();
+			controller.sendMessage(ProtocolParser.generateRemoteCommand(
+					codingTaskUserCode.getCodingTask().getLecture().getId(), controller.getUser()
+							.getId(), currentUserCode.getUser().getId(),
+					"control"));
+		}
 	}
 
 	@Override

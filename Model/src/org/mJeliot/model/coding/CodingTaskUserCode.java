@@ -167,4 +167,8 @@ public class CodingTaskUserCode implements CodingTaskListener {
 	public int getCursorPosition() {
 		return this.cursorPosition;
 	}
+
+	public CodingTask getCodingTask() {
+		return this.codingTask;
+	}
 }
