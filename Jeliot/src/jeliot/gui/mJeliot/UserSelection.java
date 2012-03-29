@@ -147,7 +147,6 @@ public class UserSelection extends JScrollPane implements MJeliotControllerListe
 			CodingTask codingTask) {
 		this.panel.removeAll();
 		codingTask.addCodingTaskListener(this);
-		// TODO enable
 		for (User user : codingTask.getLecture().getUsers()) {
 			CodingTaskUserCode userCode = codingTask.getUserCodeTask(user);
 			this.addUser(userCode);
@@ -160,8 +159,6 @@ public class UserSelection extends JScrollPane implements MJeliotControllerListe
 	public void onCodingTaskEnded(CodingTask codingTask) {
 		gui.setUserSelectionEnabled(false);
 		gui.bringTheaterToForeground();
-		// TODO disable
-		//this.panel.removeAll();
 	}
 	
 	public void addToPanel(UserButton userButton) {

@@ -35,7 +35,7 @@ import android.net.ConnectivityManager;
  * 
  */
 public class Controller extends Application implements ClientListener,
-		ProtocolParserListener, Route { 
+		ProtocolParserListener, Route {
 	// state-variables
 	private Lecture lecture = null;
 	private User user = null;
@@ -265,13 +265,12 @@ public class Controller extends Application implements ClientListener,
 	}
 
 	@Override
-	public void onLectureQuery(ProtocolParser protocolParser,
-			Route parserCaller) {
+	public void onLectureQuery(ProtocolParser protocolParser, Route parserCaller) {
 	}
 
 	@Override
-	public void onNewLecture(ProtocolParser protocolParser,
-			Route parserCaller, int lectureId, String lectureName) {
+	public void onNewLecture(ProtocolParser protocolParser, Route parserCaller,
+			int lectureId, String lectureName) {
 		Lecture lecture = new Lecture(lectureId, lectureName);
 		this.availableLectures.put(lectureId, lecture);
 		this.fireOnNewLecture(lecture);
@@ -289,15 +288,13 @@ public class Controller extends Application implements ClientListener,
 	}
 
 	@Override
-	public void onLogin(ProtocolParser protocolParser,
-			Route parserCaller, int lectureId, String userName,
-			int userId) {
+	public void onLogin(ProtocolParser protocolParser, Route parserCaller,
+			int lectureId, String userName, int userId) {
 	}
 
 	@Override
-	public void onLoggedIn(ProtocolParser protocolParser,
-			Route parserCaller, int lectureId, String userName,
-			int userId) {
+	public void onLoggedIn(ProtocolParser protocolParser, Route parserCaller,
+			int lectureId, String userName, int userId) {
 		if (this.user != null && this.user.getId() == userId
 				&& this.lecture.getId() == lectureId) {
 			this.fireOnLoggedIn();
@@ -305,9 +302,8 @@ public class Controller extends Application implements ClientListener,
 	}
 
 	@Override
-	public void onUserList(ProtocolParser protocolParser,
-			Route parserCaller, int lectureId, int userCount,
-			int[] userIds, String[] userNames) {
+	public void onUserList(ProtocolParser protocolParser, Route parserCaller,
+			int lectureId, int userCount, int[] userIds, String[] userNames) {
 	}
 
 	@Override
@@ -348,8 +344,8 @@ public class Controller extends Application implements ClientListener,
 	}
 
 	@Override
-	public void onUserLogout(ProtocolParser protocolParser,
-			Route parserCaller, int lectureId, int userId) {
+	public void onUserLogout(ProtocolParser protocolParser, Route parserCaller,
+			int lectureId, int userId) {
 		// we already know that we want to log out and we don't care about
 		// others
 	}
@@ -357,8 +353,10 @@ public class Controller extends Application implements ClientListener,
 	@Override
 	public void onUserLoggedOut(ProtocolParser protocolParser,
 			Route parserCaller, int lectureId, int userId) {
-		System.out.println("onUserLoggedOut: user: " + this.user + " lecture: " + this.lecture);
-		if (this.user != null && this.user.getId() == userId && this.lecture.getId() == lectureId) {
+		System.out.println("onUserLoggedOut: user: " + this.user + " lecture: "
+				+ this.lecture);
+		if (this.user != null && this.user.getId() == userId
+				&& this.lecture.getId() == lectureId) {
 			this.fireOnLoggedOut();
 			this.user = null;
 			this.lecture = null;
@@ -526,17 +524,17 @@ public class Controller extends Application implements ClientListener,
 			boolean attention) {
 		if (this.user != null && this.lecture != null) {
 			this.client.sendMessage(this.parser.generateCodeUpdate(code,
-					cursorPosition, done, attention, this.destination, user.getId(), lecture.getId()));
+					cursorPosition, done, attention, this.destination,
+					user.getId(), lecture.getId()));
 		} else {
 			System.err.println("Tried to send code update but not logged in");
 		}
 	}
 
 	@Override
-	public void onCodeUpdate(ProtocolParser protocolParser,
-			Route parserCaller, int lectureId, int userId, String code,
-			int cursorPosition, boolean done, boolean requestedAttention,
-			int destUserId) {
+	public void onCodeUpdate(ProtocolParser protocolParser, Route parserCaller,
+			int lectureId, int userId, String code, int cursorPosition,
+			boolean done, boolean requestedAttention, int destUserId) {
 	}
 
 	@Override
@@ -547,14 +545,13 @@ public class Controller extends Application implements ClientListener,
 	}
 
 	@Override
-	public void onCodingTask(ProtocolParser protocolParser,
-			Route parserCaller, int lectureId, int from, Integer to,
-			String unescapedCode) {
+	public void onCodingTask(ProtocolParser protocolParser, Route parserCaller,
+			int lectureId, int from, Integer to, String unescapedCode) {
 		if (this.lecture != null && this.lecture.getId() == lectureId) {
 			this.destination = from;
 			this.originalCode = unescapedCode;
 			Intent editor = new Intent();
-			editor.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK);
+			editor.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			editor.setClassName("org.mJeliot.androidClient",
 					"org.mJeliot.androidClient.view.edit.CodeEditor");
 			this.startActivity(editor);
@@ -574,7 +571,8 @@ public class Controller extends Application implements ClientListener,
 
 	@Override
 	public void onLiveModeChanged(ProtocolParser protocolParser,
-			Route parserCaller, int lectureId, int from, int to, boolean liveMode) {
+			Route parserCaller, int lectureId, int from, int to,
+			boolean liveMode) {
 		if (lectureId == this.lecture.getId()) {
 			for (ControllerListener listener : this.listeners) {
 				listener.onLiveModeChanged(this, liveMode);
@@ -592,12 +590,17 @@ public class Controller extends Application implements ClientListener,
 
 	@Override
 	public void onControlAnimation(ProtocolParser protocolParser,
-			Route parserCaller, int lectureId, int source,
-			int destination, String command) {
-		if (command.equals("control") && this.lecture.getId() == lectureId && destination == this.user.getId()) {
+			Route parserCaller, int lectureId, int source, int destination,
+			int animationSpeed, String command) {
+		if (this.lecture.getId() == lectureId
+				&& destination == this.user.getId()) {
+			this.remoteController.setAnimationSpeed(animationSpeed);
+		}
+		if (command.equals("control") && this.lecture.getId() == lectureId
+				&& destination == this.user.getId()) {
 			this.destination = source;
 			Intent remoteControl = new Intent();
-			remoteControl.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK);
+			remoteControl.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			remoteControl.setClassName("org.mJeliot.androidClient",
 					"org.mJeliot.androidClient.view.remote.Control");
 			this.startActivity(remoteControl);

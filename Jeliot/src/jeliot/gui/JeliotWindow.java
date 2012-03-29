@@ -1598,6 +1598,24 @@ public class JeliotWindow implements PauseListener, MouseListener {
                         Tracker.OTHER, -1, -1, "Slider:" + volume);
             }
         });
+        speedSlider.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+			}
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+			}
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+			}
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+			}
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				jeliot.getMJeliotController().setAnimationSpeed(speedSlider.getValue());
+			}
+        });
 
         animWidgets.addElement(speedSlider);
 
@@ -1745,7 +1763,7 @@ public class JeliotWindow implements PauseListener, MouseListener {
     /**
      * This method is called when user clicks the "Edit" button.
      */
-    void enterEdit() {
+   public void enterEdit() {
 
         //enableWidgets(editWidgets.elements(), true);
         enableWidgets(animWidgets.elements(), false);

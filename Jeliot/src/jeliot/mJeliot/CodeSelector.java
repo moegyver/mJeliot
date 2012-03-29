@@ -55,7 +55,7 @@ public class CodeSelector implements CodingTaskListener,
 				controller.getGUI().tryToEnterAnimate();
 				controller.sendMessage(ProtocolParser.generateRemoteCommand(
 						codingTask.getLecture().getId(), controller.getUser()
-								.getId(), currentUserCode.getUser().getId(),
+								.getId(), currentUserCode.getUser().getId(), -1, 
 						"control"));
 			} else {
 				this.controller.setLiveMode(true, currentUserCode);
@@ -69,11 +69,11 @@ public class CodeSelector implements CodingTaskListener,
 	@Override
 	public void onIsDoneChanged(CodingTaskUserCode codingTaskUserCode,
 			boolean isDone) {
-		if (codingTaskUserCode == this.currentUserCode) {
+		if (codingTaskUserCode == this.currentUserCode && isDone) {
 			controller.getGUI().tryToEnterAnimate();
 			controller.sendMessage(ProtocolParser.generateRemoteCommand(
 					codingTaskUserCode.getCodingTask().getLecture().getId(), controller.getUser()
-							.getId(), currentUserCode.getUser().getId(),
+							.getId(), currentUserCode.getUser().getId(), controller.getGUI().getSpeedSlider().getValue(), 
 					"control"));
 		}
 	}

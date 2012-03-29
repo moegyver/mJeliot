@@ -292,17 +292,11 @@ public class Login extends AbstractMJeliotActivity {
 	}
 	@Override
 	public void onCodingTask(Controller controller, String code) {
-		// TODO Auto-generated method stub
-		
 	}
 	@Override
 	public void onLiveModeChanged(Controller controller, boolean liveMode) {
-		// TODO Auto-generated method stub
-		
 	}
 	@Override
 	public void onAnimationControlCommand(Controller controller, String command) {
-		// TODO Auto-generated method stub
-		
 	}
 }

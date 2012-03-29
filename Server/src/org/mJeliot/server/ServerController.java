@@ -565,10 +565,10 @@ public class ServerController implements ProtocolParserListener {
 	@Override
 	public void onControlAnimation(ProtocolParser protocolParser,
 			Route parserCaller, int lectureId, int source,
-			int destination, String command) {
+			int destination, int animationSpeed, String command) {
 		if (this.currentUserThreads.containsKey(destination)) {
 			String message = ProtocolParser.generateRemoteCommand(lectureId,
-					source, destination, command);
+					source, destination, animationSpeed, command);
 			ServerThread serverThread = this.currentUserThreads
 					.get(destination);
 			serverThread.sendMessage(message);

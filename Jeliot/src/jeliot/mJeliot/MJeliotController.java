@@ -736,7 +736,7 @@ public class MJeliotController implements ClientListener,
 	@Override
 	public void onControlAnimation(ProtocolParser protocolParser,
 			Route parserCaller, int lectureId, int source, int destination,
-			String command) {
+			int animationSpeed, String command) {
 		if (destination == this.user.getId()
 				&& source == this.codingTask.getCurrentUserCode().getUser()
 						.getId()) {
@@ -748,6 +748,12 @@ public class MJeliotController implements ClientListener,
 				this.jeliot.getGUI().playAnimation();
 			} else if (command.equals("rewind")) {
 				this.jeliot.getGUI().rewindAnimation();
+			} else if (command.equals("endControl")) {
+				this.jeliot.getGUI().enterEdit();
+				this.jeliot.getGUI().bringUserSelectionToForeground();
+			}
+			if (animationSpeed != -1) {
+				this.jeliot.getGUI().getSpeedSlider().setValue(animationSpeed);
 			}
 		}
 	}
@@ -762,12 +768,18 @@ public class MJeliotController implements ClientListener,
 
 	public void mCodeError() {
 		System.err.println("mcode ERROR");
-		if (this.codingTask != null
-				&& this.codingTask.getCurrentUserCode() != null) {
-			this.sendMessage(ProtocolParser.generateRemoteCommand(
-					this.lecture.getId(), this.user.getId(), this.codingTask
-							.getCurrentUserCode().getUser().getId(),
-					"endControl"));
+		if (this.codingTask != null) {
+			this.codingTask.compilerError(this);
+		}
+	}
+
+	public CodingTask getCodingTask() {
+		return this.codingTask;
+	}
+
+	public void setAnimationSpeed(int animationSpeed) {
+		if (this.lecture != null && this.user != null) {
+			this.sendMessage(ProtocolParser.generateRemoteCommand(this.lecture.getId(), this.user.getId(), this.getDestination(), animationSpeed, "animationSpeed"));
 		}
 	}
 }

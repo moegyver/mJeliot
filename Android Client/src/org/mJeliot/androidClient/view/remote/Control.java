@@ -5,19 +5,35 @@ import org.mJeliot.androidClient.controller.Controller;
 import org.mJeliot.androidClient.view.AbstractMJeliotActivity;
 import org.mJeliot.model.Lecture;
 import org.mJeliot.model.RemoteController;
+import org.mJeliot.model.RemoteControllerListener;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 
-public class Control extends AbstractMJeliotActivity {
+public class Control extends AbstractMJeliotActivity implements RemoteControllerListener {
+
+	private SeekBar speedSlider;
+
+
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.remotecontrol);
+		ImageButton returnButton = (ImageButton)findViewById(R.id.returnToEditButton);
+		returnButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				getRemoteController().endControl();
+				finish();
+			}
+		});
 		ImageButton stepButton = (ImageButton)findViewById(R.id.remoteStepButton);
 		stepButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -44,6 +60,27 @@ public class Control extends AbstractMJeliotActivity {
 			@Override
 			public void onClick(View v) {
 				getRemoteController().rewind();
+			}
+		});
+		speedSlider = (SeekBar)findViewById(R.id.animationSpeedBar);
+		controller.getRemoteController().addRemoteControllerListener(this);
+		speedSlider.setProgress(controller.getRemoteController().getAnimationSpeed());
+		speedSlider.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) {
+				if (fromUser) {
+					controller.getRemoteController().changeAnimationSpeed(progress);
+				}
+			}
+
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+			}
+
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
 			}
 		});
 	}
@@ -123,9 +160,18 @@ public class Control extends AbstractMJeliotActivity {
 
 	@Override
 	public void onAnimationControlCommand(Controller controller, String command) {
-		if (command.equals("endCommand")) {
+		if (command.equals("endControl")) {
 			this.finish();
 		}
+	}
+
+
+
+
+	@Override
+	public void onAnimationSpeedChanged(RemoteController controller,
+			int animationSpeed) {
+		this.speedSlider.setProgress(animationSpeed);
 	}
 
 }

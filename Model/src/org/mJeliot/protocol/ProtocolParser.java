@@ -67,6 +67,8 @@ public class ProtocolParser {
 	private static final String endLive = "</liveMode>";
 	private static final String startCommand = "<command>";
 	private static final String endCommand = "</command>";
+	private static final String startAnimationSpeed = "<animationSpeed>";
+	private static final String endAnimationSpeed = "</animationSpeed>";
 
 	/**
 	 * A list of listeners to inform on understood messages.
@@ -131,6 +133,7 @@ public class ProtocolParser {
 		Boolean liveMode = null;
 		Integer cursorPosition = null;
 		String command = null;
+		Integer animationSpeed = null;
 		try {
 			document = this.documentBuilder.parse(new InputSource(
 					new StringReader(message)));
@@ -176,6 +179,10 @@ public class ProtocolParser {
 				node = document.getElementsByTagName("to").item(0);
 				if (node != null) {
 					to = Integer.parseInt(node.getTextContent());
+				}
+				node = document.getElementsByTagName("animationSpeed").item(0);
+				if (node != null) {
+					animationSpeed = Integer.parseInt(node.getTextContent());
 				}
 				node = document.getElementsByTagName("from").item(0);
 				if (node != null) {
@@ -341,9 +348,9 @@ public class ProtocolParser {
 					this.fireOnLiveModeChanged(parserCaller, lectureId, from, to,
 							liveMode);
 				} else if (action.equalsIgnoreCase("controlAnimation")
-						&& lectureId != null && to != null && from != null && command != null) {
+						&& lectureId != null && to != null && from != null && animationSpeed != null && command != null) {
 					this.fireOnControlAnimation(parserCaller, lectureId, from, to,
-							command);
+							animationSpeed, command);
 				} else {
 					System.err
 							.println("Something missing in the parser or error in the message.");
@@ -358,9 +365,9 @@ public class ProtocolParser {
 	}
 
 	private void fireOnControlAnimation(Route parserCaller,
-			int lectureId, int source, int destination, String command) {
+			int lectureId, int source, int destination, int animationSpeed, String command) {
 		for (ProtocolParserListener listener : this.listeners) {
-			listener.onControlAnimation(this, parserCaller, lectureId, source, destination,
+			listener.onControlAnimation(this, parserCaller, lectureId, source, destination, animationSpeed,
 					command);
 		}
 	}
@@ -861,13 +868,14 @@ public class ProtocolParser {
 		return result;
 	}
 
-	public static String generateRemoteCommand(int lectureId, int source, int destination, String command) {
+	public static String generateRemoteCommand(int lectureId, int source, int destination, int animationSpeed, String command) {
 		String result = xmlHeader;
 		result += startActionBegin + "controlAnimation\"" + end;
 		result += startDestination + destination + endDestination;
 		result += startSource + source + endSource;
 		result += startLectureId + lectureId + endLectureId;
 		result += startCommand + command + endCommand;
+		result += startAnimationSpeed + animationSpeed + endAnimationSpeed;
 		result += endAction;
 		return result;
 		}

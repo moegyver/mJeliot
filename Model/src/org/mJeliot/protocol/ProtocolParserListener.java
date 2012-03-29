@@ -191,5 +191,5 @@ public interface ProtocolParserListener {
 
 	public void onControlAnimation(ProtocolParser protocolParser,
 			Route parserCaller, int lectureId, int source,
-			int destination, String command);
+			int destination, int animationSpeed, String command);
 }

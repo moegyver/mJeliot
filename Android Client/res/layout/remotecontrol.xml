@@ -9,34 +9,44 @@
         android:id="@+id/remoteButtonTableRow"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
-
+        <ImageButton
+            android:id="@+id/returnToEditButton"
+            android:layout_width="fill_parent"
+            android:layout_weight="1" 
+            android:layout_height="wrap_content"
+            android:src="@drawable/goback"
+            android:contentDescription="@string/goback" />
         <ImageButton
             android:id="@+id/remoteStepButton"
             android:layout_width="fill_parent"
             android:layout_weight="1" 
             android:layout_height="wrap_content"
-            android:src="@drawable/playpause" />
+            android:src="@drawable/playpause"
+            android:contentDescription="@string/step" />
 	
 	    <ImageButton
 	        android:id="@+id/remotePlayButton"
 	        android:layout_width="fill_parent"
 	        android:layout_weight="1" 
 	        android:layout_height="wrap_content"
-	        android:src="@drawable/play" />
+	        android:src="@drawable/play"
+	        android:contentDescription="@string/play" />
 	
 	    <ImageButton
 	        android:id="@+id/remotePauseButton"
 	        android:layout_width="fill_parent"
 	        android:layout_weight="1" 
 	        android:layout_height="wrap_content"
-	        android:src="@drawable/pause" />
+	        android:src="@drawable/pause"
+	        android:contentDescription="@string/pause" />
 	
 	    <ImageButton
 	        android:id="@+id/remoteRewindButton"
 	        android:layout_width="fill_parent"
 	        android:layout_weight="1" 
 	        android:layout_height="wrap_content"
-	        android:src="@drawable/rewind" />
+	        android:src="@drawable/rewind"
+	        android:contentDescription="@string/rewind" />
 
     </TableRow>
         <TableRow

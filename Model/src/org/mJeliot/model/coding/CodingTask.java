@@ -6,6 +6,8 @@ import java.util.Vector;
 import org.mJeliot.model.Lecture;
 import org.mJeliot.model.LectureListener;
 import org.mJeliot.model.User;
+import org.mJeliot.protocol.ProtocolParser;
+import org.mJeliot.protocol.Route;
 
 public class CodingTask implements LectureListener {
 	private String originalCode = "";
@@ -13,7 +15,7 @@ public class CodingTask implements LectureListener {
 	private CodingTaskUserCode currentUserCode = null;
 	private final Lecture lecture;
 	private Vector<CodingTaskListener> listeners = new Vector<CodingTaskListener>();
-	
+
 	public CodingTask(Lecture lecture, String originalCode) {
 		this.lecture = lecture;
 		this.lecture.addLectureListener(this);
@@ -22,33 +24,41 @@ public class CodingTask implements LectureListener {
 			this.addUser(user);
 		}
 	}
-	
+
 	public String getOriginalCode() {
 		return this.originalCode;
 	}
-	
+
 	public void addUser(User user) {
-		this.codingTaskUserCodes.put(user, new CodingTaskUserCode(this, user, this.originalCode, 0));
+		this.codingTaskUserCodes.put(user, new CodingTaskUserCode(this, user,
+				this.originalCode, 0));
 	}
+
 	public CodingTaskUserCode getUserCodeTask(User user) {
 		return this.codingTaskUserCodes.get(user);
 	}
-	public void updateUserCode(Lecture lecture, User user, String code, int cursorPosition, boolean isDone, boolean requestedAttention) {
+
+	public void updateUserCode(Lecture lecture, User user, String code,
+			int cursorPosition, boolean isDone, boolean requestedAttention) {
 		if (lecture.equals(this.lecture)) {
-			CodingTaskUserCode codingTaskUserCode = this.codingTaskUserCodes.get(user);
+			CodingTaskUserCode codingTaskUserCode = this.codingTaskUserCodes
+					.get(user);
 			if (codingTaskUserCode != null) {
-				codingTaskUserCode.update(code, cursorPosition, isDone, requestedAttention);
+				codingTaskUserCode.update(code, cursorPosition, isDone,
+						requestedAttention);
 			}
 		}
 	}
 
 	@Override
 	public void onUserRemoved(Lecture lecture, User user) {
-		CodingTaskUserCode codingTaskUserCode = this.codingTaskUserCodes.remove(user);
+		CodingTaskUserCode codingTaskUserCode = this.codingTaskUserCodes
+				.remove(user);
 		if (codingTaskUserCode != null) {
 			codingTaskUserCode.remove();
 		}
 	}
+
 	public void endCodingTask() {
 		this.lecture.removeLectureListener(this);
 		this.fireOnCodingTaskEnded();
@@ -64,6 +74,7 @@ public class CodingTask implements LectureListener {
 		this.currentUserCode = usercode;
 		this.fireOnUserCodeChanged(usercode);
 	}
+
 	private void fireOnUserCodeChanged(CodingTaskUserCode usercode) {
 		for (CodingTaskListener listener : this.listeners) {
 			listener.onUserCodeChanged(this, usercode);
@@ -72,13 +83,13 @@ public class CodingTask implements LectureListener {
 
 	@Override
 	public void onUserAdded(Lecture lecture, User user) {
-		CodingTaskUserCode codingTaskUserCode = new CodingTaskUserCode(this, user, this.originalCode, 0);
+		CodingTaskUserCode codingTaskUserCode = new CodingTaskUserCode(this,
+				user, this.originalCode, 0);
 		this.codingTaskUserCodes.put(user, codingTaskUserCode);
 		this.fireOnCodingTaskUserCodeAdded(codingTaskUserCode);
 	}
-	
-	private void fireOnCodingTaskUserCodeAdded(
-			CodingTaskUserCode userCode) {
+
+	private void fireOnCodingTaskUserCodeAdded(CodingTaskUserCode userCode) {
 		for (CodingTaskListener listener : this.listeners) {
 			listener.onCodingTaskUserCodeAdded(this, userCode);
 		}
@@ -97,4 +108,18 @@ public class CodingTask implements LectureListener {
 	public CodingTaskUserCode getCurrentUserCode() {
 		return this.currentUserCode;
 	}
+
+	public void compilerError(Route route) {
+		if (this.currentUserCode != null) {
+			route.sendMessage(ProtocolParser.generateRemoteCommand(
+					this.lecture.getId(), route.getUser().getId(), this
+							.getCurrentUserCode().getUser().getId(), -1,
+					"endControl"));
+		}
+	}
+
+	public boolean hasCurrentUserCode() {
+		return this.currentUserCode != null;
+	}
+
 }

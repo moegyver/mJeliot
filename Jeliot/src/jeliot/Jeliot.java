@@ -643,6 +643,7 @@ public class Jeliot {
         Tracker.trackEvent(TrackerClock.currentTimeMillis(), Tracker.OTHER, -1,
                 -1, "Error: " + e.getMessage());
         gui.showErrorMessageDuringAnimation(e);
+        mJeliotController.mCodeError();
     }
 
     /**
