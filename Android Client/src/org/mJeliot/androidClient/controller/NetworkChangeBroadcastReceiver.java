@@ -17,7 +17,7 @@ public class NetworkChangeBroadcastReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 		boolean hasConnectivity = !intent.getBooleanExtra(
 				ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
-		if (hasConnectivity) {
+		if (hasConnectivity && client.hasUri()) {
 			client.forceReconnect();
 		}
 	}

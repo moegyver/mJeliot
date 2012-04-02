@@ -62,21 +62,22 @@ public class InputThread implements Runnable {
 				}
 			} else {
 				System.out.println("got a null message");
-				try {
-					if (!this.in.ready()) {
-						System.out.println("socket not ready for receiving");
-						if (!stop) {
+				// when null then disconnect
+//				try {
+//					if (!this.in.ready()) {
+//						System.out.println("socket not ready for receiving");
+//						if (!stop) {
 							this.client.disconnect(false, false);
 							this.stop();
-						}
-					}
-				} catch (IOException e) {
-					System.out.println("error receiving: " + e.getMessage());
-					if (!stop) {
-						this.client.disconnect(false, false);
-						this.stop();
-					}
-				}
+//						}
+//					}
+//				} catch (IOException e) {
+//					System.out.println("error receiving: " + e.getMessage());
+//					if (!stop) {
+//						this.client.disconnect(false, false);
+//						this.stop();
+//					}
+//				}
 			}
 			
 		}
