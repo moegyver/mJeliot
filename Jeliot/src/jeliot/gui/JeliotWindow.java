@@ -571,6 +571,8 @@ public class JeliotWindow implements PauseListener, MouseListener {
 
 	private JScrollPane userSelectionPane;
 
+	private int editTabIndex = 0;
+
     /**
      * Assigns the values of the parameters in the object values. Constructs the
      * panelController with theater and iload.
@@ -1764,17 +1766,19 @@ public class JeliotWindow implements PauseListener, MouseListener {
      * This method is called when user clicks the "Edit" button.
      */
    public void enterEdit() {
-
         //enableWidgets(editWidgets.elements(), true);
         enableWidgets(animWidgets.elements(), false);
 
-        tabbedPane.setSelectedIndex(0);
         changeTheatrePane(tabbedPane);
         unhighlightTabTitles();
         callTree.initialize();
         int n = tabbedPane.getTabCount();
+        tabbedPane.setSelectedIndex(this.editTabIndex);
         for (int i = 1; i < n; i++) {
-            tabbedPane.setEnabledAt(i, false);
+        	Class<? extends Component> e = tabbedPane.getComponent(i).getClass();
+        	if (e != UserSelection.class) {
+        		tabbedPane.setEnabledAt(i, false);
+        	}
         }
         
         this.runUntilLine = -1;
@@ -1890,6 +1894,7 @@ public class JeliotWindow implements PauseListener, MouseListener {
                 // StringReader(methodCall));
 
                 changeTheatrePane(tabbedPane);
+                this.editTabIndex = tabbedPane.getSelectedIndex();
                 tabbedPane.setSelectedIndex(0);
                 jeliot.setSourceCode(programCode, methodCall);
                 panelController.slide(true, new Runnable() {

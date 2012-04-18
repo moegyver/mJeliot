@@ -38,7 +38,7 @@ public class UserButton extends JButton implements CodingTaskUserCodeListener {
 		this.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				codingTaskUserCode.select();
+				codingTaskUserCode.toggleSelect();
 			}
 		});
 	}

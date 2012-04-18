@@ -1087,7 +1087,7 @@ public class CodeEditor2 extends JComponent {
     }
 
 	public void setCursorPosition(int cursorPosition) {
-		this.area.setCaretPosition(cursorPosition + 1);
+		this.area.setCaretPosition(cursorPosition);
 	}
 
 	public int getCursorPosition() {

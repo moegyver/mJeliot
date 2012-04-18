@@ -41,7 +41,9 @@ public class CodeEditor extends AbstractMJeliotActivity {
 			editor.addTextChangedListener(new TextWatcher() {
 					@Override
 					public void onTextChanged(CharSequence s, int start, int before, int count) {
-						CodeEditor.this.onCodeUpdate(s, start);
+						int tabOffset = countTabs(s, start + count);
+						System.out.println("s: " + s + " start: " + start + " before: " + before + " count: " + count + " tabOffset: " + tabOffset);
+						CodeEditor.this.onCodeUpdate(s, start + count  + 3 * tabOffset);
 					}
 					@Override
 					public void afterTextChanged(Editable arg0) {
@@ -92,6 +94,18 @@ public class CodeEditor extends AbstractMJeliotActivity {
 			});
 		}
 		
+		protected int countTabs(CharSequence s, int cursorPosition) {
+			String tabstring = s.subSequence(0, cursorPosition).toString();
+			char[] characters = tabstring.toCharArray();
+			int tabCount = 0;
+			for (char character : characters) {
+				if (character == '\t') {
+					tabCount++;
+				}
+			}
+			return tabCount;
+		}
+
 		@Override
 		public void onRestart() {
 			super.onRestart();

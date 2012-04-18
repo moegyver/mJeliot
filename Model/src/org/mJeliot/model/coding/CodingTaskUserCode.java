@@ -152,8 +152,12 @@ public class CodingTaskUserCode implements CodingTaskListener {
 		}
 	}
 
-	public void select() {
-		this.codingTask.setCurrentUserCode(this);
+	public void toggleSelect() {
+		if (this.codingTask.getCurrentUserCode() != this) {
+			this.codingTask.setCurrentUserCode(this);
+		} else {
+			this.codingTask.setCurrentUserCode(null);
+		}
 	}
 
 	public String getCode() {
