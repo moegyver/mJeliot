@@ -301,7 +301,7 @@ public class CodeEditor2 extends JComponent {
         public void actionPerformed(ActionEvent e) {
             Tracker.trackEvent(TrackerClock.currentTimeMillis(),
                     Tracker.BUTTON, -1, -1, "CodeButton");
-            jeliot.getMJeliotController().sendCode(area.getText(), CodeEditor2.this);
+            jeliot.getMJeliotController().sendCode(CodeEditor2.this);
         }
     };
 
@@ -318,7 +318,7 @@ public class CodeEditor2 extends JComponent {
         }
     };
 
-    /**
+	/**
      * Set the given frame as the masterFrame.
      * 
      * @param frame
@@ -327,7 +327,11 @@ public class CodeEditor2 extends JComponent {
     public void setMasterFrame(JFrame frame) {
         this.masterFrame = frame;
     }
-    private JPopupMenu moemenu = new JPopupMenu();
+    protected String getCodeSelection() {
+		return area.getSelectedText();
+	}
+
+	private JPopupMenu moemenu = new JPopupMenu();
 
 	private final Jeliot jeliot; {
         JMenuItem menuItem;
@@ -1092,5 +1096,26 @@ public class CodeEditor2 extends JComponent {
 
 	public void setCodeButtonEnabled(boolean b) {
 		codeButton.setEnabled(b);
+	}
+
+	public String getSelectedText() {
+		String text = this.area.getSelectedText();
+		if (text != null) {
+			return text;
+		} else {
+			return "";
+		}
+	}
+
+	public int getSelectionOffset() {
+		return this.area.getSelectionStart();
+	}
+
+	public int getSelectionLength() {
+		if (this.area.getSelectedText() != null) {
+			return this.area.getSelectedText().length();
+		} else {
+			return 0;
+		}
 	}
 }

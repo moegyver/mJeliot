@@ -694,15 +694,14 @@ public class MJeliotController implements ClientListener,
 		}
 	}
 
-	public void sendCode(String code, CodeEditor2 codeEditor) {
+	public void sendCode(CodeEditor2 codeEditor) {
 		if (this.codingTask != null) {
 			this.codingTask.endCodingTask();
 		}
 		if (this.lecture != null) {
-			this.codingTask = new CodingTask(this.lecture, code);
-			new CodeSelector(this, codeEditor, this.codingTask, code,
-					codeEditor.getCursorPosition());
-			this.sendMessage(ProtocolParser.generateCodingTask(code,
+			this.codingTask = new CodingTask(this.lecture, codeEditor.getSelectedText());
+			new CodeSelector(this, codeEditor, this.codingTask);
+			this.sendMessage(ProtocolParser.generateCodingTask(codeEditor.getSelectedText(),
 					this.user.getId(), null, this.lecture.getId()));
 		}
 	}

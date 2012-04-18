@@ -16,14 +16,19 @@ public class CodeSelector implements CodingTaskListener,
 	private CodingTaskUserCode currentUserCode;
 	private final int originalCursorPosition;
 	private final MJeliotController controller;
+	private int codeOffset = 0;
+	private int codeLength = 0;
+	private String selectedCode;
 
 	public CodeSelector(MJeliotController controller, CodeEditor2 codeEditor,
-			CodingTask codingTask, String originalCode,
-			int originalCursorPosition) {
+			CodingTask codingTask) {
 		this.controller = controller;
 		this.codeEditor = codeEditor;
-		this.originalCode = originalCode;
-		this.originalCursorPosition = originalCursorPosition;
+		this.originalCode = codeEditor.getProgram();
+		this.selectedCode = codeEditor.getSelectedText();
+		this.codeOffset = codeEditor.getSelectionOffset();
+		this.codeLength = codeEditor.getSelectionLength();
+		this.originalCursorPosition = codeEditor.getCursorPosition();
 		codingTask.addCodingTaskListener(this);
 	}
 
@@ -49,8 +54,8 @@ public class CodeSelector implements CodingTaskListener,
 		currentUserCode = usercode;
 		if (currentUserCode != null) {
 			currentUserCode.addCodingTaskUserCodeListener(this);
-			codeEditor.setProgram(usercode.getCode());
-			codeEditor.setCursorPosition(usercode.getCursorPosition());
+			codeEditor.setProgram(mergeCode(usercode.getCode()));
+			codeEditor.setCursorPosition(usercode.getCursorPosition() + this.codeOffset);
 			if (currentUserCode.isDone()) {
 				controller.getGUI().tryToEnterAnimate();
 				controller.sendMessage(ProtocolParser.generateRemoteCommand(
@@ -64,6 +69,10 @@ public class CodeSelector implements CodingTaskListener,
 			codeEditor.setProgram(originalCode);
 			codeEditor.setCursorPosition(this.originalCursorPosition);
 		}
+	}
+
+	private String mergeCode(String code) {
+		return this.originalCode.substring(0, codeOffset) + code + originalCode.substring(codeOffset + this.codeLength) ;
 	}
 
 	@Override
@@ -86,13 +95,13 @@ public class CodeSelector implements CodingTaskListener,
 	@Override
 	public void onCodeModified(CodingTaskUserCode codingTaskUserCode,
 			String modifiedCode, boolean isOriginalCode) {
-		this.codeEditor.setProgram(modifiedCode);
+		this.codeEditor.setProgram(mergeCode(modifiedCode));
 	}
 
 	@Override
 	public void onCursorMoved(CodingTaskUserCode codingTaskUserCode,
 			int cursorPosition) {
-		this.codeEditor.setCursorPosition(cursorPosition);
+		this.codeEditor.setCursorPosition(cursorPosition + this.codeOffset);
 	}
 
 	@Override
