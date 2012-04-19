@@ -277,7 +277,8 @@ public class Login extends AbstractMJeliotActivity {
 		final ArrayAdapter<CharSequence> content = new ArrayAdapter<CharSequence>(
 				this, android.R.layout.simple_spinner_item);
 		this.lectures = new Vector<Lecture>();
-		for (Lecture lecture : this.controller.getAvailableLectures()) {
+		for (int i = 0; i < this.controller.getAvailableLectures().size(); i++) {
+			Lecture lecture = this.controller.getAvailableLectures().valueAt(i);
 			content.add(lecture.getName());
 			this.lectures.add(lecture);
 		}

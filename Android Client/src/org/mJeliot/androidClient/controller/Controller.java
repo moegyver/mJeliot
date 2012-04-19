@@ -1,7 +1,5 @@
 package org.mJeliot.androidClient.controller;
 
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Vector;
 
 import org.mJeliot.client.Client;
@@ -20,6 +18,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.util.SparseArray;
 
 /**
  * The Controller is the main application and is in charge of:
@@ -45,7 +44,7 @@ public class Controller extends Application implements ClientListener,
 	private Vector<ControllerListener> listeners = new Vector<ControllerListener>();
 	// parser
 	private ProtocolParser parser = new ProtocolParser();
-	private HashMap<Integer, Lecture> availableLectures = new HashMap<Integer, Lecture>();
+	private SparseArray<Lecture> availableLectures = new SparseArray<Lecture>();
 	private String originalCode;
 	private RemoteController remoteController = new RemoteController(this);
 
@@ -234,8 +233,8 @@ public class Controller extends Application implements ClientListener,
 	/**
 	 * @return the available lectures
 	 */
-	public Collection<Lecture> getAvailableLectures() {
-		return this.availableLectures.values();
+	public SparseArray<Lecture> getAvailableLectures() {
+		return this.availableLectures;
 	}
 
 	@Override
