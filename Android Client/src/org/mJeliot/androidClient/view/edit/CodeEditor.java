@@ -42,7 +42,6 @@ public class CodeEditor extends AbstractMJeliotActivity {
 					@Override
 					public void onTextChanged(CharSequence s, int start, int before, int count) {
 						int tabOffset = countTabs(s, start + count);
-						System.out.println("s: " + s + " start: " + start + " before: " + before + " count: " + count + " tabOffset: " + tabOffset);
 						CodeEditor.this.onCodeUpdate(s, start + count  + 3 * tabOffset);
 					}
 					@Override
